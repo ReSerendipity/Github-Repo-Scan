@@ -12,3 +12,6 @@ scan-config.json
 
 # Star 周增长本地历史（按天累积，纯本地运行时数据，不入库）
 scan-data-history.json
+
+# 本地编辑备份（不入库，保留在磁盘）
+*.bak-*
