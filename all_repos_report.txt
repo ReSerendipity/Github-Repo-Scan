@@ -1,0 +1,70 @@
+== 分类统计 ==
+同步: 33
+有未提交: 8
+无远程: 23
+
+== 仓库清单 (名称 | 分支 | HEAD | 最近提交 | 未提交 | 前/后 | 远程) ==
+ComfyUI | master | 8d534945 | 09-27 18:45 | 1 | 0/0 | 有 本地独有
+antigravity-hans-src | (none) |  | - | 0 | 0/0 | 无 本地独有
+dco_sim | (none) |  | - | 0 | 0/0 | 无 本地独有
+lca_tmp | (none) |  | - | 0 | 0/0 | 无 本地独有
+orggh | (none) |  | - | 0 | 0/0 | 无 本地独有
+seedvr2_upstream_sync | (none) |  | - | 0 | 0/0 | 无 本地独有
+repo | main | 48483d4 | 09-24 16:39 | 0 | 0/0 | 无 本地独有
+ComfyUI-实验与改造工具箱 | main | a7f9565 | 09-27 19:56 | 0 | 0/0 | 有 √
+github-repo-scan | main | 5829943 | 09-23 19:17 | 9 | 0/0 | 有 √
+image-scrapers | main | d41bf55 | 09-28 15:16 | 28 | 0/0 | 有 √
+nekogal-dl | main | 21b881d | 09-23 22:43 | 10 | 0/0 | 有 √
+DraftPeek | main | 94caf67 | 09-28 07:22 | 0 | 0/0 | 有 √
+fab | fix/macro-expand-speed-dial | 5380d54 | 09-27 09:52 | 0 | 0/0 | 有 √
+imgsize | ci/unblock-image-size | 1ddd16b | 09-27 21:44 | 0 | 0/0 | 有 √
+rel16 | ci/release-tag-wiring | 8cdf123 | 09-27 16:06 | 0 | 0/0 | 有 √
+to60 | ci/macro-timeout-60 | 71fbd8b | 09-27 19:32 | 0 | 0/0 | 有 √
+GalgameShell | galgame | 3b150b4 | 09-28 15:11 | 2 | 0/0 | 有 √
+GalgameShell.bak | main | 1f1c841 | 09-22 20:05 | 1 | 0/0 | 有 √
+Image_MultiModel | main | 80a1c65 | 09-28 15:14 | 0 | 0/0 | 有 √
+MiniMax-H3-lite | main | 5bd93ab | 09-28 15:18 | 0 | 0/0 | 有 √
+SeedVR2-lite | main | b4819c5 | 09-26 13:04 | 0 | 0/0 | 有 √
+SpiritPal | ci/perf-xvfb | d1ec874 | 09-28 14:36 | 0 | 0/0 | 有 √
+b1 | fix/advparams-firefox-click | 2edf4e6 | 09-24 22:43 | 0 | 0/0 | 有 √
+baselines | ci/baselines-artifact-only | cadcad7 | 09-26 11:30 | 0 | 0/0 | 有 √
+docfix | docs/fix-navigation-ci-attribution | d582c44 | 09-25 20:08 | 0 | 0/0 | 有 √
+s1 | test/sse-nav-coverage | 3640629 | 09-24 20:40 | 0 | 0/0 | 有 √
+s2 | test/sse-decouple-networkidle | ee9dd51 | 09-25 14:17 | 0 | 0/0 | 有 √
+upstream_cache | (none) |  | - | 0 | 0/0 | 无 本地独有
+test_ambiguous_basename_prefer0 | main | a821719 | 09-24 01:34 | 0 | 0/0 | 无 本地独有
+repo | main |  | - | 1 | 0/0 | 无 本地独有
+upstream_cache | (none) |  | - | 0 | 0/0 | 无 本地独有
+test_file_under_ignored_dir_is0 | main | 382532c | 09-24 01:34 | 0 | 0/0 | 无 本地独有
+test_ignored_file_is_flagged0 | main | 382532c | 09-24 01:34 | 0 | 0/0 | 无 本地独有
+test_tracked_file_is_never_fla0 | main | 382532c | 09-24 01:34 | 0 | 0/0 | 无 本地独有
+repo | main |  | - | 1 | 0/0 | 无 本地独有
+test_unknown_path_is_not_repor0 | main | 609dbdf | 09-24 01:34 | 0 | 0/0 | 无 本地独有
+test_ambiguous_basename_prefer0 | main | 2d18f56 | 09-24 01:49 | 0 | 0/0 | 无 本地独有
+repo | main |  | - | 1 | 0/0 | 无 本地独有
+upstream_cache | (none) |  | - | 0 | 0/0 | 无 本地独有
+test_file_under_ignored_dir_is0 | main | d507ce5 | 09-24 01:49 | 0 | 0/0 | 无 本地独有
+test_ignored_file_is_flagged0 | main | 9b3703c | 09-24 01:49 | 0 | 0/0 | 无 本地独有
+test_tracked_file_is_never_fla0 | main | d507ce5 | 09-24 01:49 | 0 | 0/0 | 无 本地独有
+repo | main |  | - | 1 | 0/0 | 无 本地独有
+test_unknown_path_is_not_repor0 | main | 2d18f56 | 09-24 01:49 | 0 | 0/0 | 无 本地独有
+inst | local/installer-candidate2 | cd75739 | 09-23 18:41 | 0 | 0/0 | 有 √
+TTS_MultiModel | main | a310d2c | 09-28 11:33 | 0 | 0/0 | 有 √
+Unity | master | 937837e | 09-28 14:39 | 0 | 0/0 | 有 √
+DraftPeek | (detached) | 2039f36 | 09-02 09:57 | 2 | 0/0 | 有 √
+imm | main | f78a77a | 09-01 23:28 | 0 | 0/0 | 有 本地独有
+ComfyUI-BatchPromptLoader | master | b7ac325 | 09-28 14:35 | 0 | 0/0 | 有 √
+cs_clone | main | ce14b4f | 09-28 14:39 | 0 | 0/0 | 有 √
+lineart_clone | main | da32007 | 09-23 12:48 | 0 | 0/0 | 有 √
+verify_lineart | (none) |  | - | 0 | 0/0 | 有 √
+spiritpal_clone | ci/governance-spiritpal | 57a8303 | 09-28 14:35 | 0 | 0/0 | 有 √
+2026-09-25-21-39-00 | main | 6cec096 | 09-27 18:32 | 1 | 0/0 | 有 √
+MiniMax-H3-lite | main | 7d88404 | 09-27 11:39 | 0 | 0/0 | 有 √
+SeedVR2-lite | main | 9c0fcf2 | 09-28 15:18 | 0 | 0/0 | 有 √
+bpm | fix/branch-protection-mirror | e2c3406 | 09-27 15:41 | 0 | 0/0 | 有 √
+cron-stagger | chore/cron-stagger | 26a464a | 09-28 14:35 | 0 | 0/0 | 有 √
+imgsz | dep/image-size-unlock | 83b0f4c | 09-27 22:46 | 0 | 0/0 | 有 √
+monlock | fix/monitor-counter-thread-safety | ff5a520 | 09-28 09:29 | 0 | 0/0 | 有 √
+wt-v251 | chore/v2.5.1-version-bump | ad39a78 | 09-28 14:36 | 0 | 0/0 | 有 √
+wt-313 | ci/skip-quota-python-313 | e7e491e | 09-28 14:35 | 0 | 0/0 | 有 √
+wt-pages | ci/pages-deploy-group-scoping | 50ffedd | 09-27 19:29 | 0 | 0/0 | 有 √
