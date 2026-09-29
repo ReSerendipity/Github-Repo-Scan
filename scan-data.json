@@ -2,12 +2,12 @@
   "schema": 3,
   "owner": "ReSerendipity",
   "avatarUrl": "https://avatars.githubusercontent.com/u/259081123?s=96&u=356cdd7f5f7027b4a5804355e894a84e8ea1086e&v=4",
-  "scannedAt": "2026-09-29T10:54:06.428Z",
+  "scannedAt": "2026-09-29T12:59:09.172Z",
   "truncated": false,
   "rate": {
     "limit": 5000,
     "remaining": 5000,
-    "reset": 1790682847,
+    "reset": 1790690348,
     "used": 0
   },
   "totals": {
@@ -20,11 +20,11 @@
     "releases": 45,
     "ciDone": 24,
     "ciOk": 20,
-    "sizeTotal": 3742650,
+    "sizeTotal": 3754159,
     "localTotal": 13,
-    "localMatched": 8,
-    "localMissing": 25,
-    "localOnly": 5,
+    "localMatched": 10,
+    "localMissing": 23,
+    "localOnly": 3,
     "localDirty": 4,
     "localDiverged": 2
   },
@@ -37,10 +37,10 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-08-27T11:41:34Z",
-      "pushedAt": "2026-09-29T10:30:09Z",
+      "pushedAt": "2026-09-29T11:46:49Z",
       "stars": 0,
       "forks": 0,
-      "size": 48979,
+      "size": 49293,
       "openIssues": 1,
       "openPRs": 1,
       "branches": 6,
@@ -67,33 +67,33 @@
         "cls": "ok",
         "workflow": "Self-Purify Check",
         "ref": "main",
-        "ranAt": "2026-09-29T10:30:12Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/36555961424",
+        "ranAt": "2026-09-29T11:46:53Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/36563868113",
         "trend": [
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:30:12Z"
+            "at": "2026-09-29T11:46:52Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:30:12Z"
+            "at": "2026-09-29T11:46:52Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:30:12Z"
+            "at": "2026-09-29T11:46:52Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:30:12Z"
+            "at": "2026-09-29T11:46:52Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:30:12Z"
+            "at": "2026-09-29T11:46:53Z"
           }
         ]
       },
@@ -101,23 +101,28 @@
       "langColor": "#3178c6",
       "traffic": null,
       "lastCommit": {
-        "sha": "4190bea8c0a85833d9a7ca592ba41b97fbf61299",
-        "message": "chore: 删除零引用死 store + 修复「通知」开关空接线",
-        "at": "2026-09-29T10:22:10Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/commit/4190bea8c0a85833d9a7ca592ba41b97fbf61299",
+        "sha": "fd55628d627030eec2d7d703e5f25f95cc90ff64",
+        "message": "fix(lint): 归零 react-hooks/exhaustive-deps 警告（3 条，逐条判定）",
+        "at": "2026-09-29T11:42:41Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/commit/fd55628d627030eec2d7d703e5f25f95cc90ff64",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\SpiritPal",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "e473544",
+        "head": "fd55628",
         "dirty": true,
-        "dirtyCount": 2,
-        "ahead": 3,
+        "dirtyCount": 1,
+        "ahead": 0,
         "behind": 0,
-        "lastCommitAt": "2026-09-29T18:53:23+08:00",
+        "lastCommitAt": "2026-09-29T19:42:41+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/SpiritPal.git",
         "localBranches": [
           "ci/perf-xvfb",
@@ -136,6 +141,75 @@
       "starWeek": null
     },
     {
+      "name": "Image-Scrapers",
+      "url": "https://github.com/ReSerendipity/Image-Scrapers",
+      "description": "",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-22T15:31:32Z",
+      "pushedAt": "2026-09-29T11:10:15Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 13845,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "6d070efa0848ddd376e1f0c858d858a5f0cdf965",
+        "message": "chore: 切换全量备份策略（私有仓库）—— node_modules/output/_probe/断点等全部入库，删除 TODO.md",
+        "at": "2026-09-29T11:09:55Z",
+        "url": "https://github.com/ReSerendipity/Image-Scrapers/commit/6d070efa0848ddd376e1f0c858d858a5f0cdf965",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "6d070ef",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-09-29T19:09:55+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
+      "starWeek": null
+    },
+    {
       "name": ".github",
       "url": "https://github.com/ReSerendipity/.github",
       "description": "Default community health files and contribution templates for ReSerendipity repositories",
@@ -146,7 +220,7 @@
       "pushedAt": "2026-09-29T10:20:55Z",
       "stars": 0,
       "forks": 0,
-      "size": 37,
+      "size": 40,
       "openIssues": 0,
       "openPRs": 0,
       "branches": 3,
@@ -191,6 +265,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -205,7 +284,7 @@
       "pushedAt": "2026-09-29T10:01:36Z",
       "stars": 0,
       "forks": 0,
-      "size": 12602,
+      "size": 14179,
       "openIssues": 0,
       "openPRs": 0,
       "branches": 1,
@@ -236,6 +315,11 @@
         "url": "https://github.com/ReSerendipity/Unity/commit/798fcf02278982114bf60539ccbf3f04a7f63053",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\Unity",
@@ -300,6 +384,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -346,6 +435,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -391,6 +485,11 @@
         "url": "https://github.com/ReSerendipity/TTS-MultiModel-KeyBackup/commit/67c04a0525b3bf7ea178c3d32c447f3fda45a7e3",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -464,6 +563,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -525,6 +629,11 @@
         "url": "https://github.com/ReSerendipity/Multi-Tracker/commit/e7d381ff6f716ecf3297a7200daedaca8bbacf07",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -593,6 +702,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -644,6 +758,11 @@
         "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/commit/913d358892b91a5a49da6501265c75488d64249d",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-实验与改造工具箱",
@@ -720,6 +839,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -772,6 +896,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -823,6 +952,11 @@
         "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/commit/59cfbe3f83b979bda5296177dae61f8a878e31f4",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -896,6 +1030,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
       "local": {
         "path": "C:\\Users\\Doro\\GalgameShell",
         "branch": "main",
@@ -915,70 +1054,6 @@
           "origin/main",
           "upstream",
           "upstream/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "Image-Scrapers",
-      "url": "https://github.com/ReSerendipity/Image-Scrapers",
-      "description": "",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-22T15:31:32Z",
-      "pushedAt": "2026-09-29T05:55:02Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 4230,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "bccb512810563f22a4efa0ba880a59acaa6a0aad",
-        "message": "docs(第三十六批): P-5 补 schtasks 日跑注册→删除审计记录 (#19)",
-        "at": "2026-09-29T05:54:55Z",
-        "url": "https://github.com/ReSerendipity/Image-Scrapers/commit/bccb512810563f22a4efa0ba880a59acaa6a0aad",
-        "files": [],
-        "fileCount": 0
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "bccb512",
-        "dirty": true,
-        "dirtyCount": 22,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-09-29T13:54:55+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main"
         ]
       },
       "starWeek": null
@@ -1056,6 +1131,11 @@
         "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/commit/e8e20a722a14f374b2e88478561de02285f071ad",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
@@ -1155,6 +1235,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "CLI",
+        "detail": "入口文件: app/integrated_app/cli.py",
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -1231,6 +1316,11 @@
         "url": "https://github.com/ReSerendipity/Image-MultiModel/commit/3b18791ce6ff1357d59554ee5f52c4717a67d159",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -1309,6 +1399,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
       "local": {
         "path": "C:\\Users\\Doro\\SeedVR2-lite",
         "branch": "main",
@@ -1358,26 +1453,11 @@
       "ci": {
         "state": "通过",
         "cls": "ok",
-        "workflow": "Main Verify",
+        "workflow": "Stale 自动清理",
         "ref": "main",
-        "ranAt": "2026-09-29T01:10:28Z",
-        "url": "https://github.com/ReSerendipity/DraftPeek/actions/runs/36506632323",
+        "ranAt": "2026-09-29T09:18:51Z",
+        "url": "https://github.com/ReSerendipity/DraftPeek/actions/runs/36548354652",
         "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-28T15:22:23Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-28T15:22:23Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-28T15:29:36Z"
-          },
           {
             "s": "completed",
             "c": "success",
@@ -1387,6 +1467,21 @@
             "s": "completed",
             "c": "success",
             "at": "2026-09-29T01:10:28Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-09-29T06:56:40Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-09-29T07:43:04Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-09-29T09:18:51Z"
           }
         ]
       },
@@ -1400,6 +1495,11 @@
         "url": "https://github.com/ReSerendipity/DraftPeek/commit/c4a5826ef22cf19ef839e6e89e8f60841d1fdee1",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\DraftPeek",
@@ -1466,7 +1566,30 @@
         "files": [],
         "fileCount": 0
       },
-      "local": null,
+      "cli": {
+        "state": "CLI",
+        "detail": "入口文件: nekogal_dl/cli.py",
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "fc9e456",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-09-28T23:00:02+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Nekogal-DL.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
       "starWeek": null
     },
     {
@@ -1544,6 +1667,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -1595,6 +1723,11 @@
         "url": "https://github.com/ReSerendipity/ComfyUI-BatchPromptLoader/commit/b7ac32529cbdef67b61555ea091e8547c0b112a1",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -1668,6 +1801,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -1740,6 +1878,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -1785,6 +1928,11 @@
         "url": "https://github.com/ReSerendipity/DraftPeek-KeyBackup/commit/38c01d3dd74dcaa5fa947083aa10de690ba53882",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -1837,6 +1985,11 @@
         "url": "https://github.com/ReSerendipity/Website-Genshin-Impact/commit/98d72598c79f6453227964baf1ca1ee11079396c",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -1899,6 +2052,11 @@
         "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/commit/72213f4d8de1021cdcf0d68b2f475e664d016552",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -1972,7 +2130,29 @@
         "files": [],
         "fileCount": 0
       },
-      "local": null,
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "13f6668",
+        "dirty": true,
+        "dirtyCount": 3,
+        "ahead": 5,
+        "behind": 0,
+        "lastCommitAt": "2026-09-29T19:37:42+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin/main"
+        ]
+      },
       "starWeek": null
     },
     {
@@ -2008,19 +2188,9 @@
         "cls": "ok",
         "workflow": "pages build and deployment",
         "ref": "main",
-        "ranAt": "2026-09-23T04:50:38Z",
-        "url": "https://github.com/ReSerendipity/Unfading-Wall/actions/runs/35819974294",
+        "ranAt": "2026-09-29T10:15:04Z",
+        "url": "https://github.com/ReSerendipity/Unfading-Wall/actions/runs/36554388272",
         "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-08T13:21:59Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-08T13:23:10Z"
-          },
           {
             "s": "completed",
             "c": "success",
@@ -2035,6 +2205,16 @@
             "s": "completed",
             "c": "success",
             "at": "2026-09-23T04:50:38Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-09-29T10:01:13Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-09-29T10:15:04Z"
           }
         ]
       },
@@ -2048,6 +2228,11 @@
         "url": "https://github.com/ReSerendipity/Unfading-Wall/commit/e836446e439ec0489541e0ae87dd07b732913e7e",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -2121,6 +2306,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     },
@@ -2166,6 +2356,11 @@
         "url": "https://github.com/ReSerendipity/Hugging-Face/commit/d6655e2289a8ddeaeacce44a738aa35e88496e0a",
         "files": [],
         "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
       },
       "local": null,
       "starWeek": null
@@ -2213,6 +2408,11 @@
         "files": [],
         "fileCount": 0
       },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
       "local": null,
       "starWeek": null
     }
@@ -2220,13 +2420,13 @@
   "scanInfo": {
     "mode": "incremental",
     "total": 33,
-    "deepScanned": 26,
-    "reused": 7,
+    "deepScanned": 33,
+    "reused": 0,
     "full": false,
-    "durationMs": 21291
+    "durationMs": 45866
   },
   "localScan": {
-    "scannedAt": "2026-09-29T10:54:19.980Z",
+    "scannedAt": "2026-09-29T12:59:23.039Z",
     "roots": [
       "C:\\Users\\Doro",
       "C:\\Users\\Doro\\Desktop",
@@ -3092,40 +3292,40 @@
         "matchedRepo": "ComfyUI-Experiment-Toolbox"
       },
       {
-        "path": "C:\\Users\\Doro\\Desktop\\GithubRepoScan",
-        "name": "GithubRepoScan",
-        "remoteUrl": "https://github.com/ReSerendipity/GithubRepoScan.git",
+        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
+        "name": "Github-Repo-Scan",
+        "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
         "remotes": [
           {
             "name": "origin",
-            "url": "https://github.com/ReSerendipity/GithubRepoScan.git"
+            "url": "https://github.com/ReSerendipity/Github-Repo-Scan.git"
           }
         ],
         "github": {
           "owner": "ReSerendipity",
-          "repo": "GithubRepoScan",
+          "repo": "Github-Repo-Scan",
           "host": "github.com",
           "isGitHub": true
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "5829943",
+        "head": "13f6668",
         "localBranches": [
           "main"
         ],
         "remoteBranches": [
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-23T19:17:48+08:00",
+        "lastCommitAt": "2026-09-29T19:37:42+08:00",
         "dirty": true,
-        "dirtyCount": 12,
-        "ahead": 0,
+        "dirtyCount": 3,
+        "ahead": 5,
         "behind": 0,
         "bare": false,
         "error": null,
-        "matched": false,
-        "matchType": null,
-        "matchedRepo": null
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Github-Repo-Scan"
       },
       {
         "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
@@ -3145,7 +3345,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "bccb512",
+        "head": "6d070ef",
         "localBranches": [
           "main"
         ],
@@ -3153,9 +3353,9 @@
           "origin",
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-29T13:54:55+08:00",
-        "dirty": true,
-        "dirtyCount": 22,
+        "lastCommitAt": "2026-09-29T19:09:55+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3165,18 +3365,18 @@
         "matchedRepo": "Image-Scrapers"
       },
       {
-        "path": "C:\\Users\\Doro\\Desktop\\NekogalDl",
-        "name": "NekogalDl",
-        "remoteUrl": "https://github.com/ReSerendipity/NekogalDl.git",
+        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
+        "name": "Nekogal-DL",
+        "remoteUrl": "https://github.com/ReSerendipity/Nekogal-DL.git",
         "remotes": [
           {
             "name": "origin",
-            "url": "https://github.com/ReSerendipity/NekogalDl.git"
+            "url": "https://github.com/ReSerendipity/Nekogal-DL.git"
           }
         ],
         "github": {
           "owner": "ReSerendipity",
-          "repo": "NekogalDl",
+          "repo": "Nekogal-DL",
           "host": "github.com",
           "isGitHub": true
         },
@@ -3197,9 +3397,9 @@
         "behind": 0,
         "bare": false,
         "error": null,
-        "matched": false,
-        "matchType": null,
-        "matchedRepo": null
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Nekogal-DL"
       },
       {
         "path": "C:\\Users\\Doro\\DraftPeek",
@@ -3309,8 +3509,8 @@
           "origin/main"
         ],
         "lastCommitAt": "2026-09-28T18:27:51+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
+        "dirty": true,
+        "dirtyCount": 11,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3417,7 +3617,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "e473544",
+        "head": "fd55628",
         "localBranches": [
           "ci/perf-xvfb",
           "main"
@@ -3431,10 +3631,10 @@
           "origin/main",
           "origin/sync/main-local-20260918"
         ],
-        "lastCommitAt": "2026-09-29T18:53:23+08:00",
+        "lastCommitAt": "2026-09-29T19:42:41+08:00",
         "dirty": true,
-        "dirtyCount": 2,
-        "ahead": 3,
+        "dirtyCount": 1,
+        "ahead": 0,
         "behind": 0,
         "bare": false,
         "error": null,
@@ -3572,8 +3772,8 @@
         "matchedRepo": "Unity"
       }
     ],
-    "matched": 8,
-    "localOnlyCount": 5
+    "matched": 10,
+    "localOnlyCount": 3
   },
   "starWeekRef": null
 }
