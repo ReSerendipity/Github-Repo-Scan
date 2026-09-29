@@ -1,8 +1,8 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor } from "../scan-core.mjs";
-import { mkdtempSync, mkdirSync, rmSync } from "node:fs";
+import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote } from "../scan-core.mjs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
@@ -390,7 +390,7 @@ test("renderDashboard:分支标注本地/远程（表头、单元格与样式）
 });
 
 test("repoUnchanged：listing 级字段全等且 CI 不在运行中 → 视为无变化", () => {
-  const prev = { pushedAt: "p", stars: 1, forks: 0, openIssues: 2, openPRs: 0, branches: 1, releases: 0, isArchived: false, visibility: "PUBLIC", ci: { cls: "ok" } };
+  const prev = { pushedAt: "p", stars: 1, forks: 0, openIssues: 2, openPRs: 0, branches: 1, releases: 0, isArchived: false, visibility: "PUBLIC", ci: { cls: "ok" }, cli: { state: "无", detail: null, src: "remote" } };
   const next = { pushedAt: "p", stars: 1, forks: 0, openIssues: 2, openPRs: 0, branches: 1, releases: 0, isArchived: false, visibility: "PUBLIC" };
   assert.equal(repoUnchanged(prev, next), true, "完全一致应判定无变化");
   assert.equal(repoUnchanged(prev, { ...next, stars: 2 }), false, "star 变化应视为有变更");
@@ -413,4 +413,82 @@ test("renderDashboard：脚本应接入 scanInfo 与 /api/status（先探测再�
   assert.ok(html.includes("强制全量"), "应含强制全量文案");
   assert.ok(html.includes("/api/status"), "应轮询 /api/status");
   assert.ok(html.includes('id="scanBtn"'), "应有扫描按钮");
+});
+
+test("manifestCliDetail：package.json bin / pyproject scripts / 无入口", () => {
+  assert.match(manifestCliDetail("package.json", JSON.stringify({ bin: "cli.js" })), /^package\.json bin/);
+  assert.match(manifestCliDetail("package.json", JSON.stringify({ bin: { gsh: "./bin/gsh.js" } })), /gsh/);
+  assert.equal(manifestCliDetail("package.json", JSON.stringify({ name: "x" })), null);
+  assert.match(manifestCliDetail("pyproject.toml", "[project.scripts]\ntts-multimodel = \"integrated_app.cli:main\"\n"), /tts-multimodel/);
+  assert.equal(manifestCliDetail("pyproject.toml", "[project]\nname = \"x\"\n"), null);
+  assert.equal(manifestCliDetail("setup.py", "setup(name='x')\n"), null);
+  assert.match(manifestCliDetail("setup.py", "entry_points={'console_scripts': ['x= x']}"), /entry_points/);
+  assert.match(manifestCliDetail("Cargo.toml", "[[bin]]\nname = \"x\"\n"), /\[\[bin\]\]/);
+  assert.equal(manifestCliDetail("setup.py", "this is { invalid toml"), null);
+});
+
+test("classifyCli：入口优先，其次脚本集，最后无", () => {
+  assert.equal(classifyCli({ hasEntry: true, entryDetail: "bin", hasScriptDir: true }).state, "CLI");
+  assert.equal(classifyCli({ hasEntry: false, entryDetail: null, hasScriptDir: true }).state, "脚本集");
+  assert.equal(classifyCli({ hasEntry: false, entryDetail: null, hasScriptDir: false }).state, "无");
+});
+
+test("detectCliLocal：bin 清单 / cli 命名文件 / 脚本集 / 空目录 / 重目录跳过", () => {
+  const base = mkdtempSync(join(tmpdir(), "grs-cli-"));
+  try {
+    // 1. package.json bin → CLI
+    mkdirSync(base + "/a", { recursive: true });
+    writeFileSync(base + "/a/package.json", JSON.stringify({ bin: { tool: "./cli.js" } }));
+    assert.equal(detectCliLocal(base + "/a").state, "CLI");
+    // 2. cli 命名文件 → CLI
+    mkdirSync(base + "/b/pkg", { recursive: true });
+    writeFileSync(base + "/b/pkg/cli.py", "import argparse\n");
+    const b = detectCliLocal(base + "/b");
+    assert.equal(b.state, "CLI");
+    assert.match(b.detail, /pkg\/cli\.py/);
+    // 3. 仅 scripts/ 目录 → 脚本集
+    mkdirSync(base + "/c/scripts", { recursive: true });
+    writeFileSync(base + "/c/scripts/gen.py", "print(1)\n");
+    assert.equal(detectCliLocal(base + "/c").state, "脚本集");
+    // 4. 空目录 → 无
+    mkdirSync(base + "/d", { recursive: true });
+    assert.equal(detectCliLocal(base + "/d").state, "无");
+    // 5. node_modules 里的 cli.js 不算入口
+    mkdirSync(base + "/e/node_modules/pkg", { recursive: true });
+    writeFileSync(base + "/e/node_modules/pkg/cli.js", "x");
+    assert.equal(detectCliLocal(base + "/e").state, "无");
+    // 6. 目录不存在 → 无（不抛）
+    assert.equal(detectCliLocal(base + "/nope").state, "无");
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("detectCliRemote：树内 cli 文件 / 清单 / 脚本目录", () => {
+  assert.equal(detectCliRemote(["src", "main.py", "nekogal_dl/cli.py"], {}).state, "CLI");
+  assert.equal(detectCliRemote(["src", "main.py"], { "pyproject.toml": "[project.scripts]\nx = \"x:main\"\n" }).state, "CLI");
+  assert.equal(detectCliRemote(["src", "scripts/run.py", "README.md"], {}).state, "脚本集");
+  assert.equal(detectCliRemote(["src", "README.md"], {}).state, "无");
+  assert.equal(detectCliRemote([], {}).state, "无");
+});
+
+test("repoUnchanged：旧快照缺 CLI 结果 → 视为有变更（触发一次深扫补列）", () => {
+  const base = { pushedAt: "t", stars: 0, forks: 0, openIssues: 0, openPRs: 0, branches: 1, branchNames: ["main"], releases: 0, isArchived: false, visibility: "PUBLIC", ci: { cls: "ok" } };
+  const next = { pushedAt: "t", stars: 0, forks: 0, openIssues: 0, openPRs: 0, branches: 1, branchNames: ["main"], releases: 0, isArchived: false, visibility: "PUBLIC", ci: { cls: "ok" } };
+  assert.equal(repoUnchanged({ ...base, cli: { state: "无", detail: null, src: "remote" } }, next), true);
+  assert.equal(repoUnchanged(base, next), false); // 无 cli 字段 → 深扫
+});
+
+test("renderDashboard:CLI 列已接入表头与脚本", () => {
+  const data = {
+    schema: 3, owner: "demo", avatarUrl: "", scannedAt: "2026-09-21T00:00:00Z", truncated: false, rate: null,
+    totals: { repos: 1, totalRepos: 1, stars: 0, forks: 0, openIssues: 0, openPRs: 0, releases: 0, ciDone: 0, ciOk: 0 },
+    rows: [
+      { name: "a", url: "u", description: "d", visibility: "PUBLIC", isArchived: false, isFork: false, createdAt: "2026-01-01T00:00:00Z", pushedAt: "2026-09-21T00:00:00Z", stars: 0, forks: 0, size: 0, openIssues: 0, openPRs: 0, branches: 1, defaultBranch: "main", license: null, licenseUrl: null, releases: 0, latestRelease: null, ci: { state: "无 CI 记录", cls: "none", workflow: null, ref: null, ranAt: null, url: null, trend: [] }, language: "Python", langColor: "#3572A5", lastCommit: null, cli: { state: "CLI", detail: "pyproject scripts: x", src: "remote" } },
+    ],
+  };
+  const html = renderDashboard(data);
+  assert.ok(html.includes('data-key="cli"'), "应有 CLI 表头");
+  assert.ok(html.includes("cliCell"), "脚本应含 cliCell 渲染函数");
+  assert.ok(html.includes("cli.sortKey") || html.includes("cli:"), "脚本应含 CLI 排序接入");
 });
