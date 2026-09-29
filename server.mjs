@@ -11,6 +11,7 @@
  *   POST /api/scan-local  → 仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照
  *   GET  /api/config      → 读取本地扫描配置（scan-config.json）
  *   POST /api/config      → 保存本地扫描配置（localScanRoots / localScanDepth）
+ *   GET  /api/open?path=… → 在系统文件管理器中打开本地路径（点击仓库路径跳转）
  *
  * 仅监听 127.0.0.1。扫描策略：先拉仓库列表与上次快照比对，无变更的仓库复用上次明细（不发额外请求）；
  * 无变更时秒级返回，有变更时只对变更仓库做深度拉取。启动时的自动扫描在后台运行，不阻塞页面打开。
@@ -168,6 +169,17 @@ const server = http.createServer(async (req, res) => {
         scanState.scanning = false;
         scanState.finishedAt = new Date().toISOString();
       }
+    }
+    if (url.pathname === "/api/open" && req.method === "GET") {
+      // 点击本地仓库路径 → 在系统文件管理器中打开对应文件夹
+      const p = decodeURIComponent(url.searchParams.get("path") || "");
+      if (!p || !existsSync(p)) {
+        return sendJson(res, 404, { ok: false, error: "本地路径不存在：" + p });
+      }
+      const isWin = process.platform === "win32";
+      const opener = spawn(isWin ? "explorer" : "xdg-open", [p], { stdio: "ignore", detached: true });
+      opener.unref();
+      return sendJson(res, 200, { ok: true, path: p });
     }
     if (url.pathname === "/api/config") {
       if (!sameOriginOk(req)) {

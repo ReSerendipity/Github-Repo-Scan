@@ -1,7 +1,7 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged } from "../scan-core.mjs";
+import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor } from "../scan-core.mjs";
 import { mkdtempSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -309,7 +309,7 @@ test("renderDashboard：内嵌客户端脚本必须是合法 JS（防模板字�
   });
   const all = tags.map((s) => s.slice(8, -9)).join("\n");
   assert.equal(all.indexOf("\r"), -1, "客户端脚本不应含裸 CR 字符（模板转义泄漏）");
-  assert.ok(all.includes("function starWeekCell"), "应定义 starWeekCell 渲染函数");
+  assert.ok(all.includes("function localBranchCell"), "应定义 localBranchCell 渲染函数（本地分支列）");
   assert.ok(all.includes('/[",\\n\\r]/'), "csvCell 正则应保留 \\n \\r 转义");
   assert.ok(all.includes("/^[⚠\\s]+/"), "聚合筛选正则应保留 \\s 转义");
 });
@@ -336,6 +336,57 @@ test("renderDashboard：客户端脚本不得调用未定义的服务端辅助�
   // Star 周增长用独立类名 swtrend，避免与 CI 趋势点阵的 .trend 冲突
   assert.ok(client.indexOf("swtrend") >= 0, "Star 周增长应使用 swtrend 类名");
   assert.ok(html.indexOf(".swtrend") >= 0, "CSS 应定义 .swtrend");
+});
+
+test("renderDashboard:分支标注本地/远程（表头、单元格与样式）", () => {
+  const data = {
+    schema: 3, owner: "demo", avatarUrl: "", scannedAt: "2026-09-21T00:00:00Z", truncated: false, rate: null,
+    totals: { repos: 1, totalRepos: 1, stars: 0, forks: 0, openIssues: 0, openPRs: 0, releases: 0, ciDone: 0, ciOk: 0,
+      localTotal: 1, localMatched: 1, localMissing: 0, localOnly: 0, localDirty: 0, localDiverged: 0 },
+    rows: [{
+      name: "demo-repo", url: "https://github.com/demo/demo-repo", description: "d", visibility: "PUBLIC", isArchived: false, isFork: false,
+      createdAt: "2026-01-01T00:00:00Z", pushedAt: "2026-09-21T00:00:00Z", stars: 0, forks: 0, size: 1024, openIssues: 0, openPRs: 0,
+      branches: 3, defaultBranch: "main", license: null, licenseUrl: null, releases: 0, latestRelease: null,
+      ci: { state: "无 CI 记录", cls: "none", workflow: null, ref: null, ranAt: null, url: null, trend: [] },
+      language: "Python", langColor: "#3572A5", lastCommit: null,
+      local: { path: "C:\\demo-repo", branch: "dev", upstream: "origin/dev", head: "abc1234", dirty: false, dirtyCount: 0, ahead: 0, behind: 0 },
+    }],
+    localScan: { scannedAt: "2026-09-22T00:00:00Z", roots: ["C:\\x"], depth: 4, count: 1, matched: 1, localOnlyCount: 0,
+      repos: [{ name: "demo-repo", path: "C:\\demo-repo", branch: "dev", upstream: "origin/dev", head: "abc1234", github: { owner: "demo", repo: "demo-repo", isGitHub: true }, dirty: false, dirtyCount: 0, ahead: 0, behind: 0, matched: true }] },
+  };
+  const html = renderDashboard(data);
+  // 静态表头：主表为 GitHub 远程分支，本地表头说明标注本地/远程
+  assert.ok(html.includes(">远程分支<"), "主表分支列应改名「远程分支」");
+  assert.ok(html.includes(">本地分支<"), "主表应新增「本地分支」列（替换近7天★）");
+  assert.ok(html.includes('data-key="localBranch"'), "本地分支列应可排序");
+  assert.ok(html.includes("分支（本地/远程）"), "本地仓库表分支列应说明标注本地/远程");
+  // 客户端渲染函数：本地行 = 本地分支 + 远程跟踪分支（带标签）；主表远程分支 = 远程标签
+  assert.ok(html.includes('class="branch-type loc"'), "本地分支应带 loc 标签");
+  assert.ok(html.includes('class="branch-type rem"'), "远程分支应带 rem 标签");
+  assert.ok(html.includes("本地分支 "), "本地对照列应显示「本地分支」前缀");
+  assert.ok(html.includes("远程分支 "), "本地对照列应显示「远程分支」前缀");
+  assert.ok(html.includes("upstream"), "客户端脚本应读取 upstream 字段");
+  assert.ok(html.includes(".branch-type"), "CSS 应定义 .branch-type");
+  assert.ok(html.includes("origin/"), "数据内嵌应含远程跟踪分支 origin/dev");
+  // 视图适配：默认 125% 放大、打开即顶部、主表滚轮转横向滚动
+  assert.ok(html.includes("zoom: 1.25"), "页面应默认按 125% 显示（字体更大）");
+  assert.ok(html.includes("scrollRestoration"), "页面应阻止浏览器恢复上次滚动位置");
+  assert.ok(html.includes("mainScrollEl.scrollLeft += e.deltaY"), "主表滚轮应转为横向滚动（不再需要滑到底部够横向滚动条）");
+  assert.ok(html.includes("col-resizer"), "表头应提供列宽拖拽手柄");
+  assert.ok(html.includes("DEFAULTS"), "列宽拖拽应有默认宽度数组");
+  assert.ok(html.includes("col-dragging"), "列拖拽时表头应有拖拽态样式");
+  assert.ok(html.includes("colGuide"), "列拖拽应显示竖线插入提示");
+  assert.ok(html.includes("grs_cols"), "列顺序与列宽应持久化到 grs_cols");
+  assert.ok(html.includes("applyColLayout"), "render 后应恢复自定义列布局");
+  assert.ok(html.includes("tableScale"), "工具栏应提供表格大小滑块");
+  assert.ok(html.includes("grs_tscale"), "表格缩放应持久化到 localStorage");
+  assert.ok(html.includes("/api/open?path="), "本地仓库路径应可点击打开（链接到 /api/open）");
+  assert.ok(html.includes("local-open"), "路径跳转链接应带 local-open 类（点击不离开页面）");
+  assert.ok(html.includes("全部远程分支"), "远程分支列 tooltip 应列出全部远程分支");
+  assert.ok(html.includes("全部本地分支"), "本地分支 tooltip 应列出全部本地分支");
+  assert.ok(html.includes("branchNames"), "远程扫描应采集全部分支名（branchNames）");
+  assert.ok(html.includes("远程分支全部"), "CSV 应导出全部分支列");
+  assert.ok(gitInfoFor.toString().includes("for-each-ref"), "本地扫描应采集全部本地/远程跟踪分支（for-each-ref）");
 });
 
 test("repoUnchanged：listing 级字段全等且 CI 不在运行中 → 视为无变化", () => {

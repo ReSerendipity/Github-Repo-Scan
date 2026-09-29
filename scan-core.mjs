@@ -221,12 +221,12 @@ async function gitOne(repoPath, args, timeoutMs = 12000) {
   return stdout.trim();
 }
 
-/* 读取单个本地仓库：远程 URL / 分支 / HEAD / 脏状态 / 领先落后（基于本地缓存的 remote refs，不 fetch） */
+/* 读取单个本地仓库：远程 URL / 本地分支 + 远程跟踪分支 / HEAD / 脏状态 / 领先落后（基于本地缓存的 remote refs，不 fetch） */
 export async function gitInfoFor(repoPath) {
   const info = {
     path: repoPath, name: repoPath.split(/[\\/]/).filter(Boolean).pop() ?? repoPath,
-    remoteUrl: null, remotes: [], github: null, branch: null, head: null,
-    lastCommitAt: null, dirty: false, dirtyCount: 0, ahead: null, behind: null,
+    remoteUrl: null, remotes: [], github: null, branch: null, upstream: null, head: null,
+    localBranches: [], remoteBranches: [], lastCommitAt: null, dirty: false, dirtyCount: 0, ahead: null, behind: null,
     bare: false, error: null,
   };
   try {
@@ -251,6 +251,12 @@ export async function gitInfoFor(repoPath) {
         if (info.branch === "HEAD") info.branch = "(detached)";
       } catch { /* ignore */ }
     }
+    if (info.branch && !/^\(/.test(info.branch)) {
+      try { info.upstream = (await gitOne(repoPath, ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"])) || null; } catch { /* 当前分支无远程跟踪分支（未 push / 纯本地分支） */ }
+    }
+    // 全部分支名单：本地分支（refs/heads）+ 远程跟踪分支（refs/remotes），供面板悬停查看
+    try { info.localBranches = (await gitOne(repoPath, ["for-each-ref", "--format=%(refname:short)", "refs/heads"])).split("\n").filter(Boolean); } catch { /* ignore */ }
+    try { info.remoteBranches = (await gitOne(repoPath, ["for-each-ref", "--format=%(refname:short)", "refs/remotes"])).split("\n").filter(Boolean); } catch { /* ignore */ }
     try { info.head = (await gitOne(repoPath, ["rev-parse", "--short", "HEAD"])) || null; } catch { /* 空仓库无提交 */ }
     try { info.lastCommitAt = (await gitOne(repoPath, ["log", "-1", "--format=%cI"])) || null; } catch { /* ignore */ }
     if (!info.bare) {
@@ -349,10 +355,11 @@ export function matchLocalToRemote(data, localScan) {
       lr.matched = true;
       lr.matchedRepo = row.name;
       row.local = {
-        path: lr.path, branch: lr.branch, head: lr.head,
+        path: lr.path, branch: lr.branch, upstream: lr.upstream, head: lr.head,
         dirty: !!lr.dirty, dirtyCount: lr.dirtyCount || 0,
         ahead: lr.ahead, behind: lr.behind,
         lastCommitAt: lr.lastCommitAt, remoteUrl: lr.remoteUrl,
+        localBranches: lr.localBranches || [], remoteBranches: lr.remoteBranches || [],
       };
       matched++;
     } else {
@@ -494,13 +501,13 @@ const QUERY_PAGE = /* GraphQL */ `
           pushedAt
           stargazerCount
           forkCount
-          size
+          diskUsage
           primaryLanguage { name }
           licenseInfo { spdxId name }
           defaultBranchRef { name }
           issues(states: OPEN, first: 1) { totalCount }
           pullRequests(states: OPEN, first: 1) { totalCount }
-          refs(refPrefix: "refs/heads/", first: 1) { totalCount }
+          refs(refPrefix: "refs/heads/", first: 100) { totalCount nodes { name } }
           releases(first: 1) { totalCount }
           latestRelease { tagName name publishedAt url }
         }
@@ -519,6 +526,7 @@ export function repoUnchanged(prevRow, next) {
     && prevRow.openIssues === next.openIssues
     && prevRow.openPRs === next.openPRs
     && prevRow.branches === next.branches
+    && (prevRow.branchNames || []).join("\n") === (next.branchNames || []).join("\n") // 分支名单变化（新增/改名/删除）视为有变更
     && prevRow.releases === next.releases
     && prevRow.isArchived === next.isArchived
     && prevRow.visibility === next.visibility
@@ -576,6 +584,7 @@ export async function collectData(ownerArg, opts = {}) {
       openIssues: r.issues?.totalCount ?? 0,
       openPRs: r.pullRequests?.totalCount ?? 0,
       branches: r.refs?.totalCount ?? 0,
+      branchNames: (r.refs?.nodes || []).map((n) => n.name),
       releases: r.releases?.totalCount ?? 0,
       isArchived: !!r.isArchived,
       visibility: r.visibility,
@@ -595,10 +604,11 @@ export async function collectData(ownerArg, opts = {}) {
         pushedAt: r.pushedAt,
         stars: r.stargazerCount,
         forks: r.forkCount,
-        size: r.size ?? 0,
+        size: r.diskUsage ?? 0,
         openIssues: r.issues?.totalCount ?? 0,
         openPRs: r.pullRequests?.totalCount ?? 0,
         branches: r.refs?.totalCount ?? 0,
+        branchNames: (r.refs?.nodes || []).map((n) => n.name),
         defaultBranch: r.defaultBranchRef?.name ?? "—",
         license: lic0 ? (lic0.spdxId && lic0.spdxId !== "NOASSERTION" ? lic0.spdxId : lic0.name) : null,
         licenseUrl: lic0 ? (p.licenseUrl ?? null) : null,
@@ -671,10 +681,11 @@ export async function collectData(ownerArg, opts = {}) {
       pushedAt: r.pushedAt,
       stars: r.stargazerCount,
       forks: r.forkCount,
-      size: r.size ?? 0,
+      size: r.diskUsage ?? 0,
       openIssues: r.issues?.totalCount ?? 0,
       openPRs: r.pullRequests?.totalCount ?? 0,
       branches: r.refs?.totalCount ?? 0,
+      branchNames: (r.refs?.nodes || []).map((n) => n.name),
       defaultBranch: r.defaultBranchRef?.name ?? "—",
       license: lic ? (lic.spdxId && lic.spdxId !== "NOASSERTION" ? lic.spdxId : lic.name) : null,
       licenseUrl,
@@ -828,7 +839,8 @@ export function printSummary(data) {
     if (missing.length) console.log("  ⚠ 远程有但本地没扫到：" + missing.join(", "));
     for (const lr of ls.repos) {
       const st = [lr.dirty ? "未提交" + (lr.dirtyCount || 0) : "", (lr.ahead || 0) > 0 ? "↑" + lr.ahead : "", (lr.behind || 0) > 0 ? "↓" + lr.behind : ""].filter(Boolean).join(" ") || "干净";
-      console.log("   " + (lr.matched ? "✔ " : "＋") + lr.name.padEnd(24) + " " + String(lr.branch || "—").padEnd(14) + " " + st.padEnd(14) + " " + lr.path);
+      const br = (lr.branch ? "本地:" + lr.branch : "—") + (lr.upstream ? " 远程:" + lr.upstream : "");
+      console.log("   " + (lr.matched ? "✔ " : "＋") + lr.name.padEnd(24) + " " + br.padEnd(30) + " " + st.padEnd(14) + " " + lr.path);
     }
   }
   if (data.rate) console.log("▸ GitHub API 余量：" + data.rate.remaining + "/" + data.rate.limit);
@@ -865,6 +877,7 @@ export function renderDashboard(data) {
     background: var(--bg); color: var(--text2);
     font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
     font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+    zoom: 1.25; /* 默认按 125% 显示（等效浏览器缩放），字体更大、表格更贴合宽屏 */
   }
   .container { max-width: 1320px; margin: 0 auto; padding: 36px 28px 56px; }
   a { color: var(--accent); text-decoration: none; }
@@ -933,8 +946,14 @@ export function renderDashboard(data) {
   .badge.local-ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); background: color-mix(in srgb, var(--ok) 8%, transparent); }
   .badge.local-ok .dot { background: var(--ok); }
   .toolbar .spacer { flex: 1; }
+  .toolbar .tscale { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .toolbar .tscale input[type="range"] { width: 110px; min-width: 110px; }
+  .toolbar .tscale b { min-width: 42px; text-align: right; font-weight: 600; color: var(--text); font-size: 12px; }
+  .local-open { color: var(--accent); }
+  .local-open:hover { text-decoration: underline; }
+  td.path a.local-open { color: var(--accent); }
 
-  .scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
+  .scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); position: relative; }
   table { width: 100%; border-collapse: collapse; min-width: 1340px; }
   thead th {
     position: sticky; top: 0; background: var(--panel); color: var(--muted);
@@ -960,6 +979,44 @@ export function renderDashboard(data) {
     font-size: 11px; border: 1px solid var(--border); color: var(--muted); vertical-align: 2px;
   }
   .tag.warn { color: var(--warn); border-color: var(--warn); }
+  .branch-type { display: inline-block; margin-right: 5px; padding: 0 6px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); color: var(--muted); vertical-align: 1px; white-space: nowrap; }
+  .branch-type.loc { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); background: color-mix(in srgb, var(--ok) 8%, transparent); }
+  .branch-type.rem { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  /* 主表固定列宽布局：列宽由表头决定、表格总宽有界，长文字在单元格内省略（不再把表格撑爆/文字被边框切掉） */
+  .main-table { table-layout: fixed; width: 100%; min-width: 1495px; }
+  .main-table th { box-sizing: border-box; }
+  .main-table tbody td { padding-left: 10px; padding-right: 10px; }
+  .main-table th:nth-child(1) { width: 126px; }
+  .main-table th:nth-child(2) { width: 58px; }
+  .main-table th:nth-child(3) { width: 106px; }
+  .main-table th:nth-child(4) { width: 58px; }
+  .main-table th:nth-child(5) { width: 88px; }
+  .main-table th:nth-child(6) { width: 96px; }
+  .main-table th:nth-child(7) { width: 88px; }
+  .main-table th:nth-child(8) { width: 56px; }
+  .main-table th:nth-child(9) { width: 135px; }
+  .main-table th:nth-child(10) { width: 218px; }
+  .main-table th:nth-child(11) { width: 48px; }
+  .main-table th:nth-child(12) { width: 48px; }
+  .main-table th:nth-child(13) { width: 64px; }
+  .main-table th:nth-child(14) { width: 56px; }
+  .main-table th:nth-child(15) { width: 56px; }
+  .main-table th:nth-child(16) { width: 78px; }
+  .main-table th:nth-child(17) { width: 58px; }
+  .main-table th:nth-child(18) { width: 58px; }
+  /* 列宽拖拽手柄：拖动表头分隔线调整列宽（sticky 表头本身即定位上下文） */
+  .main-table th .col-resizer { position: absolute; right: -3px; top: 0; bottom: 0; width: 8px; cursor: col-resize; z-index: 6; }
+  .main-table th .col-resizer:hover { background: rgba(127, 127, 127, .22); }
+  /* 列拖拽重排：拖表头文字移动整列，竖线提示插入位置 */
+  .main-table th.col-dragging { opacity: .45; box-shadow: 0 2px 12px rgba(0, 0, 0, .25); }
+  #colGuide { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--accent); pointer-events: none; z-index: 50; display: none; box-shadow: 0 0 6px rgba(0, 0, 0, .35); }
+  .main-table td { overflow: hidden; }
+  .main-table td.repo { overflow: hidden; }
+  .main-table .repo-name { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
+  /* 单行短列：超出省略号截断，悬停看全值 */
+  .main-table td.num, .main-table td.lang, .main-table td.vis, .main-table td.lic, .main-table td.score { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* 分支列文字适配：长分支名单行省略 + 悬停查看全名（固定布局下生效，列宽来自表头） */
+  td.branch-cell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .badge {
     display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px;
     border-radius: 999px; font-size: 12px; border: 1px solid var(--border);
@@ -1126,12 +1183,17 @@ export function renderDashboard(data) {
         <option value="60">每 60 分钟</option>
       </select>
     </label>
+    <label class="tscale" title="整体缩放主表：调小减少横向滚动、调大更清晰（叠加在页面 125% 上，自动记住）">
+      <span>表格大小</span>
+      <input type="range" id="tableScale" min="60" max="160" step="5" value="100">
+      <b id="tableScaleVal">100%</b>
+    </label>
   </div>
 
   <div class="notice" id="truncNotice" style="display:none"></div>
 
   <div class="scroll" id="mainScroll">
-    <table>
+    <table class="main-table">
       <thead>
         <tr>
           <th class="sortable" data-key="name" title="点击按仓库名排序">仓库<span class="arr" data-arr="name"></span></th>
@@ -1142,9 +1204,9 @@ export function renderDashboard(data) {
           <th class="sortable" data-key="license" title="点击按许可证排序">许可证<span class="arr" data-arr="license"></span></th>
           <th class="sortable" data-key="release" title="点击按最新发布时间排序">最新 Release<span class="arr" data-arr="release"></span></th>
           <th class="sortable" data-key="issues" title="点击按开放 Issue 数排序">Issue<span class="arr" data-arr="issues"></span></th>
-          <th class="sortable" data-key="branches" title="点击按分支数排序">分支<span class="arr" data-arr="branches"></span></th>
+          <th class="sortable" data-key="branches" title="点击按分支数排序（GitHub 远程分支）">远程分支<span class="arr" data-arr="branches"></span></th>
+          <th class="sortable" data-key="localBranch" title="点击按本地分支排序（本机检出的本地分支 + 其远程跟踪分支；本地缺失沉底）">本地分支<span class="arr" data-arr="localBranch"></span></th>
           <th class="sortable" data-key="stars" title="点击按 Star 数排序">Star<span class="arr" data-arr="stars"></span></th>
-          <th class="sortable" data-key="starWeek" title="点击按近 7 天 Star 增量排序（基于本地扫描快照历史，需 ≥6 天历史；红涨绿跌）">近7天★<span class="arr" data-arr="starWeek"></span></th>
           <th class="sortable" data-key="forks" title="点击按 Fork 数排序">Fork<span class="arr" data-arr="forks"></span></th>
           <th class="sortable" data-key="language" title="点击按语言排序">语言<span class="arr" data-arr="language"></span></th>
           <th class="sortable" data-key="size" title="点击按仓库大小排序（GitHub 返回的磁盘占用，单位 KB）">大小<span class="arr" data-arr="size"></span></th>
@@ -1164,8 +1226,8 @@ export function renderDashboard(data) {
     <div id="footExtra"></div>
     数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node server.mjs</code>），或命令行 <code>node scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
     排序：点击表头，再点一次切换升降序（选择会记住）· 健康分：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15 · 视图：「＋存视图」保存当前筛选与排序 · 主题：右上角切换（默认浅色）·
-    CI 取最近一次 Actions 运行（任意分支/标签）· Issue 数不含 PR（PR 单列）· 分支数为全部本地分支（不含 tag）·
-    表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示分支与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。
+    CI 取最近一次 Actions 运行（任意分支/标签）· Issue 数不含 PR（PR 单列）· 远程分支数为 GitHub 上全部分支（不含 tag）·
+    表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示本地/远程分支（本地 = 当前检出分支，远程 = 其远程跟踪分支）与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。
   </footer>
 </div>
 
@@ -1175,6 +1237,15 @@ window.__SCAN_DATA__ = ${jsonStr};
 <script>
 (function () {
   'use strict';
+
+  // 打开/刷新页面总是从顶部开始（避免浏览器恢复上次滚动位置、停在页面底部）
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+  window.scrollTo(0, 0);
+  // bfcache 软刷新/后台恢复时不重跑脚本，这里兜底回到顶部
+  window.addEventListener('pageshow', function () { window.scrollTo(0, 0); });
+
+  // 列布局恢复（列顺序 + 列宽）在每次 render 后应用；具体实现由 initColLayout 挂载
+  var applyColLayout = function () {};
 
   var SVG_STAR = '<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg>';
   var SVG_FORK = '<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/></svg>';
@@ -1270,7 +1341,12 @@ window.__SCAN_DATA__ = ${jsonStr};
     issues: function (r) { return r.openIssues; },
     branches: function (r) { return r.branches; },
     stars: function (r) { return r.stars; },
-    starWeek: function (r) { return (r.starWeek == null) ? null : r.starWeek; },
+    localBranch: function (r) {
+      if (!state.data || !state.data.localScan) return null;
+      var l = r.local;
+      if (!l || !l.branch) return null;
+      return (l.branch + (l.upstream ? ' ' + l.upstream : '')).toLowerCase();
+    },
     forks: function (r) { return r.forks; },
     language: function (r) { return r.language ? r.language.toLowerCase() : null; },
     pushedAt: function (r) { return r.pushedAt; },
@@ -1451,8 +1527,14 @@ window.__SCAN_DATA__ = ${jsonStr};
     if ((l.ahead || 0) > 0) bits.push('↑' + l.ahead);
     if ((l.behind || 0) > 0) bits.push('↓' + l.behind);
     if (!bits.length) bits.push('干净');
-    var tip = esc(l.path || '') + (l.branch ? ' @ ' + esc(l.branch) : '') + ' · 基于本地缓存的远程 refs，不自动 fetch';
-    return '<span class="badge local-ok" title="' + tip + '"><span class="dot"></span>本地有</span><div class="sub">' + esc(l.branch || '—') + ' · ' + bits.join(' · ') + '</div>';
+    var tip = esc(l.path || '') + (l.branch ? ' @ ' + esc(l.branch) : '') + (l.upstream ? '（远程跟踪分支 ' + esc(l.upstream) + '）' : '') + ' · 基于本地缓存的远程 refs，不自动 fetch';
+    var okBadge;
+    if (l.path) {
+      okBadge = '<a class="badge local-ok local-open" href="/api/open?path=' + encodeURIComponent(l.path) + '" title="点击在系统文件管理器中打开：' + tip + '"><span class="dot"></span>本地有</a>';
+    } else {
+      okBadge = '<span class="badge local-ok" title="' + tip + '"><span class="dot"></span>本地有</span>';
+    }
+    return okBadge + '<div class="sub">' + bits.join(' · ') + '</div>';
   }
 
   function localRowHtml(lr) {
@@ -1471,11 +1553,15 @@ window.__SCAN_DATA__ = ${jsonStr};
     if ((lr.behind || 0) > 0) st.push('<span class="tag" title="本地落后远程">↓ ' + lr.behind + '</span>');
     if (!st.length) st.push('<span class="tag">干净</span>');
     if (lr.error) st.push('<span class="tag warn" title="' + esc(lr.error) + '">读取异常</span>');
+    var branchTip = '本机当前检出的本地分支' + (lr.upstream ? '，远程跟踪分支 ' + esc(lr.upstream) : '');
+    var limL = function (arr) { return arr.length > 50 ? arr.slice(0, 50).join('、') + '…（共 ' + arr.length + ' 个）' : arr.join('、'); };
+    if (lr.localBranches && lr.localBranches.length) branchTip += '\\n全部本地分支：' + esc(limL(lr.localBranches));
+    if (lr.remoteBranches && lr.remoteBranches.length) branchTip += '\\n远程跟踪分支：' + esc(limL(lr.remoteBranches));
     var nameCell = '<span class="repo-name">' + esc(lr.name) + '</span>' + (lr.matched ? '' : ' <span class="tag">远程无对应</span>');
     return '<tr>' +
       '<td class="repo">' + nameCell + '</td>' +
-      '<td class="path" title="' + esc(lr.path) + '">' + esc(lr.path) + '</td>' +
-      '<td>' + esc(lr.branch || '—') + (lr.head ? ' <span class="muted">@' + esc(lr.head) + '</span>' : '') + '</td>' +
+      '<td class="path" title="点击在系统文件管理器中打开：' + esc(lr.path) + '"><a class="local-open" href="/api/open?path=' + encodeURIComponent(lr.path) + '" title="点击在系统文件管理器中打开该文件夹">' + esc(lr.path) + '</a></td>' +
+      '<td title="' + branchTip + '"><span class="branch-type loc" title="本机当前检出的本地分支">本地</span>' + esc(lr.branch || '—') + (lr.upstream ? ' <span class="branch-type rem" title="该本地分支对应的远程跟踪分支">远程</span><span class="muted">' + esc(lr.upstream) + '</span>' : '') + (lr.head ? ' <span class="muted">@' + esc(lr.head) + '</span>' : '') + '</td>' +
       '<td>' + st.join(' ') + '</td>' +
       '<td class="num">' + (lr.lastCommitAt ? '<span title="' + esc(fullTime(lr.lastCommitAt)) + '">' + esc(relTime(lr.lastCommitAt)) + '</span>' : '<span class="muted">—</span>') + '</td>' +
       '<td>' + ghLink + '</td>' +
@@ -1495,18 +1581,25 @@ window.__SCAN_DATA__ = ${jsonStr};
       ? '本地独有仓库（' + repos.length + '）—— 本机存在、远程账号名下没有对应目录'
       : '本地 Git 仓库（' + repos.length + '）—— 只读本机 .git 状态，不做网络请求';
     box.style.display = '';
-    box.innerHTML = '<div class="panel-title">' + esc(label) + '</div><div class="local-scroll"><table class="local-table"><thead><tr><th>仓库</th><th>本地路径</th><th>分支</th><th>工作区状态</th><th>最近提交</th><th>远程</th></tr></thead><tbody>' + repos.map(localRowHtml).join('') + '</tbody></table></div>';
+    box.innerHTML = '<div class="panel-title">' + esc(label) + '</div><div class="local-scroll"><table class="local-table"><thead><tr><th>仓库</th><th>本地路径</th><th>分支（本地/远程）</th><th>工作区状态</th><th>最近提交</th><th>远程</th></tr></thead><tbody>' + repos.map(localRowHtml).join('') + '</tbody></table></div>';
   }
 
-  function starWeekCell(r) {
-    if (r.starWeek == null) {
-      var tip = (state.data && state.data.starWeekRef) ? '近 7 天无 Star 变化' : '暂无足够历史（需 ≥6 天扫描记录）';
-      return '<span class="muted" title="' + esc(tip) + '">—</span>';
-    }
-    var n = r.starWeek;
-    var cls = n > 0 ? 'up' : (n < 0 ? 'down' : 'flat');
-    var arrow = n > 0 ? '▲' : (n < 0 ? '▼' : '■');
-    return '<span class="swtrend ' + cls + '" title="近 7 天 Star 变化（对比 ' + esc(fullTime(state.data && state.data.starWeekRef)) + ' 快照）">' + arrow + ' ' + (n > 0 ? '+' : '') + n + '</span>';
+  function localBranchCell(r) {
+    var l = r.local;
+    if (!l || !l.branch) return '<span class="muted" title="本机扫描范围内没有对应 Git 仓库">—</span>';
+    var n = (l.localBranches && l.localBranches.length) || 1;
+    var html = '<span class="branch-type loc" title="本机当前检出的本地分支">本地</span>' + esc(l.branch) + '<span class="muted" title="全部本地分支数"> · ' + n + ' 个</span>';
+    if (l.upstream) html += ' <span class="branch-type rem" title="该本地分支对应的远程跟踪分支">远程</span><span class="muted">' + esc(l.upstream) + '</span>';
+    return html;
+  }
+  function localBranchTip(r) {
+    var l = r.local;
+    if (!l || !l.branch) return '';
+    var lim = function (arr) { return arr.length > 50 ? arr.slice(0, 50).join('、') + '…（共 ' + arr.length + ' 个）' : arr.join('、'); };
+    var tip = '本地分支 ' + l.branch + (l.upstream ? ' · 远程分支 ' + l.upstream : '');
+    if (l.localBranches && l.localBranches.length) tip += '\\n全部本地分支：' + lim(l.localBranches);
+    if (l.remoteBranches && l.remoteBranches.length) tip += '\\n远程跟踪分支：' + lim(l.remoteBranches);
+    return tip;
   }
 
   function rowHtml(r) {
@@ -1524,28 +1617,32 @@ window.__SCAN_DATA__ = ${jsonStr};
       : '<a class="muted" href="' + esc(r.url) + '/releases" target="_blank" rel="noopener">暂无发布</a>';
     var issue = '<a href="' + esc(r.url) + '/issues" target="_blank" rel="noopener" title="打开 Issues 页">' + r.openIssues + ' 个</a>' +
       (r.openPRs > 0 ? ' <a class="sub" href="' + esc(r.url) + '/pulls" target="_blank" rel="noopener" title="打开 Pull requests 页">+' + r.openPRs + ' PR</a>' : '');
-    var branch = '<a href="' + esc(r.url) + '/branches" target="_blank" rel="noopener" title="打开 Branches 页">' + esc(r.defaultBranch) + ' · ' + r.branches + ' 个</a>';
+    var branchTip = '打开 Branches 页：默认分支 ' + esc(r.defaultBranch) + '，共 ' + r.branches + ' 个';
+    if (r.branchNames && r.branchNames.length) {
+      branchTip += '\\n全部远程分支：' + (r.branchNames.length > 50 ? esc(r.branchNames.slice(0, 50).join('、')) + '…（共 ' + r.branchNames.length + ' 个）' : esc(r.branchNames.join('、')));
+    }
+    var branch = '<span class="branch-type rem" title="GitHub 上的远程分支">远程</span><a href="' + esc(r.url) + '/branches" target="_blank" rel="noopener" title="' + branchTip + '">' + esc(r.defaultBranch) + ' · ' + r.branches + ' 个</a>';
     var star = '<a href="' + esc(r.url) + '/stargazers" target="_blank" rel="noopener" title="打开 Stargazers 页">' + SVG_STAR + ' ' + r.stars + '</a>';
     var fork = '<a href="' + esc(r.url) + '/forks" target="_blank" rel="noopener" title="打开 Forks 页">' + SVG_FORK + ' ' + r.forks + '</a>';
     return '<tr>' +
-      '<td class="repo"><a class="repo-name" href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.name) + '</a>' + tags + '<div class="desc" title="' + esc(r.description) + '">' + esc(r.description || '无描述') + '</div></td>' +
-      '<td>' + visibilityCell(r) + '</td>' +
-      '<td>' + localCell(r) + '</td>' +
-      '<td>' + scoreCell(r) + '</td>' +
-      '<td>' + ciCell(r) + '</td>' +
-      '<td>' + lic + '</td>' +
-      '<td>' + rel + '</td>' +
-      '<td class="num">' + issue + '</td>' +
-      '<td>' + branch + '</td>' +
-      '<td class="num">' + star + '</td>' +
-      '<td class="num">' + starWeekCell(r) + '</td>' +
-      '<td class="num">' + fork + '</td>' +
-      '<td><span class="lang"><span class="ldot" style="background:' + esc(r.langColor) + '"></span>' + esc(r.language || '—') + '</span></td>' +
-      '<td class="num">' + sizeCell(r) + '</td>' +
-      '<td class="num">' + trafficCell(r) + '</td>' +
-      '<td>' + filesCell(r) + '</td>' +
-      '<td class="num"><span title="' + esc(fullTime(r.pushedAt)) + '">' + esc(relTime(r.pushedAt)) + '</span></td>' +
-      '<td class="num"><span title="' + esc(fullTime(r.createdAt)) + '">' + esc(relTime(r.createdAt)) + '</span></td>' +
+      '<td data-key="name" class="repo"><a class="repo-name" href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.name) + '</a>' + tags + '<div class="desc" title="' + esc(r.description) + '">' + esc(r.description || '无描述') + '</div></td>' +
+      '<td data-key="visibility" class="vis">' + visibilityCell(r) + '</td>' +
+      '<td data-key="local" class="local-cell">' + localCell(r) + '</td>' +
+      '<td data-key="score" class="score">' + scoreCell(r) + '</td>' +
+      '<td data-key="ci">' + ciCell(r) + '</td>' +
+      '<td data-key="license" class="lic">' + lic + '</td>' +
+      '<td data-key="release">' + rel + '</td>' +
+      '<td data-key="issues" class="num">' + issue + '</td>' +
+      '<td data-key="branches" class="branch-cell branch-remote">' + branch + '</td>' +
+      '<td data-key="localBranch" class="branch-cell branch-local" title="' + esc(localBranchTip(r)) + '">' + localBranchCell(r) + '</td>' +
+      '<td data-key="stars" class="num">' + star + '</td>' +
+      '<td data-key="forks" class="num">' + fork + '</td>' +
+      '<td data-key="language" class="lang"><span class="lang" title="' + esc(r.language || '') + '"><span class="ldot" style="background:' + esc(r.langColor) + '"></span>' + esc(r.language || '—') + '</span></td>' +
+      '<td data-key="size" class="num">' + sizeCell(r) + '</td>' +
+      '<td data-key="traffic" class="num">' + trafficCell(r) + '</td>' +
+      '<td data-key="files">' + filesCell(r) + '</td>' +
+      '<td data-key="pushedAt" class="num"><span title="' + esc(fullTime(r.pushedAt)) + '">' + esc(relTime(r.pushedAt)) + '</span></td>' +
+      '<td data-key="createdAt" class="num"><span title="' + esc(fullTime(r.createdAt)) + '">' + esc(relTime(r.createdAt)) + '</span></td>' +
       '</tr>';
   }
 
@@ -1667,6 +1764,7 @@ window.__SCAN_DATA__ = ${jsonStr};
       ? rows.map(rowHtml).join('')
       : '<tr><td class="empty" colspan="17">没有匹配的仓库 —— 试试清空搜索或放宽筛选条件</td></tr>';
     renderLocalBox();
+    applyColLayout(); // 恢复用户自定义的列顺序与列宽（拖拽重排/调宽后持久化，排序/筛选重渲染后保持）
 
     var extra = [];
     if (d.rate && typeof d.rate.remaining === 'number') {
@@ -1808,7 +1906,7 @@ window.__SCAN_DATA__ = ${jsonStr};
   }
   function exportCsv() {
     var rows = visibleRows();
-    var head = ['仓库', '可见性', '本地状态', '健康分', '健康等级', 'CI', '许可证', 'Release', 'Issue', 'PR', '分支', 'Star', '近7天★', 'Fork', '语言', '大小(KB)', '流量浏览', '流量克隆', '最近变更文件数', '最近推送', 'URL'];
+    var head = ['仓库', '可见性', '本地状态', '健康分', '健康等级', 'CI', '许可证', 'Release', 'Issue', 'PR', '远程分支', '远程分支全部', '本地分支', '本地分支全部', 'Star', '近7天★', 'Fork', '语言', '大小(KB)', '流量浏览', '流量克隆', '最近变更文件数', '最近推送', 'URL'];
     var lines = [head.map(csvCell).join(',')];
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i];
@@ -1820,7 +1918,7 @@ window.__SCAN_DATA__ = ${jsonStr};
         : '本地缺失';
       lines.push([
         r.name, vis, local, scoreOf(r), g.g, r.ci.state, r.license || '',
-        r.latestRelease ? r.latestRelease.tag : '', r.openIssues, r.openPRs, r.branches, r.stars, r.starWeek == null ? '' : r.starWeek, r.forks,
+        r.latestRelease ? r.latestRelease.tag : '', r.openIssues, r.openPRs, r.branches, (r.branchNames || []).join(';'), (r.local && r.local.branch ? r.local.branch + (r.local.upstream ? ' → ' + r.local.upstream : '') : ''), (r.local && r.local.localBranches ? r.local.localBranches.join(';') : ''), r.stars, r.starWeek == null ? '' : r.starWeek, r.forks,
         r.language || '', r.size || 0, r.traffic ? r.traffic.views : '', r.traffic ? r.traffic.clones : '',
         r.lastCommit ? r.lastCommit.fileCount : '', relTime(r.pushedAt), r.url,
       ].map(csvCell).join(','));
@@ -2040,6 +2138,214 @@ window.__SCAN_DATA__ = ${jsonStr};
     }
     pollStatus();
     setInterval(pollStatus, 3000);
+
+    // 主表滚轮转横向：横向滚动条在表格最底部、日常很难够到，
+    // 鼠标悬停在表格上时滚轮直接左右滚动表格（到最左/最右边界后放行纵向滚动页面）
+    var mainScrollEl = document.getElementById('mainScroll');
+    if (mainScrollEl && mainScrollEl.addEventListener) {
+      mainScrollEl.addEventListener('wheel', function (e) {
+        var sw = mainScrollEl.scrollWidth, cw = mainScrollEl.clientWidth;
+        if (sw <= cw + 2) return;                          // 无横向溢出：保持默认纵向滚动
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // 触控板横向手势：交给原生
+        var atStart = mainScrollEl.scrollLeft <= 0 && e.deltaY < 0;
+        var atEnd = mainScrollEl.scrollLeft >= sw - cw - 2 && e.deltaY > 0;
+        if (atStart || atEnd) return;                      // 横向到边界：放行给页面纵向滚动
+        e.preventDefault();
+        mainScrollEl.scrollLeft += e.deltaY;
+      }, { passive: false });
+    }
+
+    // 列布局管理：① 列宽拖拽（表头分隔线）② 列拖拽重排（表头文字，竖线提示插入位置）
+    // ③ 顺序/宽度持久化到 localStorage，每次 render 后由 applyColLayout 恢复
+    (function initColLayout() {
+      var table = document.querySelector('table.main-table');
+      if (!table) return;
+      var row = table.querySelector('thead tr');
+      var mainScroll = document.getElementById('mainScroll');
+      var DEFAULTS = [126, 58, 106, 58, 88, 96, 88, 56, 135, 218, 48, 48, 64, 56, 56, 78, 58, 58];
+      var N = DEFAULTS.length;
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('grs_cols') || 'null'); } catch (e) {}
+      var order = [];
+      for (var oi = 0; oi < N; oi++) order.push(oi);
+      var widths = DEFAULTS.slice();
+      if (saved && saved.order && saved.order.length === N) {
+        for (oi = 0; oi < N; oi++) order[oi] = Number(saved.order[oi]);
+        for (oi = 0; oi < N; oi++) widths[oi] = Math.max(40, Math.min(700, Number(saved.widths && saved.widths[oi]) || DEFAULTS[oi]));
+      }
+      function persist() { try { localStorage.setItem('grs_cols', JSON.stringify({ order: order, widths: widths })); } catch (e) {} }
+      var baseThs = null, KEYS = [];
+      function applyOrder() {
+        if (!baseThs) {
+          baseThs = Array.prototype.slice.call(row.children);
+          for (var ki = 0; ki < baseThs.length; ki++) KEYS.push(baseThs[ki].getAttribute('data-key') || '');
+        }
+        // 幂等重排：始终以初始列序 KEYS[order[i]] 为目标定位，重复调用不会交错
+        for (var i = 0; i < N; i++) {
+          var key = KEYS[order[i]];
+          var th = key ? row.querySelector('th[data-key="' + key + '"]') : null;
+          if (th && th !== row.children[i]) row.insertBefore(th, row.children[i]);
+        }
+        var tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        var trs = tbody.querySelectorAll('tr');
+        for (var k = 0; k < trs.length; k++) {
+          var tr = trs[k];
+          if (tr.children.length !== N) continue; // 空态行（colspan）
+          for (var j = 0; j < N; j++) {
+            var tkey = KEYS[order[j]];
+            var td = tkey ? tr.querySelector('td[data-key="' + tkey + '"]') : null;
+            if (td && td !== tr.children[j]) tr.insertBefore(td, tr.children[j]);
+          }
+        }
+      }
+      function applyWidths() {
+        var total = 0;
+        for (var i = 0; i < N; i++) {
+          var th = row.children[i];
+          if (th) { th.style.width = widths[i] + 'px'; total += widths[i]; }
+        }
+        table.style.minWidth = total + 'px';
+      }
+      applyColLayout = function () { applyOrder(); applyWidths(); };
+      applyColLayout();
+
+      // 每个 th 挂载：宽度手柄 + 整列拖拽
+      for (var ci = 0; ci < N; ci++) {
+        (function (idx) {
+          var th = row.children[idx];
+
+          // —— 列宽拖拽（分隔线手柄）——
+          var h = document.createElement('span');
+          h.className = 'col-resizer';
+          h.title = '拖动调整「' + th.textContent.trim() + '」列宽，双击恢复默认';
+          h.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var zoom = (parseFloat(getComputedStyle(document.body).zoom) || 1) * (parseFloat(getComputedStyle(table).zoom) || 1);
+            var startX = e.clientX, startW = widths[idx];
+            function move(ev) {
+              var nw = Math.max(40, Math.min(700, startW + (ev.clientX - startX) / zoom));
+              if (nw !== widths[idx]) { widths[idx] = nw; th.style.width = nw + 'px'; }
+              var total = 0;
+              for (var k = 0; k < N; k++) total += widths[k];
+              table.style.minWidth = total + 'px';
+            }
+            function up() {
+              document.removeEventListener('mousemove', move);
+              document.removeEventListener('mouseup', up);
+              document.body.style.userSelect = '';
+              persist();
+            }
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
+            document.body.style.userSelect = 'none';
+          });
+          h.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
+          h.addEventListener('dblclick', function (e) {
+            e.preventDefault(); e.stopPropagation();
+            widths[idx] = DEFAULTS[idx];
+            applyColLayout();
+            persist();
+          });
+          th.appendChild(h);
+
+          // —— 整列拖拽重排（表头文字区域）——
+          var guide = document.getElementById('colGuide');
+          if (!guide && mainScroll) {
+            guide = document.createElement('div');
+            guide.id = 'colGuide';
+            mainScroll.appendChild(guide);
+          }
+          th.addEventListener('mousedown', function (e) {
+            if (e.button !== 0) return;
+            if (e.target && e.target.classList && e.target.classList.contains('col-resizer')) return;
+            var startX = e.clientX, startY = e.clientY;
+            var moved = false;
+            var zoom = 1;
+            function colIndexAt(x) {
+              var ths = row.children;
+              for (var i = 0; i < ths.length; i++) {
+                var r = ths[i].getBoundingClientRect();
+                if (x < r.left + r.width / 2) return i;
+              }
+              return ths.length;
+            }
+            function move(ev) {
+              if (!moved) {
+                if (Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) < 4) return; // 拖拽阈值
+                moved = true;
+                zoom = (parseFloat(getComputedStyle(document.body).zoom) || 1) * (parseFloat(getComputedStyle(table).zoom) || 1);
+                th.classList.add('col-dragging');
+                document.body.style.userSelect = 'none';
+              }
+              ev.preventDefault();
+              var to = colIndexAt(ev.clientX);
+              var cRect = mainScroll.getBoundingClientRect();
+              var ths = row.children;
+              var xCss = to < ths.length ? (ths[to].getBoundingClientRect().left - cRect.left) / zoom : (cRect.right - cRect.left) / zoom;
+              guide.style.left = Math.max(0, xCss) + 'px';
+              guide.style.display = 'block';
+            }
+            function up() {
+              document.removeEventListener('mousemove', move);
+              document.removeEventListener('mouseup', up);
+              guide.style.display = 'none';
+              document.body.style.userSelect = '';
+              if (!moved) return; // 未拖动 = 普通点击，交还排序
+              th.classList.remove('col-dragging');
+              var to = colIndexAt(lastX);
+              if (to !== idx) {
+                var f = order[idx];
+                order.splice(idx, 1);
+                order.splice(to, 0, f);
+                var w = widths[idx];
+                widths.splice(idx, 1);
+                widths.splice(to, 0, w);
+                applyColLayout();
+                persist();
+              }
+              // 吞掉这次拖拽后的 click，避免触发排序
+              function swallow(ev) { ev.stopPropagation(); ev.preventDefault(); document.removeEventListener('click', swallow, true); }
+              document.addEventListener('click', swallow, true);
+            }
+            var lastX = startX;
+            document.addEventListener('mousemove', function (ev) { lastX = ev.clientX; });
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
+          });
+        })(ci);
+      }
+    })();
+
+    // 表格大小滑块：整体缩放主表（叠加在页面 125% 上），自动记住
+    var tsInput = document.getElementById('tableScale');
+    var tsVal = document.getElementById('tableScaleVal');
+    var mainTableEl = document.querySelector('table.main-table');
+    function applyTableScale(v) {
+      if (mainTableEl) mainTableEl.style.zoom = (v / 100).toFixed(2);
+      if (tsVal) tsVal.textContent = v + '%';
+      try { localStorage.setItem('grs_tscale', String(v)); } catch (e) {}
+    }
+    if (tsInput) {
+      var savedScale = parseInt(localStorage.getItem('grs_tscale'), 10);
+      if (isFinite(savedScale)) tsInput.value = Math.max(60, Math.min(160, savedScale));
+      tsInput.addEventListener('input', function () { applyTableScale(parseInt(tsInput.value, 10) || 100); });
+      applyTableScale(parseInt(tsInput.value, 10) || 100);
+    }
+
+    // 点击本地仓库路径：调本地服务在系统文件管理器中打开文件夹（不离开面板页）
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a.local-open') : null;
+      if (!a) return;
+      e.preventDefault();
+      fetch(a.getAttribute('href'))
+        .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'HTTP ' + r.status }; }); })
+        .then(function (j) {
+          if (!j || !j.ok) setHint((j && j.error) || '打开文件夹失败', '');
+        })
+        .catch(function () { setHint('打开文件夹失败：本地服务未响应', ''); });
+    });
   }
 
   boot();
