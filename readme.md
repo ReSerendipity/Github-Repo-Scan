@@ -37,6 +37,7 @@
 | API 配额 | 页脚实时显示 GitHub API 剩余额度与重置时间 |
 | CI/CD 状态 | 最近一次 GitHub Actions 运行：通过 / 失败 / 运行中 + 工作流名与触发分支，点击直达该次运行页 |
 | 许可证类型 | SPDX 标识（MIT、Apache-2.0 等），点击直达 LICENSE 文件页 |
+| CLI 形态 | 每仓三态：CLI（有正式命令行入口：manifest bin/entry_points 或 cli 命名入口文件）/ 脚本集（scripts·tools 目录承载命令行脚本但无统一入口）/ 无；本地有克隆的仓按本地代码检测，远程-only 仓走文件树 + 清单（pushedAt 未变复用快照）；悬停看判定依据；`gradlew`、`vitepress build` 之类构建工具链不算仓库自有 CLI |
 | Release | 最新发布 tag + 名称 + 时间，点击直达 release 页 |
 | Issue | 开放 issue 数（不含 PR），点击直达 issues 页；开放 PR 数单独列出并链接 |
 | 分支 | 主表「远程分支」列（GitHub 默认分支名 + 分支总数，带「远程」标签）与「本地分支」列（本机检出分支 + 其远程跟踪分支，带「本地/远程」标签）相邻展示，一眼区分远程与本地；**悬停可查看全部远程分支 / 全部本地分支 / 全部远程跟踪分支名单**（超 50 个截断并显示总数）；过长分支名单行省略号截断、悬停查看全名；点击直达 branches 页 |
@@ -115,6 +116,7 @@ node --test
 - Issue 数为开放 issue，不含 PR（GraphQL 的 issues 连接天然排除 PR；PR 数单列）。
 - 分支数为 GitHub 远程分支总数（不含 tag）；面板「远程分支」列与「本地」列的 本地/远程 标注区分 GitHub 分支与本机检出分支。
 - 许可证链接来自 `GET /repos/{owner}/{repo}/license`；根目录没有标准 LICENSE 文件时只显示标识、不带链接。
+- CLI 判定为静态启发式：入口 = 根清单（package.json `bin` / pyproject `[project.scripts]`·`[tool.poetry.scripts]` / setup.py·setup.cfg entry_points / Cargo `[[bin]]`）或 `cli.py`·`__main__.py` 等 cli 命名入口文件；仅散装命令行脚本（scripts/tools 目录）计为「脚本集」；判定不实跑命令，仅为面板参考。
 - 本工具面向个人账号（查询走 `user(login:)`），组织账号暂不支持。
 - Star 周增长趋势：每仓「近7天★」= 当前 Star 数 − 约 7 天前本地快照里的 Star 数；历史来自 `scan-data-history.json`（每次远程全量扫描按自然日去重追加一条）。历史不足 6 天时显示「—」，不会凭空推算增量。红涨绿跌遵循 A 股涨跌配色惯例。
 - 本地对照：`↑n` 本地领先远程 n 个提交、`↓n` 落后 n 个（基于本地缓存的远程 refs，不自动 fetch，需要刷新先手动 `git fetch`）；「未提交 n」为工作区改动文件数（含未跟踪）；「本地缺失」= 远程有但扫描范围内没有对应目录。分支标注：「本地」= 本机当前检出的本地分支，「远程」= 该分支的远程跟踪分支（如 `origin/main`，同样来自本地缓存的 refs，不自动 fetch）；无远程跟踪分支（未 push 的纯本地分支）只显示「本地」。

@@ -11,7 +11,7 @@ export function fmtSize(kb) {
 }
 import { execFileSync, execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { writeFileSync, readFileSync, readdirSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -361,6 +361,7 @@ export function matchLocalToRemote(data, localScan) {
         lastCommitAt: lr.lastCommitAt, remoteUrl: lr.remoteUrl,
         localBranches: lr.localBranches || [], remoteBranches: lr.remoteBranches || [],
       };
+      row.cli = detectCliLocal(lr.path); // 本地有克隆 → 本地检测覆盖远程结果（更新鲜）
       matched++;
     } else {
       localOnly.push(lr);
@@ -419,6 +420,97 @@ const LANG_COLORS = {
   Vue: "#41b883", Dart: "#00B4AB", PowerShell: "#012456", Batchfile: "#C1F12E",
   Lua: "#000080", MDX: "#fcb32c", Dockerfile: "#384d54", "Jupyter Notebook": "#DA5B0B",
 };
+
+/* ---------------- CLI 检测 ----------------
+ * 三态口径：CLI = 有正式命令行入口（manifest bin/entry_points 或 cli 命名入口文件）；
+ * 脚本集 = scripts|tools|bin|cmd 目录承载命令行脚本但无统一入口；无 = 检测不到交互面。
+ * 本地有克隆的仓优先本地检测（更新鲜），远程-only 仓走文件树 + 清单（pushedAt 未变复用快照）。
+ * gradlew / vitepress build 之类构建工具链不算仓库自有 CLI。 */
+const CLI_SKIP_DIRS = new Set(["node_modules", ".git", ".venv", "venv", "__pycache__", "dist", "build",
+  "target", ".gradle", ".idea", ".vscode", "site", ".vitepress", "output", "outputs", "vendor",
+  "third_party", "coverage", "test-results", "playwright-report", "_archive", "backups", "logs", "data"]);
+const CLI_MANIFESTS = ["package.json", "pyproject.toml", "setup.py", "setup.cfg", "Cargo.toml"];
+const CLI_ENTRY_FILE = /(^|\/)(cli|__main__|entrypoint|entry_point|console)\.(py|js|ts|mjs|cjs|go)$/i;
+const CLI_SCRIPT_DIR = /^(scripts|tools|bin|cmd)\/[^/]+$/.source;
+
+export function manifestCliDetail(name, text) {
+  try {
+    if (name === "package.json") {
+      const bin = JSON.parse(text).bin;
+      if (!bin) return null;
+      return typeof bin === "string" ? "package.json bin" : "package.json bin: " + Object.keys(bin).slice(0, 3).join(", ");
+    }
+    if (name === "pyproject.toml") {
+      const m = text.match(/\[project\.scripts\]([^\[]*)/);
+      if (m && m[1].trim()) {
+        const keys = m[1].split("\n").map((l) => l.split("=")[0].trim()).filter(Boolean).slice(0, 3).join(", ");
+        return "pyproject scripts: " + keys;
+      }
+      const m2 = text.match(/\[tool\.poetry\.scripts\]([^\[]*)/);
+      return m2 && m2[1].trim() ? "poetry scripts" : null;
+    }
+    if (name === "setup.py") return /console_scripts|entry_points\s*=/.test(text) ? "setup.py entry_points" : null;
+    if (name === "setup.cfg") return /console_scripts/.test(text) ? "setup.cfg console_scripts" : null;
+    if (name === "Cargo.toml") return /\[\[bin\]\]/.test(text) ? "Cargo [[bin]]" : null;
+  } catch { /* 解析失败按未命中处理 */ }
+  return null;
+}
+
+export function classifyCli({ hasEntry, entryDetail, hasScriptDir }) {
+  if (hasEntry) return { state: "CLI", detail: entryDetail || null };
+  if (hasScriptDir) return { state: "脚本集", detail: null };
+  return { state: "无", detail: null };
+}
+
+export function detectCliLocal(dir) {
+  let hasEntry = false, entryDetail = null, hasScriptDir = false;
+  let rootNames = [];
+  try { rootNames = readdirSync(dir); } catch { return { state: "无", detail: null, src: "local" }; }
+  for (const mf of CLI_MANIFESTS) {
+    if (!rootNames.includes(mf)) continue;
+    let text = "";
+    try { text = readFileSync(join(dir, mf), "utf8"); } catch { continue; }
+    const d = manifestCliDetail(mf, text);
+    if (d) { hasEntry = true; entryDetail = d; }
+  }
+  const walk = (rel, depth) => {
+    let items = [];
+    try { items = readdirSync(join(dir, rel)); } catch { return; }
+    for (const it of items) {
+      if (it.startsWith(".")) continue;
+      const r = rel ? rel + "/" + it : it;
+      let st = null;
+      try { st = statSync(join(dir, r)); } catch { continue; }
+      if (st.isDirectory()) {
+        if (CLI_SKIP_DIRS.has(it)) continue;
+        if (it === "scripts" || it === "tools" || it === "bin" || it === "cmd") { hasScriptDir = true; continue; }
+        if (depth < 2) walk(r, depth + 1);
+      } else if (CLI_ENTRY_FILE.test(r)) {
+        if (!hasEntry) entryDetail = "入口文件: " + r;
+        hasEntry = true;
+      }
+    }
+  };
+  walk("", 0);
+  const c = classifyCli({ hasEntry, entryDetail, hasScriptDir });
+  return { state: c.state, detail: c.detail, src: "local" };
+}
+
+export function detectCliRemote(paths, manifests) {
+  let hasEntry = false, entryDetail = null;
+  for (const p of paths || []) {
+    if (CLI_ENTRY_FILE.test(p)) { entryDetail = "入口文件: " + p; hasEntry = true; break; }
+  }
+  if (!hasEntry) {
+    for (const mf of Object.keys(manifests || {})) {
+      const d = manifestCliDetail(mf, manifests[mf]);
+      if (d) { entryDetail = d; hasEntry = true; break; }
+    }
+  }
+  const hasScriptDir = !hasEntry && (paths || []).some((p) => new RegExp(CLI_SCRIPT_DIR).test(p));
+  const c = classifyCli({ hasEntry, entryDetail, hasScriptDir });
+  return { state: c.state, detail: c.detail, src: "remote" };
+}
 
 export function relTime(iso) {
   if (!iso) return "—";
@@ -529,8 +621,9 @@ export function repoUnchanged(prevRow, next) {
     && (prevRow.branchNames || []).join("\n") === (next.branchNames || []).join("\n") // 分支名单变化（新增/改名/删除）视为有变更
     && prevRow.releases === next.releases
     && prevRow.isArchived === next.isArchived
-    && prevRow.visibility === next.visibility
-    && (!prevRow.ci || prevRow.ci.cls !== "running"); // CI 运行中的仓库需重查（可能刚出结果）
+  && prevRow.visibility === next.visibility
+  && !!prevRow.cli // 旧快照缺 CLI 检测结果 → 视为有变更，深扫一次后随 pushedAt 缓存
+  && (!prevRow.ci || prevRow.ci.cls !== "running"); // CI 运行中的仓库需重查（可能刚出结果）
 }
 
 export async function collectData(ownerArg, opts = {}) {
@@ -668,6 +761,20 @@ export async function collectData(ownerArg, opts = {}) {
       }
     } catch { /* 无提交或接口不可用时留空 */ }
 
+    // CLI 检测（远程-only 仓的唯一来源；有本地克隆的仓稍后被 matchLocalToRemote 用本地检测覆盖）：
+    // 拉一次文件树 + 最多 2 份根目录清单；pushedAt 未变的仓库走复用路径不进这里。
+    let cli = null;
+    try {
+      const tree = JSON.parse(await ghAsync(["api", "repos/" + owner + "/" + r.name + "/git/trees/" + (r.defaultBranchRef?.name || "HEAD") + "?recursive=1"]));
+      const paths = (tree.tree || []).map((x) => x.path);
+      const manifests = {};
+      for (const mf of CLI_MANIFESTS) {
+        if (!paths.includes(mf) || Object.keys(manifests).length >= 2) continue;
+        try { manifests[mf] = await ghAsync(["api", "repos/" + owner + "/" + r.name + "/contents/" + mf, "-H", "Accept: application/vnd.github.raw"]); } catch { /* 拉不到就跳过 */ }
+      }
+      cli = detectCliRemote(paths, manifests);
+    } catch { /* 文件树不可用时 CLI 列留空 */ }
+
     const state = ciStateOf(run);
     const lic = r.licenseInfo;
     return {
@@ -706,6 +813,7 @@ export async function collectData(ownerArg, opts = {}) {
       langColor: LANG_COLORS[r.primaryLanguage?.name ?? ""] ?? "#8b949e",
       traffic,
       lastCommit,
+      cli,
     };
   });
 
@@ -1202,6 +1310,7 @@ export function renderDashboard(data) {
           <th class="sortable" data-key="score" title="健康分 = CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15(归档仓打七折)">健康<span class="arr" data-arr="score"></span></th>
           <th class="sortable" data-key="ci" title="点击按 CI 状态排序（降序 = 问题优先）">CI/CD 状态<span class="arr" data-arr="ci"></span></th>
           <th class="sortable" data-key="license" title="点击按许可证排序">许可证<span class="arr" data-arr="license"></span></th>
+          <th class="sortable" data-key="cli" title="点击按 CLI 形态排序（CLI / 脚本集 / 无；本地克隆仓按本地检测，悬停看依据）">CLI<span class="arr" data-arr="cli"></span></th>
           <th class="sortable" data-key="release" title="点击按最新发布时间排序">最新 Release<span class="arr" data-arr="release"></span></th>
           <th class="sortable" data-key="issues" title="点击按开放 Issue 数排序">Issue<span class="arr" data-arr="issues"></span></th>
           <th class="sortable" data-key="branches" title="点击按分支数排序（GitHub 远程分支）">远程分支<span class="arr" data-arr="branches"></span></th>
@@ -1337,6 +1446,7 @@ window.__SCAN_DATA__ = ${jsonStr};
     visibility: function (r) { return r.visibility === 'PRIVATE' ? 1 : 0; },
     ci: function (r) { return { fail: 3, running: 2, ok: 1, none: 0 }[r.ci.cls] || 0; },
     license: function (r) { return r.license ? r.license.toLowerCase() : null; },
+    cli: function (r) { return r.cli ? ({ 'CLI': 2, '脚本集': 1, '无': 0 }[r.cli.state] ?? 0) : null; },
     release: function (r) { return r.latestRelease && r.latestRelease.publishedAt ? r.latestRelease.publishedAt : null; },
     issues: function (r) { return r.openIssues; },
     branches: function (r) { return r.branches; },
@@ -1475,6 +1585,15 @@ window.__SCAN_DATA__ = ${jsonStr};
     var tip = '最近一次运行：' + (ci.workflow || '未知工作流') + (ci.ref ? '（' + ci.ref + '）' : '') + (ci.ranAt ? ' · ' + fullTime(ci.ranAt) : '');
     var sub = [ci.workflow, ci.ref ? '@' + ci.ref : '', ci.ranAt ? relTime(ci.ranAt) : ''].filter(Boolean).join(' · ');
     return '<a class="badge ' + ci.cls + '" href="' + esc(ci.url) + '" target="_blank" rel="noopener" title="' + esc(tip) + '"><span class="dot"></span>' + esc(ci.state) + '</a><div class="sub">' + esc(sub) + '</div>' + trendDots(r);
+  }
+
+  function cliCell(r) {
+    var c = r.cli;
+    if (!c) return '<span class="mut">—</span>';
+    var cls = c.state === 'CLI' ? 'ok' : (c.state === '脚本集' ? 'warn' : 'none');
+    var src = c.src === 'local' ? '本地检测' : (c.src === 'remote' ? '远程检测' : '');
+    var tip = [c.detail, src].filter(Boolean).join(' · ') || '未检测到命令行入口';
+    return '<span class="badge ' + cls + '" title="' + esc(tip) + '"><span class="dot"></span>' + esc(c.state) + '</span>';
   }
 
   function scoreCell(r) {
@@ -1631,6 +1750,7 @@ window.__SCAN_DATA__ = ${jsonStr};
       '<td data-key="score" class="score">' + scoreCell(r) + '</td>' +
       '<td data-key="ci">' + ciCell(r) + '</td>' +
       '<td data-key="license" class="lic">' + lic + '</td>' +
+      '<td data-key="cli">' + cliCell(r) + '</td>' +
       '<td data-key="release">' + rel + '</td>' +
       '<td data-key="issues" class="num">' + issue + '</td>' +
       '<td data-key="branches" class="branch-cell branch-remote">' + branch + '</td>' +
@@ -1906,7 +2026,7 @@ window.__SCAN_DATA__ = ${jsonStr};
   }
   function exportCsv() {
     var rows = visibleRows();
-    var head = ['仓库', '可见性', '本地状态', '健康分', '健康等级', 'CI', '许可证', 'Release', 'Issue', 'PR', '远程分支', '远程分支全部', '本地分支', '本地分支全部', 'Star', '近7天★', 'Fork', '语言', '大小(KB)', '流量浏览', '流量克隆', '最近变更文件数', '最近推送', 'URL'];
+    var head = ['仓库', '可见性', '本地状态', '健康分', '健康等级', 'CI', '许可证', 'CLI', 'Release', 'Issue', 'PR', '远程分支', '远程分支全部', '本地分支', '本地分支全部', 'Star', '近7天★', 'Fork', '语言', '大小(KB)', '流量浏览', '流量克隆', '最近变更文件数', '最近推送', 'URL'];
     var lines = [head.map(csvCell).join(',')];
     for (var i = 0; i < rows.length; i++) {
       var r = rows[i];
@@ -1917,7 +2037,7 @@ window.__SCAN_DATA__ = ${jsonStr};
           : (((r.local.ahead || 0) > 0 || (r.local.behind || 0) > 0) ? '本地与远程不一致' : '本地有'))
         : '本地缺失';
       lines.push([
-        r.name, vis, local, scoreOf(r), g.g, r.ci.state, r.license || '',
+        r.name, vis, local, scoreOf(r), g.g, r.ci.state, r.license || '', (r.cli ? r.cli.state : ''),
         r.latestRelease ? r.latestRelease.tag : '', r.openIssues, r.openPRs, r.branches, (r.branchNames || []).join(';'), (r.local && r.local.branch ? r.local.branch + (r.local.upstream ? ' → ' + r.local.upstream : '') : ''), (r.local && r.local.localBranches ? r.local.localBranches.join(';') : ''), r.stars, r.starWeek == null ? '' : r.starWeek, r.forks,
         r.language || '', r.size || 0, r.traffic ? r.traffic.views : '', r.traffic ? r.traffic.clones : '',
         r.lastCommit ? r.lastCommit.fileCount : '', relTime(r.pushedAt), r.url,
@@ -2162,7 +2282,7 @@ window.__SCAN_DATA__ = ${jsonStr};
       if (!table) return;
       var row = table.querySelector('thead tr');
       var mainScroll = document.getElementById('mainScroll');
-      var DEFAULTS = [126, 58, 106, 58, 88, 96, 88, 56, 135, 218, 48, 48, 64, 56, 56, 78, 58, 58];
+      var DEFAULTS = [126, 58, 106, 58, 88, 96, 72, 88, 56, 135, 218, 48, 48, 64, 56, 56, 78, 58, 58];
       var N = DEFAULTS.length;
       var saved = null;
       try { saved = JSON.parse(localStorage.getItem('grs_cols') || 'null'); } catch (e) {}
