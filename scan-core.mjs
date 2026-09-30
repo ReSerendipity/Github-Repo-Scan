@@ -354,14 +354,22 @@ export function matchLocalToRemote(data, localScan) {
     if (row) {
       lr.matched = true;
       lr.matchedRepo = row.name;
-      row.local = {
-        path: lr.path, branch: lr.branch, upstream: lr.upstream, head: lr.head,
-        dirty: !!lr.dirty, dirtyCount: lr.dirtyCount || 0,
-        ahead: lr.ahead, behind: lr.behind,
-        lastCommitAt: lr.lastCommitAt, remoteUrl: lr.remoteUrl,
-        localBranches: lr.localBranches || [], remoteBranches: lr.remoteBranches || [],
-      };
-      row.cli = detectCliLocal(lr.path); // 本地有克隆 → 本地检测覆盖远程结果（更新鲜）
+      const repoName = String(row.name).toLowerCase();
+      const baseOf = (p) => String(p).split(/[\\/]/).pop().toLowerCase();
+      const exact = baseOf(lr.path) === repoName;
+      const prevExact = row.local && baseOf(row.local.path) === repoName;
+      // 多本地克隆共享同一 remote 时，优先目录名与仓库名完全一致的克隆，
+      // 避免被 -git/-new 等次级克隆覆盖，导致 CLI 检测落到错误目录（#fix 多克隆歧义）
+      if (!row.local || (!prevExact && exact)) {
+        row.local = {
+          path: lr.path, branch: lr.branch, upstream: lr.upstream, head: lr.head,
+          dirty: !!lr.dirty, dirtyCount: lr.dirtyCount || 0,
+          ahead: lr.ahead, behind: lr.behind,
+          lastCommitAt: lr.lastCommitAt, remoteUrl: lr.remoteUrl,
+          localBranches: lr.localBranches || [], remoteBranches: lr.remoteBranches || [],
+        };
+        row.cli = detectCliLocal(lr.path); // 本地有克隆 → 本地检测覆盖远程结果（更新鲜）
+      }
       matched++;
     } else {
       localOnly.push(lr);
@@ -483,7 +491,10 @@ export function detectCliLocal(dir) {
       try { st = statSync(join(dir, r)); } catch { continue; }
       if (st.isDirectory()) {
         if (CLI_SKIP_DIRS.has(it)) continue;
-        if (it === "scripts" || it === "tools" || it === "bin" || it === "cmd") { hasScriptDir = true; continue; }
+        if (it === "scripts" || it === "tools" || it === "bin" || it === "cmd") {
+          hasScriptDir = true;
+          if (depth < 2) walk(r, depth + 1); // 进入脚本目录查找 cli 命名入口（如 scripts/ops.py / agent_cli.py），命中则升级为 CLI
+        }
         if (depth < 2) walk(r, depth + 1);
       } else if (CLI_ENTRY_FILE.test(r)) {
         if (!hasEntry) entryDetail = "入口文件: " + r;

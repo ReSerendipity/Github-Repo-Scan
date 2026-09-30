@@ -2,12 +2,12 @@
   "schema": 3,
   "owner": "ReSerendipity",
   "avatarUrl": "https://avatars.githubusercontent.com/u/259081123?s=96&u=356cdd7f5f7027b4a5804355e894a84e8ea1086e&v=4",
-  "scannedAt": "2026-09-29T12:59:09.172Z",
+  "scannedAt": "2026-09-30T00:25:50.804Z",
   "truncated": false,
   "rate": {
     "limit": 5000,
     "remaining": 5000,
-    "reset": 1790690348,
+    "reset": 1790731550,
     "used": 0
   },
   "totals": {
@@ -16,17 +16,17 @@
     "stars": 26,
     "forks": 6,
     "openIssues": 4,
-    "openPRs": 2,
+    "openPRs": 1,
     "releases": 45,
     "ciDone": 24,
     "ciOk": 20,
-    "sizeTotal": 3754159,
-    "localTotal": 13,
-    "localMatched": 10,
-    "localMissing": 23,
-    "localOnly": 3,
-    "localDirty": 4,
-    "localDiverged": 2
+    "sizeTotal": 3754247,
+    "localTotal": 21,
+    "localMatched": 16,
+    "localMissing": 19,
+    "localOnly": 5,
+    "localDirty": 6,
+    "localDiverged": 8
   },
   "rows": [
     {
@@ -37,17 +37,16 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-08-27T11:41:34Z",
-      "pushedAt": "2026-09-29T11:46:49Z",
+      "pushedAt": "2026-09-29T15:00:39Z",
       "stars": 0,
       "forks": 0,
-      "size": 49293,
+      "size": 49381,
       "openIssues": 1,
-      "openPRs": 1,
-      "branches": 6,
+      "openPRs": 0,
+      "branches": 5,
       "branchNames": [
         "ci/governance-spiritpal",
         "ci/perf-xvfb",
-        "dependabot/npm_and_yarn/ip-address-10.7.2",
         "gh-pages",
         "main",
         "sync/main-local-20260918"
@@ -65,35 +64,35 @@
       "ci": {
         "state": "通过",
         "cls": "ok",
-        "workflow": "Self-Purify Check",
+        "workflow": "npm_and_yarn in / for ip-address - Update #1598113458",
         "ref": "main",
-        "ranAt": "2026-09-29T11:46:53Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/36563868113",
+        "ranAt": "2026-09-29T14:59:48Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/36586783753",
         "trend": [
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T11:46:52Z"
+            "at": "2026-09-29T14:58:26Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T11:46:52Z"
+            "at": "2026-09-29T14:58:26Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T11:46:52Z"
+            "at": "2026-09-29T14:58:26Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T11:46:52Z"
+            "at": "2026-09-29T14:58:26Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T11:46:53Z"
+            "at": "2026-09-29T14:59:48Z"
           }
         ]
       },
@@ -101,10 +100,10 @@
       "langColor": "#3178c6",
       "traffic": null,
       "lastCommit": {
-        "sha": "fd55628d627030eec2d7d703e5f25f95cc90ff64",
-        "message": "fix(lint): 归零 react-hooks/exhaustive-deps 警告（3 条，逐条判定）",
-        "at": "2026-09-29T11:42:41Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/commit/fd55628d627030eec2d7d703e5f25f95cc90ff64",
+        "sha": "331abc1f2f15692cb63266fbc13402a707210b02",
+        "message": "fix(deps): 升级 ip-address 修复 GHSA-2vr4-cq9g-pvrc（Dependabot #15）",
+        "at": "2026-09-29T14:57:00Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/commit/331abc1f2f15692cb63266fbc13402a707210b02",
         "files": [],
         "fileCount": 0
       },
@@ -117,12 +116,12 @@
         "path": "C:\\Users\\Doro\\SpiritPal",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "fd55628",
+        "head": "0814c81",
         "dirty": true,
         "dirtyCount": 1,
-        "ahead": 0,
+        "ahead": 1,
         "behind": 0,
-        "lastCommitAt": "2026-09-29T19:42:41+08:00",
+        "lastCommitAt": "2026-09-30T08:22:51+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/SpiritPal.git",
         "localBranches": [
           "ci/perf-xvfb",
@@ -143,7 +142,7 @@
     {
       "name": "Image-Scrapers",
       "url": "https://github.com/ReSerendipity/Image-Scrapers",
-      "description": "",
+      "description": "米哈游系游戏与 Cosplay 站点素材采集工具集（图片与语音），支持模块化站点适配。 | A modular toolkit for collecting image and audio assets from game and cosplay sites.",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
@@ -184,20 +183,20 @@
         "fileCount": 0
       },
       "cli": {
-        "state": "脚本集",
-        "detail": null,
+        "state": "CLI",
+        "detail": "package.json bin: image-scrapers",
         "src": "local"
       },
       "local": {
         "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "6d070ef",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
+        "head": "eb01999",
+        "dirty": true,
+        "dirtyCount": 2,
+        "ahead": 5,
         "behind": 0,
-        "lastCommitAt": "2026-09-29T19:09:55+08:00",
+        "lastCommitAt": "2026-09-29T23:04:51+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
         "localBranches": [
           "main"
@@ -276,7 +275,7 @@
     {
       "name": "Unity",
       "url": "https://github.com/ReSerendipity/Unity",
-      "description": "",
+      "description": "住校手记：第一人称中式高中住校生活模拟与心理恐怖游戏（Unity/C#，PC）。 | Dormitory Notes is a first-person school-life simulation with psychological horror, built in Unity/C# for PC.",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
@@ -497,7 +496,7 @@
     {
       "name": "Health-Info-Card",
       "url": "https://github.com/ReSerendipity/Health-Info-Card",
-      "description": "安心牌 · 老人急救信息卡（FoloToy AI Passport 玩法）",
+      "description": "安心牌 · 老人急救信息卡（FoloToy AI Passport 玩法） | Emergency information card for older adults, inspired by FoloToy AI Passport.",
       "visibility": "PUBLIC",
       "isArchived": false,
       "isFork": false,
@@ -631,11 +630,29 @@
         "fileCount": 0
       },
       "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
+        "state": "CLI",
+        "detail": "入口文件: cli.py",
+        "src": "local"
       },
-      "local": null,
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Multi-Tracker",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "1b9c837",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 1,
+        "behind": 0,
+        "lastCommitAt": "2026-09-29T23:04:33+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Multi-Tracker.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
       "starWeek": null
     },
     {
@@ -713,7 +730,7 @@
     {
       "name": "ComfyUI-Experiment-Toolbox",
       "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox",
-      "description": "ComfyUI 采样器/调度器受控实验 + 工作流结构改造工具箱（含零依赖 Web 面板，可自动拉起 ComfyUI）",
+      "description": "ComfyUI 采样器/调度器受控实验 + 工作流结构改造工具箱（含零依赖 Web 面板，可自动拉起 ComfyUI） | A toolkit for controlled sampler and scheduler experiments, workflow editing, and a lightweight web panel.",
       "visibility": "PUBLIC",
       "isArchived": false,
       "isFork": false,
@@ -788,7 +805,7 @@
     {
       "name": "Mooncake-Deconstruction",
       "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction",
-      "description": "月饼解构可视化存档：Three.js 3D + SVG 零构建单 HTML Demo，附无头验证方法论。Apache-2.0。",
+      "description": "月饼解构可视化存档：Three.js 3D + SVG 零构建单 HTML Demo，附无头验证方法论。Apache-2.0。 | A single-file Three.js and SVG demo exploring mooncake structure.",
       "visibility": "PUBLIC",
       "isArchived": false,
       "isFork": false,
@@ -956,9 +973,27 @@
       "cli": {
         "state": "无",
         "detail": null,
-        "src": "remote"
+        "src": "local"
       },
-      "local": null,
+      "local": {
+        "path": "C:\\Users\\Doro\\RTX-VSR-Lite",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "59cfbe3",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-09-29T15:29:01+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/RTX-VSR-Lite.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
       "starWeek": null
     },
     {
@@ -1141,12 +1176,12 @@
         "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "e8e20a7",
+        "head": "22f7fce",
         "dirty": false,
         "dirtyCount": 0,
-        "ahead": 0,
+        "ahead": 1,
         "behind": 0,
-        "lastCommitAt": "2026-09-29T08:38:19+08:00",
+        "lastCommitAt": "2026-09-29T22:06:18+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite.git",
         "localBranches": [
           "main"
@@ -1526,7 +1561,7 @@
     {
       "name": "Nekogal-DL",
       "url": "https://github.com/ReSerendipity/Nekogal-DL",
-      "description": "",
+      "description": "NekoGAL Downloader：Python 个人下载器，提供网页界面、并发下载与断点续传。仅用于个人备份，请支持正版。 | A personal-use downloader with a web UI and resumable downloads.",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
@@ -2139,12 +2174,12 @@
         "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "13f6668",
+        "head": "572a30f",
         "dirty": true,
-        "dirtyCount": 3,
-        "ahead": 5,
+        "dirtyCount": 7,
+        "ahead": 7,
         "behind": 0,
-        "lastCommitAt": "2026-09-29T19:37:42+08:00",
+        "lastCommitAt": "2026-09-29T21:22:50+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
         "localBranches": [
           "main"
@@ -2158,7 +2193,7 @@
     {
       "name": "Unfading-Wall",
       "url": "https://github.com/ReSerendipity/Unfading-Wall",
-      "description": "黑板·上的话 — 教师节师生印象墙：学生手书的信贴上老师的黑板墙，零后端链接分享（Apache-2.0）",
+      "description": "黑板·上的话 — 教师节师生印象墙：学生手书的信贴上老师的黑板墙，零后端链接分享（Apache-2.0） | A backend-free Teachers Day message wall for students and teachers, shareable by link.",
       "visibility": "PUBLIC",
       "isArchived": false,
       "isFork": false,
@@ -2240,7 +2275,7 @@
     {
       "name": "Offer-Landing-Kit",
       "url": "https://github.com/ReSerendipity/Offer-Landing-Kit",
-      "description": "到岗前作战包 · Offer→入职 衔接工具：离职交接清单 / 社保断档测算 / 试用期100天台账。纯前端单文件，数据不出本机。",
+      "description": "到岗前作战包 · Offer→入职 衔接工具：离职交接清单 / 社保断档测算 / 试用期100天台账。纯前端单文件，数据不出本机。 | A privacy-first, local-only toolkit for the transition from job offer to onboarding.",
       "visibility": "PUBLIC",
       "isArchived": false,
       "isFork": false,
@@ -2317,7 +2352,7 @@
     {
       "name": "Hugging-Face",
       "url": "https://github.com/ReSerendipity/Hugging-Face",
-      "description": "Hugging Face 模型批量下载与台账管理工具链",
+      "description": "Hugging Face 模型批量下载与台账管理工具链 | Tools for batch downloading and tracking Hugging Face models.",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
@@ -2360,15 +2395,33 @@
       "cli": {
         "state": "无",
         "detail": null,
-        "src": "remote"
+        "src": "local"
       },
-      "local": null,
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Hugging-Face",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "d6655e2",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-09-23T12:47:41+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Hugging-Face.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
       "starWeek": null
     },
     {
       "name": "Bilibili-Follow-Manager",
       "url": "https://github.com/ReSerendipity/Bilibili-Follow-Manager",
-      "description": "B站关注列表管理工具：控制台抓取关注UP主并按内容分区分类，生成清理/保留两档名单，代码化批量取关（含白名单拦截与状态核验）",
+      "description": "B站关注列表管理工具：抓取并分类关注UP主，生成清理/保留名单，批量取关并提供白名单拦截与状态核验。 | A Bilibili following-list manager for classifying creators and safely reviewing bulk unfollows.",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
@@ -2409,24 +2462,42 @@
         "fileCount": 0
       },
       "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "remote"
+        "state": "CLI",
+        "detail": "package.json bin: bilibili-follow-manager",
+        "src": "local"
       },
-      "local": null,
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Bilibili-Follow-Manager",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "34bcab3",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 1,
+        "behind": 0,
+        "lastCommitAt": "2026-09-29T22:23:54+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Bilibili-Follow-Manager.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
       "starWeek": null
     }
   ],
   "scanInfo": {
-    "mode": "incremental",
+    "mode": "reuse",
     "total": 33,
-    "deepScanned": 33,
-    "reused": 0,
+    "deepScanned": 0,
+    "reused": 33,
     "full": false,
-    "durationMs": 45866
+    "durationMs": 9123
   },
   "localScan": {
-    "scannedAt": "2026-09-29T12:59:23.039Z",
+    "scannedAt": "2026-09-30T00:26:04.119Z",
     "roots": [
       "C:\\Users\\Doro",
       "C:\\Users\\Doro\\Desktop",
@@ -2434,7 +2505,7 @@
       "C:\\Users\\Doro\\Downloads"
     ],
     "depth": 4,
-    "count": 13,
+    "count": 21,
     "repos": [
       {
         "path": "C:\\Users\\Doro\\APP\\ComfyUI-aki-v3\\ComfyUI",
@@ -3255,6 +3326,111 @@
         "matchedRepo": null
       },
       {
+        "path": "C:\\Users\\Doro\\AppData\\Local\\Temp\\box64clone",
+        "name": "box64clone",
+        "remoteUrl": "https://github.com/ptitSeb/box64",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ptitSeb/box64"
+          }
+        ],
+        "github": {
+          "owner": "ptitSeb",
+          "repo": "box64",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "50069bc",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin/main"
+        ],
+        "lastCommitAt": "2026-09-29T09:12:29+02:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "bare": false,
+        "error": null,
+        "matched": false,
+        "matchType": null,
+        "matchedRepo": null
+      },
+      {
+        "path": "C:\\Users\\Doro\\AppData\\Local\\Temp\\box64src",
+        "name": "box64src",
+        "remoteUrl": "https://github.com/ptitSeb/box64",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ptitSeb/box64"
+          }
+        ],
+        "github": {
+          "owner": "ptitSeb",
+          "repo": "box64",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": null,
+        "upstream": null,
+        "head": null,
+        "localBranches": [],
+        "remoteBranches": [],
+        "lastCommitAt": null,
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": null,
+        "behind": null,
+        "bare": false,
+        "error": null,
+        "matched": false,
+        "matchType": null,
+        "matchedRepo": null
+      },
+      {
+        "path": "C:\\Users\\Doro\\Desktop\\Bilibili-Follow-Manager",
+        "name": "Bilibili-Follow-Manager",
+        "remoteUrl": "https://github.com/ReSerendipity/Bilibili-Follow-Manager.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/Bilibili-Follow-Manager.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "Bilibili-Follow-Manager",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "34bcab3",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ],
+        "lastCommitAt": "2026-09-29T22:23:54+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 1,
+        "behind": 0,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Bilibili-Follow-Manager"
+      },
+      {
         "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-实验与改造工具箱",
         "name": "ComfyUI-实验与改造工具箱",
         "remoteUrl": "https://github.com/ReSerendipity/comfyui-experiment-toolbox.git",
@@ -3309,23 +3485,60 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "13f6668",
+        "head": "572a30f",
         "localBranches": [
           "main"
         ],
         "remoteBranches": [
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-29T19:37:42+08:00",
+        "lastCommitAt": "2026-09-29T21:22:50+08:00",
         "dirty": true,
-        "dirtyCount": 3,
-        "ahead": 5,
+        "dirtyCount": 7,
+        "ahead": 7,
         "behind": 0,
         "bare": false,
         "error": null,
         "matched": true,
         "matchType": "owner/repo",
         "matchedRepo": "Github-Repo-Scan"
+      },
+      {
+        "path": "C:\\Users\\Doro\\Desktop\\Hugging-Face",
+        "name": "Hugging-Face",
+        "remoteUrl": "https://github.com/ReSerendipity/Hugging-Face.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/Hugging-Face.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "Hugging-Face",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "d6655e2",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ],
+        "lastCommitAt": "2026-09-23T12:47:41+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Hugging-Face"
       },
       {
         "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
@@ -3345,7 +3558,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "6d070ef",
+        "head": "eb01999",
         "localBranches": [
           "main"
         ],
@@ -3353,16 +3566,117 @@
           "origin",
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-29T19:09:55+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
+        "lastCommitAt": "2026-09-29T23:04:51+08:00",
+        "dirty": true,
+        "dirtyCount": 2,
+        "ahead": 5,
         "behind": 0,
         "bare": false,
         "error": null,
         "matched": true,
         "matchType": "owner/repo",
         "matchedRepo": "Image-Scrapers"
+      },
+      {
+        "path": "C:\\Users\\Doro\\Desktop\\Multi-Tracker",
+        "name": "Multi-Tracker",
+        "remoteUrl": "https://github.com/ReSerendipity/Multi-Tracker.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/Multi-Tracker.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "Multi-Tracker",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "1b9c837",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ],
+        "lastCommitAt": "2026-09-29T23:04:33+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 1,
+        "behind": 0,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Multi-Tracker"
+      },
+      {
+        "path": "C:\\Users\\Doro\\Desktop\\Multi-Tracker-git",
+        "name": "Multi-Tracker-git",
+        "remoteUrl": "https://github.com/ReSerendipity/Multi-Tracker.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/Multi-Tracker.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "Multi-Tracker",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": null,
+        "upstream": null,
+        "head": null,
+        "localBranches": [],
+        "remoteBranches": [],
+        "lastCommitAt": null,
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": null,
+        "behind": null,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Multi-Tracker"
+      },
+      {
+        "path": "C:\\Users\\Doro\\Desktop\\Multi-Tracker-new",
+        "name": "Multi-Tracker-new",
+        "remoteUrl": "https://github.com/ReSerendipity/Multi-Tracker.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/Multi-Tracker.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "Multi-Tracker",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": null,
+        "upstream": null,
+        "head": null,
+        "localBranches": [],
+        "remoteBranches": [],
+        "lastCommitAt": null,
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": null,
+        "behind": null,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "Multi-Tracker"
       },
       {
         "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
@@ -3498,21 +3812,22 @@
           "host": "github.com",
           "isGitHub": true
         },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "3b18791",
+        "branch": "feat/agent-p0-remaining",
+        "upstream": null,
+        "head": "abcb6a8",
         "localBranches": [
+          "feat/agent-p0-remaining",
           "main"
         ],
         "remoteBranches": [
           "origin",
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-28T18:27:51+08:00",
+        "lastCommitAt": "2026-09-29T22:58:32+08:00",
         "dirty": true,
-        "dirtyCount": 11,
-        "ahead": 0,
-        "behind": 0,
+        "dirtyCount": 2,
+        "ahead": null,
+        "behind": null,
         "bare": false,
         "error": null,
         "matched": false,
@@ -3537,7 +3852,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "e8e20a7",
+        "head": "22f7fce",
         "localBranches": [
           "main"
         ],
@@ -3546,7 +3861,44 @@
           "origin/chore/git-policy-20260918",
           "origin/main"
         ],
-        "lastCommitAt": "2026-09-29T08:38:19+08:00",
+        "lastCommitAt": "2026-09-29T22:06:18+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 1,
+        "behind": 0,
+        "bare": false,
+        "error": null,
+        "matched": true,
+        "matchType": "owner/repo",
+        "matchedRepo": "MiniMax-H3-Lite"
+      },
+      {
+        "path": "C:\\Users\\Doro\\RTX-VSR-Lite",
+        "name": "RTX-VSR-Lite",
+        "remoteUrl": "https://github.com/ReSerendipity/RTX-VSR-Lite.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "url": "https://github.com/ReSerendipity/RTX-VSR-Lite.git"
+          }
+        ],
+        "github": {
+          "owner": "ReSerendipity",
+          "repo": "RTX-VSR-Lite",
+          "host": "github.com",
+          "isGitHub": true
+        },
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "59cfbe3",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ],
+        "lastCommitAt": "2026-09-29T15:29:01+08:00",
         "dirty": false,
         "dirtyCount": 0,
         "ahead": 0,
@@ -3555,7 +3907,7 @@
         "error": null,
         "matched": true,
         "matchType": "owner/repo",
-        "matchedRepo": "MiniMax-H3-Lite"
+        "matchedRepo": "RTX-VSR-Lite"
       },
       {
         "path": "C:\\Users\\Doro\\SeedVR2-lite",
@@ -3617,7 +3969,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "fd55628",
+        "head": "0814c81",
         "localBranches": [
           "ci/perf-xvfb",
           "main"
@@ -3631,10 +3983,10 @@
           "origin/main",
           "origin/sync/main-local-20260918"
         ],
-        "lastCommitAt": "2026-09-29T19:42:41+08:00",
+        "lastCommitAt": "2026-09-30T08:22:51+08:00",
         "dirty": true,
         "dirtyCount": 1,
-        "ahead": 0,
+        "ahead": 1,
         "behind": 0,
         "bare": false,
         "error": null,
@@ -3660,7 +4012,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "5453769",
+        "head": "0dd7c56",
         "localBranches": [
           "main"
         ],
@@ -3724,10 +4076,10 @@
           "pr-73",
           "rp-main"
         ],
-        "lastCommitAt": "2026-09-29T08:39:07+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
+        "lastCommitAt": "2026-09-29T21:29:03+08:00",
+        "dirty": true,
+        "dirtyCount": 1,
+        "ahead": 1,
         "behind": 0,
         "bare": false,
         "error": null,
@@ -3772,8 +4124,8 @@
         "matchedRepo": "Unity"
       }
     ],
-    "matched": 10,
-    "localOnlyCount": 3
+    "matched": 16,
+    "localOnlyCount": 5
   },
   "starWeekRef": null
 }
