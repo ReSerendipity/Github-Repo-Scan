@@ -49,6 +49,7 @@
 | 隐藏归档 | 工具栏「隐藏归档」复选框一键隐藏 archived 仓库 |
 | 低健康分筛选 | 状态筛选「仅低健康分(<50)」快速定位问题仓库 |
 | 启动前自动扫描 | 面板「启动前扫描」开关 + `scan-config.json` 的 `autoScanOnStart`（always/stale/first/off），双击启动面板可先自动扫描再打开 |
+| 只扫本账户 | 面板「只扫本账户」开关（默认开启）+ `scan-config.json` 的 `localOwnerOnly`；开启后本地对照只保留当前 gh 登录账号名下的仓库，第三方克隆与纯本地仓被忽略 |
 | 创建时间排序 | 「创建时间」列可点表头按仓库创建时间排序 |
 | 语言分布 | 顶部「语言分布」面板按仓库数 Top 8 展示各语言占比条（颜色取自 GitHub 语言色） |
 | 聚合视图 | 顶部「聚合视图」面板一键列出 CI 失败 / 低健康分(<50) / 未声明许可证 / 无 CI 记录 / 本地缺失 的数量，点 chip 直接套用对应筛选 |
@@ -66,10 +67,11 @@
 - **远程与本地对照**：扫描远程账号的同时遍历本机目录找 Git 仓库，每个远程仓库在「本地」列显示：本地有（本地分支 · 对应远程分支（若有）· 干净 / 未提交 n / ↑领先 ↓落后）或本地缺失。
 - **仅本地扫描**：`node scan.mjs --local-only` 或面板「仅扫本地」——只读本机 `.git`（remote / 分支 / HEAD / status / rev-list），不访问 GitHub、不 fetch、不推送；面板「仅本地仓库」模式列出全部本机仓库。
 - **本地独有仓库**：本机存在但远程账号名下没有对应的仓库（改名、fork 后删库、纯本地实验仓），单独区块列出。
+- **只保留本账号仓库（默认开启）**：本地对照只保留远程归属为当前 gh 登录账号的仓库——第三方克隆（如 ComfyUI、box64、sd-scripts 等）与无 GitHub 远程的纯本地仓会被忽略，不再出现在本地对照与「本地独有」里（控制台会提示忽略了几个）。面板工具栏「只扫本账户」开关可随时切换，记忆在 `scan-config.json` 的 `localOwnerOnly`，**显式设成 `false` 才关闭**。
 - **扫描范围**：默认 = 用户主目录（只看 1 层）+ 桌面 / 文档 / 下载（深度 4）；`scan-config.json` 的 `localScanRoots`（字符串或 `{ "path": "...", "depth": 2 }`）+ `localScanDepth` 持久配置，`--local-paths` / `--depth` 临时覆盖，面板「本地目录…」可视化保存。隐藏目录、`node_modules` 等重目录、符号链接自动跳过，最多 500 个仓库。
 - **对照规则**：本地 remote URL 解析出 `owner/repo` 与远程精确匹配；无 GitHub remote 或 owner 不同但仓库名唯一时按名字兜底；同名多候选不猜（标记 ambiguous，进「本地独有」）。
 - **依赖**：git 在 PATH 即可，无需 gh 登录；`--remote-only` 可关掉本地对照。
-- **配置文件**：`scan-config.json` 含本机路径，已加入 `.gitignore` 不入库；还可配置 `autoScanOnStart`（启动前自动扫描模式：`always`/`stale`/`first`/`off`，默认 `stale`）与 `autoScanMaxAgeHours`（stale 模式下判定「过期」的小时数，默认 6）。
+- **配置文件**：`scan-config.json` 含本机路径，已加入 `.gitignore` 不入库；还可配置 `autoScanOnStart`（启动前自动扫描模式：`always`/`stale`/`first`/`off`，默认 `stale`）、`autoScanMaxAgeHours`（stale 模式下判定「过期」的小时数，默认 6）与 `localOwnerOnly`（只保留本账号仓库，默认 `true`）。
 
 ## 性能与增量
 

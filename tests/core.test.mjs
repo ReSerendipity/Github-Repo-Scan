@@ -1,7 +1,7 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote } from "../scan-core.mjs";
+import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled } from "../scan-core.mjs";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -180,6 +180,41 @@ test("matchLocalToRemote:owner/repo 精准、按名兜底与本地独有", () =>
   assert.equal(ls.matched, 2);
 });
 
+test("matchLocalToRemote:ownerOnly 只保留本账号仓库，默认不过滤", () => {
+  const data = { owner: "me", rows: [
+    { name: "a", url: "https://github.com/me/a" },
+  ] };
+  const ls = { repos: [
+    { name: "a", path: "P1", github: { owner: "me", repo: "a", isGitHub: true } },
+    { name: "third", path: "P2", github: { owner: "someoneelse", repo: "third", isGitHub: true } },
+    { name: "orphan", path: "P3", github: null, remoteUrl: null },
+  ] };
+  const res = matchLocalToRemote(data, ls, { ownerOnly: true });
+  assert.equal(ls.repos.length, 1, "只剩本账号仓库");
+  assert.equal(ls.repos[0].name, "a");
+  assert.equal(ls.count, 1);
+  assert.equal(ls.matched, 1);
+  assert.equal(ls.localOnlyCount, 0);
+  assert.equal(ls.filteredOut, 2);
+  assert.equal(res.matched, 1);
+  // 未开启 ownerOnly 时保持既有行为（第三方克隆仍进「本地独有」）
+  const ls2 = { repos: [{ name: "y", path: "P", github: { owner: "other", repo: "y", isGitHub: true } }] };
+  const d2 = { owner: "me", rows: [{ name: "x", url: "https://github.com/me/x" }] };
+  matchLocalToRemote(d2, ls2);
+  assert.equal(ls2.repos.length, 1, "默认不过滤");
+  assert.equal(ls2.localOnlyCount, 1);
+  assert.equal(ls2.filteredOut, undefined);
+});
+
+test("ownerOnlyEnabled:默认开启，仅显式 false 才关闭", () => {
+  assert.equal(ownerOnlyEnabled({}), true, "配置缺省 → 默认开启");
+  assert.equal(ownerOnlyEnabled(null), true, "无配置 → 默认开启");
+  assert.equal(ownerOnlyEnabled(undefined), true);
+  assert.equal(ownerOnlyEnabled({ localOwnerOnly: true }), true);
+  assert.equal(ownerOnlyEnabled({ localOwnerOnly: false }), false, "显式 false → 关闭");
+  assert.equal(ownerOnlyEnabled({ localOwnerOnly: 0 }), true, "非布尔假值不视为关闭");
+});
+
 test("applyLocalTotals:有/无本地扫描", () => {
   const d1 = { rows: [{ local: { path: "p" } }, { local: null }], localScan: { count: 2, matched: 1, localOnlyCount: 1, repos: [{ dirty: true }, { dirty: false, ahead: 2, behind: 0 }] }, totals: {} };
   applyLocalTotals(d1);
@@ -323,7 +358,7 @@ test("renderDashboard：客户端脚本不得调用未定义的服务端辅助�
   });
   const tags = html.match(/<script>[\s\S]*?<\/script>/g) || [];
   const client = tags[tags.length - 1].slice(8, -9);
-  const serverOnly = ["fmtSize", "esc", "relTime", "fullTime", "ciStateOf", "scoreOf", "gradeOf", "applyJq", "parseRemoteUrl", "findGitRepos", "matchLocalToRemote", "applyLocalTotals", "computeStarWeek", "repoUnchanged", "collectData", "collectLocal", "mergeLocalSnapshot", "writeOutputs", "printSummary", "loadStarHistory", "recordStarHistory"];
+  const serverOnly = ["fmtSize", "esc", "relTime", "fullTime", "ciStateOf", "scoreOf", "gradeOf", "applyJq", "parseRemoteUrl", "findGitRepos", "matchLocalToRemote", "ownerOnlyEnabled", "applyLocalTotals", "computeStarWeek", "repoUnchanged", "collectData", "collectLocal", "mergeLocalSnapshot", "writeOutputs", "printSummary", "loadStarHistory", "recordStarHistory"];
   for (const name of serverOnly) {
     const at = client.indexOf(name + "(");
     if (at < 0) continue;

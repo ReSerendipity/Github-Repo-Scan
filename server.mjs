@@ -10,7 +10,7 @@
  *   POST /api/scan        → 重新扫描（body 可带 {"full":true} 强制全量）；默认先探测变更、只深挖变更仓库
  *   POST /api/scan-local  → 仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照
  *   GET  /api/config      → 读取本地扫描配置（scan-config.json）
- *   POST /api/config      → 保存本地扫描配置（localScanRoots / localScanDepth）
+ *   POST /api/config      → 保存本地扫描配置（localScanRoots / localScanDepth / autoScanOnStart / autoScanMaxAgeHours / localOwnerOnly）
  *   GET  /api/open?path=… → 在系统文件管理器中打开本地路径（点击仓库路径跳转）
  *
  * 仅监听 127.0.0.1。扫描策略：先拉仓库列表与上次快照比对，无变更的仓库复用上次明细（不发额外请求）；
@@ -202,6 +202,9 @@ const server = http.createServer(async (req, res) => {
         }
         if (body && Number.isFinite(body.autoScanMaxAgeHours)) {
           patchCfg.autoScanMaxAgeHours = Math.max(1, Math.min(720, Math.floor(body.autoScanMaxAgeHours)));
+        }
+        if (body && typeof body.localOwnerOnly === "boolean") {
+          patchCfg.localOwnerOnly = body.localOwnerOnly;
         }
         const merged = { ...readLocalConfig() };
         for (const [k, v] of Object.entries(patchCfg)) {
