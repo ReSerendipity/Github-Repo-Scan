@@ -288,6 +288,11 @@ export function readLocalConfig() {
 export function writeLocalConfig(cfg) {
   writeFileSync(join(HERE, "scan-config.json"), JSON.stringify(cfg, null, 2) + "\n", "utf8");
 }
+/* localOwnerOnly：默认 true —— 本地对照只保留当前 gh 登录账号名下的仓库；
+   只有显式写成 false 才关闭（面板「只扫本账户」开关会写这个字段） */
+export function ownerOnlyEnabled(cfg) {
+  return (cfg && cfg.localOwnerOnly) !== false;
+}
 /* 默认扫描范围：用户主目录只看 1 层（覆盖 C:\Users\me\<repo> 式克隆）+ 桌面/文档/下载看完整深度 */
 export function defaultLocalRoots() {
   const cfg = readLocalConfig();
@@ -322,8 +327,10 @@ export async function collectLocal({ roots, depth = 4, maxRepos = 500 } = {}) {
   };
 }
 
-/* 本地仓库与远程 rows 匹配：优先 owner/repo 精准，其次唯一同名兜底；写入 row.local 与 localScan.matched */
-export function matchLocalToRemote(data, localScan) {
+/* 本地仓库与远程 rows 匹配：优先 owner/repo 精准，其次唯一同名兜底；写入 row.local 与 localScan.matched
+   opts.ownerOnly=true → 只保留远程归属为当前账号（data.owner）的本地仓库，
+   丢弃第三方克隆与无 GitHub 远程的仓库，避免扫描范围溢出到别人名下的仓库 */
+export function matchLocalToRemote(data, localScan, opts = {}) {
   const rows = data.rows || [];
   for (const r of rows) r.local = null;
   const byFull = new Map();
@@ -375,6 +382,22 @@ export function matchLocalToRemote(data, localScan) {
       localOnly.push(lr);
     }
   }
+  // 「只保留本账号仓库」（scan-config.json 的 localOwnerOnly）：丢弃远程归属不是当前账号的
+  // 本地仓库（含第三方克隆与无 GitHub 远程的纯本地仓），使本地对照与「本地独有」不再溢出。
+  if (opts.ownerOnly && data.owner) {
+    const want = String(data.owner).toLowerCase();
+    const all = localScan.repos || [];
+    const kept = all.filter((lr) =>
+      lr.github && lr.github.isGitHub && String(lr.github.owner || "").toLowerCase() === want);
+    if (kept.length !== all.length) {
+      localScan.repos = kept;
+      localScan.count = kept.length;
+      localScan.filteredOut = all.length - kept.length;
+      matched = kept.filter((x) => x.matched).length;
+      localOnly.length = 0;
+      for (const lr of kept) if (!lr.matched) localOnly.push(lr);
+    }
+  }
   localScan.matched = matched;
   localScan.localOnlyCount = localOnly.length;
   return { matched, localOnly };
@@ -409,7 +432,7 @@ export function mergeLocalSnapshot(localScan) {
       rows: [],
     };
   }
-  matchLocalToRemote(data, localScan);
+  matchLocalToRemote(data, localScan, { ownerOnly: ownerOnlyEnabled(readLocalConfig()) });
   data.localScan = localScan;
   data.schema = 3;
   applyLocalTotals(data);
@@ -865,7 +888,7 @@ export async function collectData(ownerArg, opts = {}) {
       const cfg = readLocalConfig();
       const depth = Number.isFinite(opts.depth) ? opts.depth : (Number.isFinite(cfg.localScanDepth) ? cfg.localScanDepth : 4);
       const localScan = await collectLocal({ roots: opts.roots, depth });
-      matchLocalToRemote(data, localScan);
+      matchLocalToRemote(data, localScan, { ownerOnly: ownerOnlyEnabled(cfg) });
       data.localScan = localScan;
     } catch (e) {
       console.log("▸ 本地对照跳过：" + ((e && e.message) ?? e));
@@ -953,7 +976,8 @@ export function printSummary(data) {
   }
   if (data.localScan) {
     const ls = data.localScan;
-    console.log("▸ 本地对照：本机 " + ls.count + " 个 Git 仓库 · 对上 " + ls.matched + " · 本地独有 " + ls.localOnlyCount + " · 远程有本地缺 " + (t.localMissing ?? 0));
+    console.log("▸ 本地对照：本机 " + ls.count + " 个 Git 仓库 · 对上 " + ls.matched + " · 本地独有 " + ls.localOnlyCount + " · 远程有本地缺 " + (t.localMissing ?? 0)
+      + (ls.filteredOut ? "（另有 " + ls.filteredOut + " 个非本账号仓库已按 localOwnerOnly 忽略）" : ""));
     const missing = data.rows.filter((r) => !r.local).map((r) => r.name);
     if (missing.length) console.log("  ⚠ 远程有但本地没扫到：" + missing.join(", "));
     for (const lr of ls.repos) {
@@ -1288,6 +1312,7 @@ export function renderDashboard(data) {
     <label class="chk"><input type="checkbox" id="fNoFork">隐藏 fork</label>
     <label class="chk"><input type="checkbox" id="fNoArchived">隐藏归档</label>
     <label class="chk"><input type="checkbox" id="fAutoScanStart" title="开启后，启动面板会先自动扫描（约 20–40 秒）再打开页面；可在 scan-config.json 设 stale/always/off">启动前扫描</label>
+    <label class="chk"><input type="checkbox" id="fOwnerOnly" checked title="开启后本地对照只保留当前 gh 登录账号名下的仓库；关闭后本机所有 Git 仓库（含第三方克隆）都会算进本地对照与「本地独有」">只扫本账户</label>
     <span class="spacer"></span>
     <span class="views-box">
       <select id="fView" title="自定义视图 = 当前搜索/筛选/排序的命名快照"><option value="">视图:手动状态</option></select>
@@ -1347,7 +1372,7 @@ export function renderDashboard(data) {
     数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node server.mjs</code>），或命令行 <code>node scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
     排序：点击表头，再点一次切换升降序（选择会记住）· 健康分：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15 · 视图：「＋存视图」保存当前筛选与排序 · 主题：右上角切换（默认浅色）·
     CI 取最近一次 Actions 运行（任意分支/标签）· Issue 数不含 PR（PR 单列）· 远程分支数为 GitHub 上全部分支（不含 tag）·
-    表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示本地/远程分支（本地 = 当前检出分支，远程 = 其远程跟踪分支）与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。
+    表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示本地/远程分支（本地 = 当前检出分支，远程 = 其远程跟踪分支）与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」「只扫本账户」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。
   </footer>
 </div>
 
@@ -2133,6 +2158,15 @@ window.__SCAN_DATA__ = ${jsonStr};
           else setHint(asEl.checked ? '已开启：下次启动面板将先自动扫描（约 20–40 秒）再打开页面' : '已关闭启动前自动扫描', 'okc');
         });
     });
+    var ooEl = document.getElementById('fOwnerOnly');
+    ooEl.addEventListener('change', function () {
+      fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ localOwnerOnly: ooEl.checked }) })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+        .then(function (j) {
+          if (!j.ok) setHint('保存「只扫本账户」偏好失败（需本地服务 node server.mjs）', 'err');
+          else setHint(ooEl.checked ? '已开启「只扫本账户」：点「重新扫描」后本地对照只保留本账号仓库' : '已关闭「只扫本账户」：点「重新扫描」后本机全部 Git 仓库都会算进来', 'okc');
+        });
+    });
     document.getElementById('csvBtn').addEventListener('click', exportCsv);
     document.getElementById('cloneBtn').addEventListener('click', copyClones);
     document.getElementById('alertBox').addEventListener('click', function (e) {
@@ -2173,6 +2207,8 @@ window.__SCAN_DATA__ = ${jsonStr};
         if (j && j.ok && j.config) {
           var m = String(j.config.autoScanOnStart || 'first').toLowerCase();
           document.getElementById('fAutoScanStart').checked = (m === 'always' || m === 'stale');
+          // 「只扫本账户」默认开启，只有显式 false 才不勾选
+          document.getElementById('fOwnerOnly').checked = (j.config.localOwnerOnly !== false);
         }
       }).catch(function () {});
 
