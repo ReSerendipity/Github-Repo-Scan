@@ -11,6 +11,7 @@
  *   POST /api/scan-local  → 仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照
  *   GET  /api/config      → 读取本地扫描配置（scan-config.json）
  *   POST /api/config      → 保存本地扫描配置（localScanRoots / localScanDepth / autoScanOnStart / autoScanMaxAgeHours / localOwnerOnly）
+ *   GET  /api/modelscope  → 魔搭社区（ModelScope）魔粒余额；?refresh=1 强制重新拉取（独立小组件，与 GitHub 扫描解耦）
  *   GET  /api/open?path=… → 在系统文件管理器中打开本地路径（点击仓库路径跳转）
  *
  * 仅监听 127.0.0.1。扫描策略：先拉仓库列表与上次快照比对，无变更的仓库复用上次明细（不发额外请求）；
@@ -22,6 +23,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import { collectData, collectLocal, mergeLocalSnapshot, writeOutputs, readLocalConfig, writeLocalConfig, HERE } from "./scan-core.mjs";
+import { getMoli } from "./modelscope.mjs";
 
 const args = process.argv.slice(2);
 // 兼容 `--name value` 与 `--name=value` 两种写法
@@ -213,6 +215,19 @@ const server = http.createServer(async (req, res) => {
         }
         writeLocalConfig(merged);
         return sendJson(res, 200, { ok: true, config: merged });
+      }
+    }
+    if (url.pathname === "/api/modelscope" && req.method === "GET") {
+      // 魔搭社区魔粒余额：独立小组件，与 GitHub 扫描解耦；同源校验同上
+      if (!sameOriginOk(req)) {
+        return sendJson(res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
+      }
+      const refresh = url.searchParams.get("refresh") === "1";
+      try {
+        const m = await getMoli({ refresh });
+        return sendJson(res, 200, { ok: m.ok, moli: m });
+      } catch (e) {
+        return sendJson(res, 500, { ok: false, error: String(e?.message ?? e) });
       }
     }
     return sendJson(res, 404, { ok: false, error: "Not Found" });

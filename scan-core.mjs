@@ -1064,6 +1064,17 @@ export function renderDashboard(data) {
   }
   .toolbar input[type="search"] { min-width: 230px; }
   .toolbar input:focus, .toolbar select:focus { outline: none; border-color: var(--accent); }
+  /* 魔搭社区魔粒余额条（与 GitHub 扫描解耦的独立小组件） */
+  .moli-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; padding: 8px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--muted); }
+  .moli-bar .moli-val { font-size: 18px; font-weight: 700; color: var(--text); }
+  .moli-bar .moli-val small { font-size: 12px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+  .moli-bar .moli-sep { color: var(--border); margin: 0 2px; }
+  .moli-bar .moli-tag { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+  .moli-bar .spacer { flex: 1; }
+  .moli-bar button { font-size: 12px; padding: 4px 12px; cursor: pointer; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-family: inherit; }
+  .moli-bar button:hover { border-color: var(--accent); color: var(--accent); }
+  .moli-bar.err { color: #d97757; }
+  .moli-bar code { font-family: Consolas, "Cascadia Mono", monospace; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; }
   .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; }
   .chk input { accent-color: var(--accent); }
   .views-box { display: inline-flex; gap: 6px; align-items: center; }
@@ -1267,6 +1278,12 @@ export function renderDashboard(data) {
       <button id="themeBtn" class="btn icon" type="button" title="切换明暗主题" aria-label="切换明暗主题"></button>
     </div>
   </header>
+  <div class="moli-bar" id="moliBar" title="魔搭社区（ModelScope）魔粒余额，来自 /openapi/v1/magicubes/balance">
+    <span class="moli-tag">魔搭魔粒</span>
+    <span id="moliBody">载入中…</span>
+    <span class="spacer"></span>
+    <button id="moliRefresh" type="button" title="重新拉取魔粒余额（走 ModelScope 接口）">刷新</button>
+  </div>
   <div class="hint" id="scanHint"></div>
 
   <div class="agg-wrap" id="aggWrap">
@@ -2305,6 +2322,43 @@ window.__SCAN_DATA__ = ${jsonStr};
     }
     pollStatus();
     setInterval(pollStatus, 3000);
+
+    // 魔搭社区魔粒余额：与 GitHub 扫描解耦的独立小组件
+    // 打开时只读本地缓存（瞬开、不刷网络）；点「刷新」才请求 /api/modelscope?refresh=1
+    function renderMoli(m) {
+      var el = document.getElementById('moliBody');
+      var bar = document.getElementById('moliBar');
+      if (!el || !bar) return;
+      if (!m || m.ok === false) {
+        bar.classList.add('err');
+        if (m && m.configured === false) {
+          el.textContent = '未配置 ModelScope 凭据：设 MODELSCOPE_API_TOKEN 环境变数，或 modelscope login 后重试';
+        } else {
+          el.textContent = '拉取失败：' + String((m && m.error) || '未知错误') + (m && m.cached ? '（显示上次缓存）' : '');
+        }
+        return;
+      }
+      bar.classList.remove('err');
+      var av = m.available_balance, tot = m.total_balance, fr = m.frozen_amount;
+      var when = m.updatedAt ? new Date(m.updatedAt).toLocaleString('zh-CN', { hour12: false }) : '';
+      el.innerHTML =
+        '<span class="moli-val">' + (av == null ? '—' : av) + '<small>可用</small></span>' +
+        '<span class="moli-sep">·</span>总 ' + (tot == null ? '—' : tot) +
+        (fr ? '<span class="moli-sep">·</span>冻结 ' + fr : '') +
+        '<span class="moli-sep">·</span><span style="font-size:12px">更新 ' + when + (m.cached ? '（缓存）' : '') + '</span>';
+    }
+    function loadMoli(refresh) {
+      fetch('/api/modelscope' + (refresh ? '?refresh=1' : ''))
+        .then(function (r) { return r.json(); })
+        .then(function (j) { renderMoli(j && j.moli); })
+        .catch(function () { renderMoli({ ok: false, error: '本地服务不可用' }); });
+    }
+    var moliRefreshBtn = document.getElementById('moliRefresh');
+    if (moliRefreshBtn) moliRefreshBtn.addEventListener('click', function () {
+      var b = document.getElementById('moliBody'); if (b) b.textContent = '刷新中…';
+      loadMoli(true);
+    });
+    loadMoli(false);
 
     // 主表滚轮转横向：横向滚动条在表格最底部、日常很难够到，
     // 鼠标悬停在表格上时滚轮直接左右滚动表格（到最左/最右边界后放行纵向滚动页面）
