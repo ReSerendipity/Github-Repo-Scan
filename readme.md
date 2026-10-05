@@ -61,6 +61,7 @@
 | Star 周增长趋势 | 表格中该列已改为「本地分支」；近 7 天 Star 增量仍在顶部指标卡「本周新增★」与 Star 排行榜 Top5「+N/周」展示（基于 scan-data-history.json 按天累积，红涨绿跌遵循 A 股惯例，需 ≥6 天历史，否则显示「—」不编造数据）；导出 CSV 仍含「近7天★」列 |
 | 先探测再扫描（增量） | 「重新扫描」默认先拉一次仓库列表（1–2 次 GraphQL）与上次快照逐仓比对；**未变的仓库直接复用上次明细（许可证 / CI / 提交 / 流量），不发任何额外请求** —— 无变更时秒级返回。元信息显示「本次：无变更·复用快照 / 增量扫描 N/M / 强制全量 · 用时」。**按住 Shift 点「重新扫描」= 强制全量扫描** |
 | 启动不阻塞 + 自动刷新 | 启动时若触发自动扫描，服务**先开页面（现有快照）再后台扫描**；页面每 3 秒轮询 `/api/status`，扫描完成后自动刷新，无需手工等待或刷新页面 |
+| 魔搭魔粒余额 | 顶部「魔搭魔粒」条展示 ModelScope（魔搭社区）魔粒余额（可用 / 总 / 冻结），点击「刷新」走 `GET /openapi/v1/magicubes/balance` 实时拉取；打开页面只读本地缓存（瞬开、不刷网络）。认证优先 `MODELSCOPE_API_TOKEN` 环境变数，其次 `scan-config.json` 的 `modelscopeToken`，兜底复用本机 `modelscope login` 登录态（零配置） |
 
 ## 本地 Git 仓库扫描（对照 + 独立）
 
@@ -72,6 +73,7 @@
 - **对照规则**：本地 remote URL 解析出 `owner/repo` 与远程精确匹配；无 GitHub remote 或 owner 不同但仓库名唯一时按名字兜底；同名多候选不猜（标记 ambiguous，进「本地独有」）。
 - **依赖**：git 在 PATH 即可，无需 gh 登录；`--remote-only` 可关掉本地对照。
 - **配置文件**：`scan-config.json` 含本机路径，已加入 `.gitignore` 不入库；还可配置 `autoScanOnStart`（启动前自动扫描模式：`always`/`stale`/`first`/`off`，默认 `stale`）、`autoScanMaxAgeHours`（stale 模式下判定「过期」的小时数，默认 6）与 `localOwnerOnly`（只保留本账号仓库，默认 `true`）。
+- **魔搭魔粒（ModelScope）**：面板顶部「魔搭魔粒」条显示你的魔粒余额，来自官方 OpenAPI `GET /openapi/v1/magicubes/balance`。认证三选一（优先级从高到低）：① 设环境变数 `MODELSCOPE_API_TOKEN`（在 `modelscope.cn/my/access/token` 申请，稳定推荐）；② 把 token 写入 `scan-config.json` 的 `modelscopeToken` 字段；③ 零配置复用本机 `modelscope login` 产生的 `~/.modelscope/credentials/cookies` 登录态（cookie 过期后重新 `modelscope login` 即可）。命令行也可直接 `node modelscope.mjs [--refresh]` 打印余额。
 
 ## 性能与增量
 
