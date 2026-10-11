@@ -2,566 +2,33 @@
   "schema": 3,
   "owner": "ReSerendipity",
   "avatarUrl": "https://avatars.githubusercontent.com/u/259081123?s=96&u=356cdd7f5f7027b4a5804355e894a84e8ea1086e&v=4",
-  "scannedAt": "2026-10-04T06:40:08.745Z",
+  "scannedAt": "2026-10-09T11:31:23.951Z",
   "truncated": false,
   "rate": {
     "limit": 5000,
     "remaining": 5000,
-    "reset": 1791099608,
+    "reset": 1791549085,
     "used": 0
   },
   "totals": {
-    "repos": 36,
-    "totalRepos": 36,
-    "stars": 29,
-    "forks": 6,
-    "openIssues": 4,
-    "openPRs": 49,
-    "releases": 49,
-    "ciDone": 24,
-    "ciOk": 22,
-    "sizeTotal": 3803938,
-    "localTotal": 15,
-    "localMatched": 15,
-    "localMissing": 21,
+    "repos": 39,
+    "totalRepos": 39,
+    "stars": 38,
+    "forks": 7,
+    "openIssues": 5,
+    "openPRs": 39,
+    "releases": 53,
+    "ciDone": 28,
+    "ciOk": 24,
+    "sizeTotal": 3873136,
+    "localTotal": 12,
+    "localMatched": 12,
+    "localMissing": 27,
     "localOnly": 0,
-    "localDirty": 3,
+    "localDirty": 8,
     "localDiverged": 1
   },
   "rows": [
-    {
-      "name": "Image-MultiModel",
-      "url": "https://github.com/ReSerendipity/Image-MultiModel",
-      "description": "AI 图像生成平台：进程内原生引擎（复用 ComfyUI 源码）驱动 Z-Image Turbo，支持 LoRA 叠加、SeedVR2 超分、批量生成、SSE 进度、DCT 水印溯源，中英日韩界面，便携运行 | Native in-process Z-Image Turbo engine + SeedVR2 upscaler, LoRA stacking, batch + SSE progress, DCT watermark, zh/en/ja/ko UI",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-08-10T03:42:31Z",
-      "pushedAt": "2026-10-04T06:32:05Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 7096,
-      "openIssues": 0,
-      "openPRs": 6,
-      "branches": 7,
-      "branchNames": [
-        "dependabot/npm_and_yarn/tests/jsdom-30.1.1",
-        "dependabot/pip/multidict-7.0.0",
-        "dependabot/pip/networkx-3.7",
-        "dependabot/pip/test-tooling-f431531bb4",
-        "dependabot/pip/wcwidth-0.9.1",
-        "dependabot/pip/web-stack-d9ebf55d68",
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Image-MultiModel/blob/main/LICENSE",
-      "releases": 4,
-      "latestRelease": {
-        "tag": "v1.3.0",
-        "name": "v1.3.0",
-        "publishedAt": "2026-10-04T06:36:30Z",
-        "url": "https://github.com/ReSerendipity/Image-MultiModel/releases/tag/v1.3.0"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Deploy",
-        "ref": "main",
-        "ranAt": "2026-10-04T06:37:02Z",
-        "url": "https://github.com/ReSerendipity/Image-MultiModel/actions/runs/37183324209",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T02:54:14Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T02:54:14Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T02:54:14Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T06:32:07Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:37:02Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "cc15a96965c131a524d2f7627b00e6eb133d1abc",
-        "message": "test(infra): skip 台账重采（170→228）+ linux 视觉基线重采集入库",
-        "at": "2026-10-04T02:54:03Z",
-        "url": "https://github.com/ReSerendipity/Image-MultiModel/commit/cc15a96965c131a524d2f7627b00e6eb133d1abc",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Image-MultiModel",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "cc15a96",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T10:54:03+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Image-MultiModel.git",
-        "localBranches": [
-          "feat/agent-p0-remaining",
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/dependabot/npm_and_yarn/tests/jsdom-30.1.1",
-          "origin/dependabot/pip/multidict-7.0.0",
-          "origin/dependabot/pip/networkx-3.7",
-          "origin/dependabot/pip/test-tooling-f431531bb4",
-          "origin/dependabot/pip/wcwidth-0.9.1",
-          "origin/dependabot/pip/web-stack-d9ebf55d68",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "Website-Honkai-Star-Rail",
-      "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail",
-      "description": "Honkai Star Rail character site (VitePress, zh/en/ja/ko)",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-24T02:21:03Z",
-      "pushedAt": "2026-10-04T06:09:02Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 859141,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Other",
-      "licenseUrl": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Docs Lint",
-        "ref": "main",
-        "ranAt": "2026-10-04T06:09:04Z",
-        "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/actions/runs/37181960859",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T00:17:19Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T06:07:00Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:07:00Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:09:04Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:09:04Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "010a7893846437d40620c3f6342c79a129fe4557",
-        "message": "docs(lint): AGENTS.md 存量 markdownlint 清零（42 处：MD013×11 超长行折行、MD040×5 裸围栏补 text、MD058×1 表格空行、MD032/MD022×25 列表与标题空行）——与 G",
-        "at": "2026-10-04T06:08:59Z",
-        "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/commit/010a7893846437d40620c3f6342c79a129fe4557",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "prompt-library",
-      "url": "https://github.com/ReSerendipity/prompt-library",
-      "description": "",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-10-01T15:48:50Z",
-      "pushedAt": "2026-10-04T06:01:42Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 6772,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "a088f896ba1b4757bfc9dfc9190dabdc15327ff7",
-        "message": "s6-A: 场景池全条目可达性普查报告(只留痕不退池)",
-        "at": "2026-10-04T06:01:15Z",
-        "url": "https://github.com/ReSerendipity/prompt-library/commit/a088f896ba1b4757bfc9dfc9190dabdc15327ff7",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Website-Genshin-Impact",
-      "url": "https://github.com/ReSerendipity/Website-Genshin-Impact",
-      "description": "Genshin Impact character site (VitePress, zh/en/ja/ko)",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-24T02:06:38Z",
-      "pushedAt": "2026-10-04T04:59:26Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 1593514,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Other",
-      "licenseUrl": "https://github.com/ReSerendipity/Website-Genshin-Impact/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Quality Gates",
-        "ref": "main",
-        "ranAt": "2026-10-04T04:59:28Z",
-        "url": "https://github.com/ReSerendipity/Website-Genshin-Impact/actions/runs/37178575615",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T00:52:06Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T03:34:39Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T03:34:39Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T03:50:14Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:59:28Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "dbff83d52fe4198b23ae45d12074cc4acea7ca87",
-        "message": "chore(deadlinks): 棘轮脚本 FATAL 护栏报告头判断改用两仓共同子串「链接有效性校验报告」（GI=外部链接…/HSR=Wiki链接…，为四仓同脚本铺路）+ 超时兜底 45→90 分钟（HSR 主机桶少并行度低，45 分钟",
-        "at": "2026-10-04T04:59:22Z",
-        "url": "https://github.com/ReSerendipity/Website-Genshin-Impact/commit/dbff83d52fe4198b23ae45d12074cc4acea7ca87",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "ComfyUI-Experiment-Toolbox",
-      "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox",
-      "description": "ComfyUI 采样器/调度器受控实验 + 工作流结构改造工具箱（含零依赖 Web 面板，可自动拉起 ComfyUI） | A toolkit for controlled sampler and scheduler experiments, workflow editing, and a lightweight web panel.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-27T11:45:50Z",
-      "pushedAt": "2026-10-04T04:57:57Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 8823,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-github-release-support"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "CI",
-        "ref": "main",
-        "ranAt": "2026-10-04T04:57:59Z",
-        "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/actions/runs/37178508396",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T08:15:55Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:00:18Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:00Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:33:36Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:57:59Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "dea72785101ce8f1f56d3e6e1b922d5ca8c76b1c",
-        "message": "chore(gitignore): 把 S8 prompt 归入「仅本地内容」，不入公开仓库",
-        "at": "2026-10-04T04:57:52Z",
-        "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/commit/dea72785101ce8f1f56d3e6e1b922d5ca8c76b1c",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-实验与改造工具箱",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "dea7278",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:57:52+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main",
-          "origin/reserendipity-github-release-support"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "SeedVR2-Lite",
-      "url": "https://github.com/ReSerendipity/SeedVR2-Lite",
-      "description": "SeedVR2 视频/图像超分辨率修复工具箱：Tauri 桌面版（一键安装+增量更新）与网页版/便携包，支持 3B/7B/7B-Sharp、FP8、GPU Block Swap 省显存、一键与批量修复、5 种语言界面，无需 ComfyUI | SeedVR2 video & image super-resolution toolkit: Tauri desktop (one-click install + incremental updates) + web/portable, 3B/7B/7B-Sharp & FP8, GPU Block Swap, one-click & batch restore, 5-language UI, no ComfyUI",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-07-23T14:24:11Z",
-      "pushedAt": "2026-10-04T04:57:03Z",
-      "stars": 11,
-      "forks": 2,
-      "size": 133846,
-      "openIssues": 1,
-      "openPRs": 9,
-      "branches": 10,
-      "branchNames": [
-        "dependabot/github_actions/actions/cache-6.1.0",
-        "dependabot/github_actions/actions/upload-pages-artifact-5.0.0",
-        "dependabot/github_actions/codecov/codecov-action-7.1.1",
-        "dependabot/github_actions/docker/metadata-action-6.2.0",
-        "dependabot/github_actions/docker/setup-buildx-action-4.4.1",
-        "dependabot/npm_and_yarn/desktop/minor-and-patch-9d03d0a864",
-        "dependabot/npm_and_yarn/tests/minor-and-patch-ffb689ce8f",
-        "dependabot/pip/huggingface-hub-2.0.0",
-        "dependabot/pip/minor-and-patch-3f4a731190",
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/SeedVR2-Lite/blob/main/LICENSE",
-      "releases": 21,
-      "latestRelease": {
-        "tag": "v1.6.1",
-        "name": "SeedVR2 v1.6.1",
-        "publishedAt": "2026-10-02T09:21:29Z",
-        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/releases/tag/v1.6.1"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Secret Scan (gitleaks)",
-        "ref": "main",
-        "ranAt": "2026-10-04T06:27:44Z",
-        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/actions/runs/37182869123",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:57:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:57:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:57:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:57:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:27:44Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "9291dbf8a7a72239b342a3fc4443ca0005df8f36",
-        "message": "chore(gitignore): 把 .zcodeignore 与 docs/RELEASE_PROFILE.md 归入「仅本地保留」",
-        "at": "2026-10-04T04:56:18Z",
-        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/commit/9291dbf8a7a72239b342a3fc4443ca0005df8f36",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\SeedVR2-lite",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "9291dbf",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:56:18+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/SeedVR2-Lite.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/dependabot/github_actions/actions/cache-6.1.0",
-          "origin/dependabot/github_actions/actions/upload-pages-artifact-5.0.0",
-          "origin/dependabot/github_actions/codecov/codecov-action-7.1.1",
-          "origin/dependabot/github_actions/docker/metadata-action-6.2.0",
-          "origin/dependabot/github_actions/docker/setup-buildx-action-4.4.1",
-          "origin/dependabot/npm_and_yarn/desktop/minor-and-patch-9d03d0a864",
-          "origin/dependabot/npm_and_yarn/tests/minor-and-patch-ffb689ce8f",
-          "origin/dependabot/pip/huggingface-hub-2.0.0",
-          "origin/dependabot/pip/minor-and-patch-3f4a731190",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
     {
       "name": "DraftPeek",
       "url": "https://github.com/ReSerendipity/DraftPeek",
@@ -570,24 +37,21 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-08-27T11:41:24Z",
-      "pushedAt": "2026-10-04T04:49:55Z",
+      "pushedAt": "2026-10-09T11:09:35Z",
       "stars": 0,
       "forks": 1,
-      "size": 5526,
-      "openIssues": 0,
-      "openPRs": 10,
-      "branches": 12,
+      "size": 6360,
+      "openIssues": 1,
+      "openPRs": 6,
+      "branches": 9,
       "branchNames": [
-        "dependabot/github_actions/actions/download-artifact-8",
-        "dependabot/github_actions/actions/setup-node-7",
         "dependabot/gradle/agp-9.4.1",
-        "dependabot/gradle/minor-and-patch-da34ea343c",
+        "dependabot/gradle/minor-and-patch-c8d8624ea1",
         "dependabot/gradle/org.eclipse.jgit-org.eclipse.jgit-7.8.0.202609011348-r",
         "dependabot/gradle/org.junit.vintage-junit-vintage-engine-6.1.3",
         "dependabot/gradle/paparazzi-2.0.0-alpha04",
-        "dependabot/npm_and_yarn/minor-and-patch-6791b5ace6",
-        "dependabot/npm_and_yarn/multi-b04dc22ff7",
-        "dependabot/pip/server/minor-and-patch-c29cde29e7",
+        "dependabot/pip/server/minor-and-patch-265d0b35c2",
+        "docs/skill-md-ingest",
         "gh-pages",
         "main"
       ],
@@ -599,35 +63,35 @@
       "ci": {
         "state": "通过",
         "cls": "ok",
-        "workflow": "Secret Scan (gitleaks)",
-        "ref": "main",
-        "ranAt": "2026-10-04T06:32:22Z",
-        "url": "https://github.com/ReSerendipity/DraftPeek/actions/runs/37183098913",
+        "workflow": "Self-Purify Check",
+        "ref": "dependabot/gradle/minor-and-patch-c8d8624ea1",
+        "ranAt": "2026-10-09T11:09:42Z",
+        "url": "https://github.com/ReSerendipity/DraftPeek/actions/runs/37922019475",
         "trend": [
           {
+            "s": "in_progress",
+            "c": null,
+            "at": "2026-10-09T11:09:42Z"
+          },
+          {
             "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:50:01Z"
+            "c": "skipped",
+            "at": "2026-10-09T11:09:42Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-09T11:09:42Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-04T04:50:01Z"
+            "at": "2026-10-09T11:09:42Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-04T04:50:01Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:50:01Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T06:32:22Z"
+            "at": "2026-10-09T11:09:42Z"
           }
         ]
       },
@@ -635,10 +99,10 @@
       "langColor": "#A97BFF",
       "traffic": null,
       "lastCommit": {
-        "sha": "73a52f1fef3012a2f9b305186f409ab21af18fc1",
-        "message": "i18n(en): 补齐 28 个缺失英文键 + 加 locale 对齐棘轮闸与 string-resources CI",
-        "at": "2026-10-04T03:44:28Z",
-        "url": "https://github.com/ReSerendipity/DraftPeek/commit/73a52f1fef3012a2f9b305186f409ab21af18fc1",
+        "sha": "15cd97817c3e5fdb1047ca4094dc247ea8fddcc6",
+        "message": "fix(sync): 补齐 beta/release 变体的依赖锁（CI 才暴露的第三次同源坑）",
+        "at": "2026-10-09T11:07:41Z",
+        "url": "https://github.com/ReSerendipity/DraftPeek/commit/15cd97817c3e5fdb1047ca4094dc247ea8fddcc6",
         "files": [],
         "fileCount": 0
       },
@@ -651,12 +115,12 @@
         "path": "C:\\Users\\Doro\\DraftPeek",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "73a52f1",
+        "head": "15cd978",
         "dirty": true,
-        "dirtyCount": 6,
+        "dirtyCount": 21,
         "ahead": 0,
         "behind": 0,
-        "lastCommitAt": "2026-10-04T11:44:28+08:00",
+        "lastCommitAt": "2026-10-09T19:07:41+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/DraftPeek.git",
         "localBranches": [
           "main"
@@ -671,8 +135,8 @@
           "origin/dependabot/gradle/org.junit.vintage-junit-vintage-engine-6.1.3",
           "origin/dependabot/gradle/paparazzi-2.0.0-alpha04",
           "origin/dependabot/npm_and_yarn/minor-and-patch-6791b5ace6",
-          "origin/dependabot/npm_and_yarn/multi-b04dc22ff7",
           "origin/dependabot/pip/server/minor-and-patch-c29cde29e7",
+          "origin/docs/skill-md-ingest",
           "origin/gh-pages",
           "origin/main"
         ]
@@ -680,671 +144,78 @@
       "starWeek": 0
     },
     {
-      "name": "Unity",
-      "url": "https://github.com/ReSerendipity/Unity",
-      "description": "住校手记：第一人称中式高中住校生活模拟与心理恐怖游戏（Unity/C#，PC）。 | Dormitory Notes is a first-person school-life simulation with psychological horror, built in Unity/C# for PC.",
+      "name": "Free-Model-Probe",
+      "url": "https://github.com/ReSerendipity/Free-Model-Probe",
+      "description": "免费模型清单调研与连通性测试台：面向自部署自用的选型者，汇总 ModelScope/OpenRouter 免费模型、魔粒费用与编程基准，附纯标准库 Web 连通性测试 UI，运行 start_webui.bat 即用",
       "visibility": "PRIVATE",
       "isArchived": false,
       "isFork": false,
-      "createdAt": "2026-09-22T15:31:23Z",
-      "pushedAt": "2026-10-04T04:44:05Z",
+      "createdAt": "2026-09-30T14:39:47Z",
+      "pushedAt": "2026-10-09T09:05:30Z",
       "stars": 0,
       "forks": 0,
-      "size": 14436,
+      "size": 1799,
       "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
+      "openPRs": 2,
+      "branches": 3,
       "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": "C#",
-      "langColor": "#178600",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "21c40c3395281700eea2bce83f542c10d430d171",
-        "message": "chore(assets): 提交 Unity 重序列化后的场景与材质（水房/灯光相关）",
-        "at": "2026-10-04T04:43:58Z",
-        "url": "https://github.com/ReSerendipity/Unity/commit/21c40c3395281700eea2bce83f542c10d430d171",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Unity",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "21c40c3",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:43:58+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Unity.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin/main"
-        ]
-      },
-      "starWeek": 0
-    },
-    {
-      "name": "MiniMax-H3-Lite",
-      "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite",
-      "description": "MiniMax H3 本地视频生成时间线工作台：T2V/I2V/R2V 三模式页、多镜头时间线编排，diffusers 进程内推理（官方 ComfyUI 工作流仅作参数契约），单端口 FastAPI + Jinja2，一键启动 / Docker 部署 | One-click local video timeline studio for MiniMax H3: multi-shot T2V/I2V/R2V, in-process diffusers inference, single-port FastAPI + Jinja2 UI",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-08-17T11:04:25Z",
-      "pushedAt": "2026-10-04T04:34:30Z",
-      "stars": 3,
-      "forks": 0,
-      "size": 15815,
-      "openIssues": 0,
-      "openPRs": 12,
-      "branches": 14,
-      "branchNames": [
-        "dependabot/github_actions/actions/download-artifact-8",
+        "dependabot/github_actions/actions/checkout-7",
         "dependabot/github_actions/actions/setup-python-7",
-        "dependabot/github_actions/docker/build-push-action-7",
-        "dependabot/github_actions/docker/login-action-4",
-        "dependabot/github_actions/github/codeql-action-4",
-        "dependabot/npm_and_yarn/jsdom-30.1.1",
-        "dependabot/npm_and_yarn/minor-and-patch-4ee7f9a52b",
-        "dependabot/pip/huggingface-hub-2.0.0",
-        "dependabot/pip/minor-and-patch-30a2d92e95",
-        "dependabot/pip/multidict-7.0.0",
-        "dependabot/pip/pyflakes-4.0.0",
-        "dependabot/pip/virtualenv-21.7.13",
-        "main",
-        "reserendipity-ghcr-container-publishing"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite/blob/main/LICENSE",
-      "releases": 7,
-      "latestRelease": {
-        "tag": "v2.5.1",
-        "name": "v2.5.1",
-        "publishedAt": "2026-09-27T03:43:22Z",
-        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/releases/tag/v2.5.1"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Self-Purify Check",
-        "ref": "dependabot/pip/virtualenv-21.7.13",
-        "ranAt": "2026-10-04T04:34:35Z",
-        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/actions/runs/37177403802",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:34:34Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:34:34Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:34:34Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:34:35Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:34:35Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "d93404f5d533eef8773a32347e8203461ccf1e1c",
-        "message": "fix(deps): 升级 brace-expansion 5.0.9 -> 5.0.12，修复 GHSA-q2hr-2g5m-vwhr",
-        "at": "2026-10-04T04:14:47Z",
-        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/commit/d93404f5d533eef8773a32347e8203461ccf1e1c",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "d93404f",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:14:47+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite.git",
-        "localBranches": [
-          "main",
-          "reserendipity-ghcr-container-publishing"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/chore/git-policy-20260918",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "Image-Scrapers",
-      "url": "https://github.com/ReSerendipity/Image-Scrapers",
-      "description": "米哈游系游戏与 Cosplay 站点素材采集工具集（图片与语音），支持模块化站点适配。 | A modular toolkit for collecting image and audio assets from game and cosplay sites.",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-22T15:31:32Z",
-      "pushedAt": "2026-10-04T04:32:49Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 14396,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
         "main"
       ],
       "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "aecbc3a12edfef2286727f69a2d497ff278573b1",
-        "message": "chore(qoder): 归档 better-harness 运行记录（3 次运行 + scratch，30 文件）",
-        "at": "2026-10-04T04:32:41Z",
-        "url": "https://github.com/ReSerendipity/Image-Scrapers/commit/aecbc3a12edfef2286727f69a2d497ff278573b1",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "CLI",
-        "detail": "package.json bin: image-scrapers",
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "aecbc3a",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:32:41+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "Github-Repo-Scan",
-      "url": "https://github.com/ReSerendipity/Github-Repo-Scan",
-      "description": "GitHub 账号仓库总览面板：CI / 许可证 / Release / Issue / 分支 / Star·Fork 一张表看完，双击即用 | Local dashboard scanning all your GitHub repos: CI, license, releases, issues, branches, stars - clickable links",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-21T12:56:10Z",
-      "pushedAt": "2026-10-04T04:32:21Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 552,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-repo-scan-releases"
-      ],
-      "defaultBranch": "main",
       "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Github-Repo-Scan/blob/main/LICENSE",
+      "licenseUrl": "https://github.com/ReSerendipity/Free-Model-Probe/blob/main/LICENSE",
       "releases": 0,
       "latestRelease": null,
       "ci": {
         "state": "通过",
         "cls": "ok",
-        "workflow": "pages build and deployment",
+        "workflow": "CI",
         "ref": "main",
-        "ranAt": "2026-10-04T04:32:23Z",
-        "url": "https://github.com/ReSerendipity/Github-Repo-Scan/actions/runs/37177297689",
+        "ranAt": "2026-10-09T09:05:32Z",
+        "url": "https://github.com/ReSerendipity/Free-Model-Probe/actions/runs/37909041106",
         "trend": [
           {
             "s": "completed",
-            "c": "success",
-            "at": "2026-09-23T11:18:21Z"
+            "c": "failure",
+            "at": "2026-09-30T14:43:44Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-09-30T14:43:44Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-09-30T14:44:50Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:01:02Z"
+            "at": "2026-10-01T07:48:01Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-09-29T10:14:53Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:06Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T04:32:23Z"
+            "at": "2026-10-09T09:05:32Z"
           }
         ]
       },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
+      "language": "HTML",
+      "langColor": "#e34c26",
       "traffic": null,
       "lastCommit": {
-        "sha": "eb25732c38285841fb755fd943460ce8a168dde1",
-        "message": "chore: 刷新扫描快照与面板（本地 15 仓全部与远程同步）",
-        "at": "2026-10-04T04:32:06Z",
-        "url": "https://github.com/ReSerendipity/Github-Repo-Scan/commit/eb25732c38285841fb755fd943460ce8a168dde1",
+        "sha": "3ac4a8b06d905581c71df2dbc3be9e436e3f2f9a",
+        "message": "docs: 补充 LICENSE 许可证与版权说明（Apache License 2.0 / Copyright 2026 ReSerendipity）",
+        "at": "2026-10-09T09:04:13Z",
+        "url": "https://github.com/ReSerendipity/Free-Model-Probe/commit/3ac4a8b06d905581c71df2dbc3be9e436e3f2f9a",
         "files": [],
         "fileCount": 0
       },
       "cli": {
         "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "eb25732",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T12:32:06+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main",
-          "origin/reserendipity-repo-scan-releases"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "GalgameShell",
-      "url": "https://github.com/ReSerendipity/GalgameShell",
-      "description": "Android application for running Windows applications with Wine and Box86/Box64",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-22T13:52:04Z",
-      "pushedAt": "2026-10-04T03:36:58Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 723652,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-github-release-support"
-      ],
-      "defaultBranch": "main",
-      "license": "LGPL-2.1",
-      "licenseUrl": "https://github.com/ReSerendipity/GalgameShell/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "失败",
-        "cls": "fail",
-        "workflow": "GalgameShell CI",
-        "ref": "main",
-        "ranAt": "2026-10-04T03:37:00Z",
-        "url": "https://github.com/ReSerendipity/GalgameShell/actions/runs/37174579457",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-01T16:38:18Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-02T02:33:35Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-02T09:43:59Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-02T13:08:33Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T03:37:00Z"
-          }
-        ]
-      },
-      "language": "C",
-      "langColor": "#555555",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "928963517c60f90110a0e8b67ea197b6cfaa99e4",
-        "message": "fix(krkr): 补齐 isWritableNormal JNI 契约，端到端打通游戏启动链",
-        "at": "2026-10-04T03:03:11Z",
-        "url": "https://github.com/ReSerendipity/GalgameShell/commit/928963517c60f90110a0e8b67ea197b6cfaa99e4",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\GalgameShell",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "9289635",
-        "dirty": true,
-        "dirtyCount": 1,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T11:03:11+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/GalgameShell.git",
-        "localBranches": [
-          "main",
-          "reserendipity-github-release-support"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main",
-          "origin/reserendipity-github-release-support",
-          "upstream",
-          "upstream/main"
-        ]
-      },
-      "starWeek": 0
-    },
-    {
-      "name": "Nekogal-DL",
-      "url": "https://github.com/ReSerendipity/Nekogal-DL",
-      "description": "NekoGAL Downloader：Python 个人下载器，提供网页界面、并发下载与断点续传。仅用于个人备份，请支持正版。 | A personal-use downloader with a web UI and resumable downloads.",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-22T15:31:35Z",
-      "pushedAt": "2026-10-04T03:36:43Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 239,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "cd95e018393f512d0df570e6e3785b7de2d5eda3",
-        "message": "docs: 帖 6352 连接故障复盘，连通性判据改为逐 IP 并作废 1.1.1.1 代理指标",
-        "at": "2026-10-03T08:12:13Z",
-        "url": "https://github.com/ReSerendipity/Nekogal-DL/commit/cd95e018393f512d0df570e6e3785b7de2d5eda3",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "CLI",
-        "detail": "入口文件: nekogal_dl/cli.py",
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "cd95e01",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-03T16:12:13+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Nekogal-DL.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
-      "name": "Website-Wuthering-Waves",
-      "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves",
-      "description": "Wuthering Waves character site (VitePress, zh/en/ja/ko)",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-24T02:05:39Z",
-      "pushedAt": "2026-10-04T00:17:30Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 92671,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Other",
-      "licenseUrl": "https://github.com/ReSerendipity/Website-Wuthering-Waves/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "失败",
-        "cls": "fail",
-        "workflow": "Docs Lint",
-        "ref": "main",
-        "ranAt": "2026-10-04T00:17:32Z",
-        "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves/actions/runs/37164495060",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-03T15:03:31Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-03T15:03:31Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-03T17:32:35Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T00:17:32Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-04T00:17:32Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "4269f11fb0796148017f1ab920377a1de412e72d",
-        "message": "docs(AGENTS): 归档与备份生命周期统一条款（3.1 双轨分工的释放侧补全）+ cspell 补词",
-        "at": "2026-10-04T00:17:24Z",
-        "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves/commit/4269f11fb0796148017f1ab920377a1de412e72d",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Website-Zenless-Zone-Zero",
-      "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero",
-      "description": "Zenless Zone Zero character site (VitePress, zh/en/ja/ko)",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-24T02:06:18Z",
-      "pushedAt": "2026-10-04T00:17:22Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 42268,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Other",
-      "licenseUrl": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Quality Gates",
-        "ref": "main",
-        "ranAt": "2026-10-04T00:17:24Z",
-        "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/actions/runs/37164487619",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-10-03T13:28:33Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-03T13:28:33Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-03T17:35:06Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T00:17:24Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-04T00:17:24Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "babbfc4c5a93bde18d78eb5bd4fae46c8e56a37b",
-        "message": "docs(AGENTS): 归档与备份生命周期统一条款 + ci: lychee 降可见不阻断（对齐 GI/HSR/WW 先例：存量腐烂+B站域名临时 403 期硬门必误伤，清零后删行升硬）+ cspell 补词",
-        "at": "2026-10-04T00:17:19Z",
-        "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/commit/babbfc4c5a93bde18d78eb5bd4fae46c8e56a37b",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
         "detail": null,
         "src": "remote"
       },
@@ -1359,10 +230,839 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-10-02T13:50:32Z",
-      "pushedAt": "2026-10-04T00:16:16Z",
+      "pushedAt": "2026-10-09T08:55:37Z",
       "stars": 0,
       "forks": 0,
-      "size": 301,
+      "size": 475,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "3338c436496b43a6ca5ae52977614425c1198329",
+        "message": "fix(skills): 修掉 dispatch 模板的自相矛盾——第0步要 GET /user 却把 /user 列为连读禁地",
+        "at": "2026-10-09T08:55:34Z",
+        "url": "https://github.com/ReSerendipity/agent-knowledge/commit/3338c436496b43a6ca5ae52977614425c1198329",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": null
+    },
+    {
+      "name": "Mooncake-Deconstruction",
+      "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction",
+      "description": "月饼解构实验室：零构建单 HTML 的 Three.js 3D + SVG 月饼结构可视化 Demo，双击即开或看 Pages 在线版，供中秋活动展示与自助把玩。Apache-2.0。",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-27T09:25:43Z",
+      "pushedAt": "2026-10-09T05:10:54Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 9368,
+      "openIssues": 0,
+      "openPRs": 1,
+      "branches": 3,
+      "branchNames": [
+        "dependabot/pip/playwright-1.63.0",
+        "main",
+        "reserendipity-github-pages-deployment"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Mooncake-Deconstruction/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "CI",
+        "ref": "main",
+        "ranAt": "2026-10-09T05:10:56Z",
+        "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction/actions/runs/37887341607",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T17:04:41Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T17:04:42Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T17:05:34Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:10:56Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:10:56Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "17ec8ad36a409dd2d9eee2766882cf6fb898da94",
+        "message": "docs(readme): 补充在线体验入口、验证依赖安装步骤与版权行",
+        "at": "2026-10-09T05:10:52Z",
+        "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction/commit/17ec8ad36a409dd2d9eee2766882cf6fb898da94",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Lineart-Painter",
+      "url": "https://github.com/ReSerendipity/Lineart-Painter",
+      "description": "本地 AI 线稿重绘工作台：把图片/视频转成线稿并分阶段上色（经典 XDoG+K-Means 或可选神经上色）。面向本地创作者，运行 python webui.py 后开 127.0.0.1:8765。",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-10T02:15:01Z",
+      "pushedAt": "2026-10-09T05:10:42Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 2851,
+      "openIssues": 0,
+      "openPRs": 5,
+      "branches": 6,
+      "branchNames": [
+        "dependabot/pip/huggingface-hub-gte-2.1.1-and-lt-3.0",
+        "dependabot/pip/onnxruntime-gte-1.30.0-and-lt-2.0",
+        "dependabot/pip/safetensors-gte-0.8.0-and-lt-0.9",
+        "dependabot/pip/timm-gte-1.0.30-and-lt-1.1",
+        "dependabot/pip/torchvision-gte-0.29.1-and-lt-0.30",
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Lineart-Painter/blob/main/LICENSE",
+      "releases": 1,
+      "latestRelease": {
+        "tag": "v1.0.0",
+        "name": "v1.0.0",
+        "publishedAt": "2026-09-13T14:46:24Z",
+        "url": "https://github.com/ReSerendipity/Lineart-Painter/releases/tag/v1.0.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "CI",
+        "ref": "main",
+        "ranAt": "2026-10-09T05:10:44Z",
+        "url": "https://github.com/ReSerendipity/Lineart-Painter/actions/runs/37887324502",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T16:35:26Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T16:35:27Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T16:35:27Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:39:42Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:10:44Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "239a511059f8f9fb68b68f8039ebc8bbc635148e",
+        "message": "docs: README 补最小可运行示例（内置 demo_input.png）与版权行",
+        "at": "2026-10-09T05:10:37Z",
+        "url": "https://github.com/ReSerendipity/Lineart-Painter/commit/239a511059f8f9fb68b68f8039ebc8bbc635148e",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "RTX-VSR-Lite",
+      "url": "https://github.com/ReSerendipity/RTX-VSR-Lite",
+      "description": "基于 NVIDIA RTX VSR（nvvfx）的独立视频超分命令行工具：Windows + RTX 20 系及以上可用，装好依赖后一条 rtx-vsr 命令即可把低分辨率视频逐帧放大重编码。",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-12T15:40:28Z",
+      "pushedAt": "2026-10-09T05:06:27Z",
+      "stars": 1,
+      "forks": 0,
+      "size": 82,
+      "openIssues": 0,
+      "openPRs": 3,
+      "branches": 5,
+      "branchNames": [
+        "dependabot/pip/mypy-1.20.2",
+        "dependabot/pip/opencv-python-headless-gte-4.8.0-and-lt-6.0.0",
+        "dependabot/pip/pre-commit-gte-3.8.0",
+        "main",
+        "reserendipity-rtx-vsr-lite-releases"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/RTX-VSR-Lite/blob/main/LICENSE",
+      "releases": 1,
+      "latestRelease": {
+        "tag": "v1.0.0",
+        "name": "v1.0.0",
+        "publishedAt": "2026-10-09T05:07:09Z",
+        "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/releases/tag/v1.0.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Release",
+        "ref": "v1.0.0",
+        "ranAt": "2026-10-09T05:06:28Z",
+        "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/actions/runs/37886994112",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:58:38Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:59:36Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:59:36Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:06:21Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:06:28Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "634b3c0d9f942b384803b2fd74af8af11bb0a9ea",
+        "message": "docs: 修正 README 克隆地址与目录结构，并补齐版权行",
+        "at": "2026-10-09T05:06:17Z",
+        "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/commit/634b3c0d9f942b384803b2fd74af8af11bb0a9ea",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "CLI",
+        "detail": "pyproject scripts: rtx-vsr",
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 1
+    },
+    {
+      "name": "Offer-Landing-Kit",
+      "url": "https://github.com/ReSerendipity/Offer-Landing-Kit",
+      "description": "面向求职者的纯前端入职衔接工具：离职交接清单 / 社保断档测算 / 试用期 100 天台账，打开 index.html 即用，数据不出本机。",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-21T11:26:15Z",
+      "pushedAt": "2026-10-09T05:05:24Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 1287,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Offer-Landing-Kit/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "CI",
+        "ref": "main",
+        "ranAt": "2026-10-09T05:05:26Z",
+        "url": "https://github.com/ReSerendipity/Offer-Landing-Kit/actions/runs/37886913244",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T19:27:15Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:23:40Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:23:42Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:05:26Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:05:26Z"
+          }
+        ]
+      },
+      "language": "HTML",
+      "langColor": "#e34c26",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "6ccfd40b3ed03a44427feb9a74cd2ef7a6d63d06",
+        "message": "chore(readme): 修正在线体验链接大小写，并补充最小本地运行入口",
+        "at": "2026-10-09T05:05:23Z",
+        "url": "https://github.com/ReSerendipity/Offer-Landing-Kit/commit/6ccfd40b3ed03a44427feb9a74cd2ef7a6d63d06",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Unfading-Wall",
+      "url": "https://github.com/ReSerendipity/Unfading-Wall",
+      "description": "黑板·上的话（Unfading Wall）：学生把想对老师说的话写成手写信贴上黑板墙，纯前端零后端、打开链接即分享（Apache-2.0） | Backend-free; share by link.",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-08T12:56:48Z",
+      "pushedAt": "2026-10-09T05:00:15Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 2299,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Unfading-Wall/blob/main/LICENSE",
+      "releases": 1,
+      "latestRelease": {
+        "tag": "v1.0.0",
+        "name": "v1.0.0 黑板·上的话 · 师者印象墙",
+        "publishedAt": "2026-09-08T13:21:59Z",
+        "url": "https://github.com/ReSerendipity/Unfading-Wall/releases/tag/v1.0.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "CI",
+        "ref": "main",
+        "ranAt": "2026-10-09T05:00:17Z",
+        "url": "https://github.com/ReSerendipity/Unfading-Wall/actions/runs/37886504371",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T19:27:15Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:30:01Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:30:03Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:00:16Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T05:00:17Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "a07a8cfa8923773475e0cde975279acdf3d13f60",
+        "message": "docs: 修正 README 目录树（移除已停止跟踪的 .qoder/）",
+        "at": "2026-10-09T05:00:14Z",
+        "url": "https://github.com/ReSerendipity/Unfading-Wall/commit/a07a8cfa8923773475e0cde975279acdf3d13f60",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Android-IconAutoArrange",
+      "url": "https://github.com/ReSerendipity/Android-IconAutoArrange",
+      "description": "安卓桌面图标自动整理 PoC：走 Launcher3 官方布局通道，免 root 一键分类整理（可预览、可回滚）。面向 Android 用户与开发者，poc/build.sh 构建 APK。",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-10-08T06:34:22Z",
+      "pushedAt": "2026-10-09T04:59:36Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 17246,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Other",
+      "licenseUrl": "https://github.com/ReSerendipity/Android-IconAutoArrange/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "失败",
+        "cls": "fail",
+        "workflow": "github_actions in /. - Update #1617801094",
+        "ref": "main",
+        "ranAt": "2026-10-08T17:46:29Z",
+        "url": "https://github.com/ReSerendipity/Android-IconAutoArrange/actions/runs/37819155474",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-08T17:46:29Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-08T17:46:29Z"
+          }
+        ]
+      },
+      "language": "Java",
+      "langColor": "#b07219",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "fc8070a4e60fec784cfdbca68aa8a4270cbb42d2",
+        "message": "docs: README 补第五条官方布局通道、预构建 APK 入口与版权行",
+        "at": "2026-10-09T04:59:31Z",
+        "url": "https://github.com/ReSerendipity/Android-IconAutoArrange/commit/fc8070a4e60fec784cfdbca68aa8a4270cbb42d2",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": null
+    },
+    {
+      "name": "Multi-Tracker",
+      "url": "https://github.com/ReSerendipity/Multi-Tracker",
+      "description": "Python toolkit to download and track AI creators' videos on Bilibili, Douyin, Kuaishou, Xiaohongshu and sync to Feishu.",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-08-06T01:16:33Z",
+      "pushedAt": "2026-10-09T04:59:32Z",
+      "stars": 1,
+      "forks": 0,
+      "size": 12309,
+      "openIssues": 0,
+      "openPRs": 5,
+      "branches": 7,
+      "branchNames": [
+        "dependabot/npm_and_yarn/playwright-1.63.0",
+        "dependabot/pip/numpy-gte-2.5.3",
+        "dependabot/pip/torch-gte-2.14.1",
+        "dependabot/pip/tqdm-gte-4.70.1",
+        "dependabot/pip/yt-dlp-gte-2026.8.19",
+        "main",
+        "reserendipity-github-release-support"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Multi-Tracker/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "CI",
+        "ref": "main",
+        "ranAt": "2026-10-09T04:59:34Z",
+        "url": "https://github.com/ReSerendipity/Multi-Tracker/actions/runs/37886445531",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T22:18:45Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T22:18:48Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T22:19:27Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T22:19:39Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:59:34Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "61c1a7b0371b10f43c05c946a08a79c6ebdc82c4",
+        "message": "docs: 补全 README 缺失的依赖安装步骤与 License/版权行",
+        "at": "2026-10-09T04:59:22Z",
+        "url": "https://github.com/ReSerendipity/Multi-Tracker/commit/61c1a7b0371b10f43c05c946a08a79c6ebdc82c4",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Health-Info-Card",
+      "url": "https://github.com/ReSerendipity/Health-Info-Card",
+      "description": "老人安心牌：FoloToy AI Passport 上的离线急救信息卡；ESP-IDF 5.5.3 构建。Offline emergency info card for older adults.",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-21T07:48:21Z",
+      "pushedAt": "2026-10-09T04:53:53Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 11351,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 3,
+      "branchNames": [
+        "main",
+        "reserendipity-docs-landing-page",
+        "reserendipity-github-pages-deployment"
+      ],
+      "defaultBranch": "main",
+      "license": "MIT",
+      "licenseUrl": "https://github.com/ReSerendipity/Health-Info-Card/blob/main/LICENSE",
+      "releases": 1,
+      "latestRelease": {
+        "tag": "v1.0.0",
+        "name": "v1.0.0",
+        "publishedAt": "2026-10-09T04:58:10Z",
+        "url": "https://github.com/ReSerendipity/Health-Info-Card/releases/tag/v1.0.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Build firmware",
+        "ref": "v1.0.0",
+        "ranAt": "2026-10-09T04:53:55Z",
+        "url": "https://github.com/ReSerendipity/Health-Info-Card/actions/runs/37886012377",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T19:05:34Z"
+          },
+          {
+            "s": "completed",
+            "c": "skipped",
+            "at": "2026-10-09T04:41:21Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:53:16Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:53:16Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:53:55Z"
+          }
+        ]
+      },
+      "language": "C",
+      "langColor": "#555555",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "7060520bf727ce06816fc9e99da3723d785aaec1",
+        "message": "docs: correct README QR/page accuracy and add MIT license section",
+        "at": "2026-10-09T04:53:13Z",
+        "url": "https://github.com/ReSerendipity/Health-Info-Card/commit/7060520bf727ce06816fc9e99da3723d785aaec1",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Card-Studio",
+      "url": "https://github.com/ReSerendipity/Card-Studio",
+      "description": "Browser-based multi-view 3D holographic card generator for creators; local ONNX cutout. Run: node src-web/server.js",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-10T02:15:01Z",
+      "pushedAt": "2026-10-09T04:51:34Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 131978,
+      "openIssues": 0,
+      "openPRs": 3,
+      "branches": 6,
+      "branchNames": [
+        "dependabot/cargo/src-tauri/tauri-2.11.6",
+        "dependabot/cargo/src-tauri/tauri-build-2.7.1",
+        "dependabot/cargo/src-tauri/tauri-plugin-log-2.10.0",
+        "feature/upgrade-and-enhance",
+        "main",
+        "reserendipity-card-studio-pages"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Card-Studio/blob/main/LICENSE",
+      "releases": 1,
+      "latestRelease": {
+        "tag": "v1.0.0",
+        "name": "Card Studio v1.0.0",
+        "publishedAt": "2026-09-13T15:50:02Z",
+        "url": "https://github.com/ReSerendipity/Card-Studio/releases/tag/v1.0.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Deploy to GitHub Pages",
+        "ref": "main",
+        "ranAt": "2026-10-09T04:51:36Z",
+        "url": "https://github.com/ReSerendipity/Card-Studio/actions/runs/37885835699",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T19:50:06Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:42:43Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:42:43Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:51:36Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T04:51:36Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "96b8727f44392fa93f9826be66b854297f4213f8",
+        "message": "docs(readme): 修正与仓库实况不符的目录树与模型描述，补零安装入口与许可证版权行",
+        "at": "2026-10-09T04:51:33Z",
+        "url": "https://github.com/ReSerendipity/Card-Studio/commit/96b8727f44392fa93f9826be66b854297f4213f8",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "prompt-library",
+      "url": "https://github.com/ReSerendipity/prompt-library",
+      "description": "",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-10-01T15:48:50Z",
+      "pushedAt": "2026-10-09T04:45:13Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 12732,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "94ba215b7980c291e107f03f2fc65d03ccef1f81",
+        "message": "s16-closeout: 视角漂移5/5重试落盘(情趣空间过滤1件)+B门终态44/44 PASS+regression四项甄别(4/4非引擎回归)+认证矩阵(integration 10/10,comprehensive 45/45)",
+        "at": "2026-10-09T04:45:07Z",
+        "url": "https://github.com/ReSerendipity/prompt-library/commit/94ba215b7980c291e107f03f2fc65d03ccef1f81",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": null
+    },
+    {
+      "name": "Android-IconAutoArrange-Assets-Backup",
+      "url": "https://github.com/ReSerendipity/Android-IconAutoArrange-Assets-Backup",
+      "description": "Private backup ledger for Android-IconAutoArrange: passwords for the encrypted signing-key backup",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-10-08T10:22:17Z",
+      "pushedAt": "2026-10-08T10:31:28Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 13527,
       "openIssues": 0,
       "openPRs": 0,
       "branches": 1,
@@ -1387,37 +1087,274 @@
       "langColor": "#8b949e",
       "traffic": null,
       "lastCommit": {
-        "sha": "40a87959aff6c86f639887a48bd4d1b592d4b67c",
-        "message": "docs: brain skill 补充回收站配额FIFO清除大文件教训（2026-10-04 归档实测）",
-        "at": "2026-10-04T00:16:13Z",
-        "url": "https://github.com/ReSerendipity/agent-knowledge/commit/40a87959aff6c86f639887a48bd4d1b592d4b67c",
+        "sha": "7002528bf19ce266c9d53fff5b0142a6312b9daf",
+        "message": "feat: 归档 PoC 运行时资产（两个 APK）",
+        "at": "2026-10-08T10:31:18Z",
+        "url": "https://github.com/ReSerendipity/Android-IconAutoArrange-Assets-Backup/commit/7002528bf19ce266c9d53fff5b0142a6312b9daf",
         "files": [],
         "fileCount": 0
       },
       "cli": {
         "state": "无",
         "detail": null,
-        "src": "local"
+        "src": "remote"
       },
-      "local": {
-        "path": "C:\\Users\\Doro\\agent-knowledge",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "40a8795",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-04T08:16:13+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/agent-knowledge.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main"
-        ]
+      "local": null,
+      "starWeek": null
+    },
+    {
+      "name": "SeedVR2-Lite-KeyBackup",
+      "url": "https://github.com/ReSerendipity/SeedVR2-Lite-KeyBackup",
+      "description": "Private encrypted backup of SeedVR2-lite Tauri release signing key",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-29T09:02:39Z",
+      "pushedAt": "2026-10-08T09:08:12Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 2,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
       },
+      "language": null,
+      "langColor": "#8b949e",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "668b426f916ef29a68640930eea375c49ec58ee9",
+        "message": "fix: 加 .gitattributes 固定 LF 检出，修复 SHA256SUMS.txt 校验失败",
+        "at": "2026-10-08T09:08:06Z",
+        "url": "https://github.com/ReSerendipity/SeedVR2-Lite-KeyBackup/commit/668b426f916ef29a68640930eea375c49ec58ee9",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Image-MultiModel-KeyBackup",
+      "url": "https://github.com/ReSerendipity/Image-MultiModel-KeyBackup",
+      "description": "Private encrypted backup of Image_MultiModel Tauri release signing key",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-29T09:02:43Z",
+      "pushedAt": "2026-10-08T09:07:14Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 2,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": null,
+      "langColor": "#8b949e",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "e8164c9a484cabf807f4e86669c7e3c730f2af63",
+        "message": "fix: 加 .gitattributes 固定 LF 检出，修复 SHA256SUMS.txt 校验失败",
+        "at": "2026-10-08T09:07:09Z",
+        "url": "https://github.com/ReSerendipity/Image-MultiModel-KeyBackup/commit/e8164c9a484cabf807f4e86669c7e3c730f2af63",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "TTS-MultiModel-KeyBackup",
+      "url": "https://github.com/ReSerendipity/TTS-MultiModel-KeyBackup",
+      "description": "Private encrypted backup of TTS_MultiModel release signing keys (RSA private key + cert + Tauri rsign key)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-29T09:02:36Z",
+      "pushedAt": "2026-10-08T09:06:58Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 4,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": null,
+      "langColor": "#8b949e",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "a76a940c879a1a1d037006e9930b3692838b5ded",
+        "message": "fix: 加 .gitattributes 固定 LF 检出，修复 SHA256SUMS.txt 校验失败",
+        "at": "2026-10-08T09:06:53Z",
+        "url": "https://github.com/ReSerendipity/TTS-MultiModel-KeyBackup/commit/a76a940c879a1a1d037006e9930b3692838b5ded",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "DraftPeek-KeyBackup",
+      "url": "https://github.com/ReSerendipity/DraftPeek-KeyBackup",
+      "description": "Private encrypted backup of DraftPeek release signing material",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-24T03:09:53Z",
+      "pushedAt": "2026-10-08T09:06:42Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 5,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": null,
+      "langColor": "#8b949e",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "b482b86e8c171aa299068d93b3dc2cfc85523101",
+        "message": "fix: 加 .gitattributes 固定 LF 检出，修复 SHA256SUMS.txt 校验失败",
+        "at": "2026-10-08T09:06:37Z",
+        "url": "https://github.com/ReSerendipity/DraftPeek-KeyBackup/commit/b482b86e8c171aa299068d93b3dc2cfc85523101",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Android-IconAutoArrange-KeyBackup",
+      "url": "https://github.com/ReSerendipity/Android-IconAutoArrange-KeyBackup",
+      "description": "Private encrypted backup of Android-IconAutoArrange signing material (release + debug keystore)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-10-08T08:37:05Z",
+      "pushedAt": "2026-10-08T08:39:02Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 10,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": null,
+      "langColor": "#8b949e",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "1fbc63ad743fe14d7cf0d4b71df67df4b505ed0f",
+        "message": "fix: 加 .gitattributes 固定 LF 检出，避免校验文件被转成 CRLF",
+        "at": "2026-10-08T08:38:56Z",
+        "url": "https://github.com/ReSerendipity/Android-IconAutoArrange-KeyBackup/commit/1fbc63ad743fe14d7cf0d4b71df67df4b505ed0f",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
       "starWeek": null
     },
     {
@@ -1428,24 +1365,20 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-08-27T11:41:34Z",
-      "pushedAt": "2026-10-03T08:15:02Z",
+      "pushedAt": "2026-10-08T05:43:33Z",
       "stars": 0,
       "forks": 0,
-      "size": 50498,
+      "size": 50649,
       "openIssues": 1,
-      "openPRs": 8,
-      "branches": 13,
+      "openPRs": 4,
+      "branches": 9,
       "branchNames": [
         "ci/governance-spiritpal",
         "ci/perf-xvfb",
         "dependabot/github_actions/github/codeql-action-4",
-        "dependabot/gradle/src-tauri/gen/android/gradle-wrapper-9.8.0",
         "dependabot/gradle/src-tauri/gen/android/minor-and-patch-4bdd38abdc",
         "dependabot/npm_and_yarn/fast-uri-4.2.1",
         "dependabot/npm_and_yarn/jsdom-30.1.1",
-        "dependabot/npm_and_yarn/lucide-react-1.48.0",
-        "dependabot/npm_and_yarn/minor-and-patch-4e7a1ce1a4",
-        "dependabot/npm_and_yarn/vitejs/plugin-react-5.2.0",
         "gh-pages",
         "main",
         "sync/main-local-20260918"
@@ -1465,33 +1398,33 @@
         "cls": "ok",
         "workflow": "Stale 自动清理",
         "ref": "main",
-        "ranAt": "2026-10-03T08:59:49Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/37111550944",
+        "ranAt": "2026-10-08T10:16:06Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/actions/runs/37762344982",
         "trend": [
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-03T08:15:04Z"
+            "at": "2026-10-08T05:43:35Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-03T08:15:04Z"
+            "at": "2026-10-08T05:43:35Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-08T05:43:35Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-03T08:15:04Z"
+            "at": "2026-10-08T05:43:36Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-03T08:15:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-03T08:59:49Z"
+            "at": "2026-10-08T10:16:06Z"
           }
         ]
       },
@@ -1499,10 +1432,10 @@
       "langColor": "#3178c6",
       "traffic": null,
       "lastCommit": {
-        "sha": "c859f4e30e4dd3712209e727f8dc7a588dc9903c",
-        "message": "fix(build): gradle 侧补 verifyFrontendSri，堵住手搓 gradlew 绕过 dist/SRI 门禁",
-        "at": "2026-10-03T08:13:57Z",
-        "url": "https://github.com/ReSerendipity/SpiritPal/commit/c859f4e30e4dd3712209e727f8dc7a588dc9903c",
+        "sha": "0e0b55cb70ee4682f49f9b41245ee76e64b9c2fd",
+        "message": "chore(repo): 停止跟踪 vendored rustix 自带 Cargo.lock（消除 atty 误报源）",
+        "at": "2026-10-08T05:39:59Z",
+        "url": "https://github.com/ReSerendipity/SpiritPal/commit/0e0b55cb70ee4682f49f9b41245ee76e64b9c2fd",
         "files": [],
         "fileCount": 0
       },
@@ -1515,12 +1448,12 @@
         "path": "C:\\Users\\Doro\\SpiritPal",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "fab0164",
-        "dirty": true,
-        "dirtyCount": 6,
-        "ahead": 12,
+        "head": "0e0b55c",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
         "behind": 0,
-        "lastCommitAt": "2026-10-04T13:02:08+08:00",
+        "lastCommitAt": "2026-10-08T13:41:40+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/SpiritPal.git",
         "localBranches": [
           "ci/perf-xvfb",
@@ -1537,6 +1470,10 @@
           "origin/dependabot/npm_and_yarn/jsdom-30.1.1",
           "origin/dependabot/npm_and_yarn/lucide-react-1.48.0",
           "origin/dependabot/npm_and_yarn/minor-and-patch-4e7a1ce1a4",
+          "origin/dependabot/npm_and_yarn/modelcontextprotocol/sdk-1.31.0",
+          "origin/dependabot/npm_and_yarn/proxy-addr-2.0.8",
+          "origin/dependabot/npm_and_yarn/sharp-0.35.5",
+          "origin/dependabot/npm_and_yarn/source-map-js-1.2.2",
           "origin/dependabot/npm_and_yarn/vitejs/plugin-react-5.2.0",
           "origin/gh-pages",
           "origin/main",
@@ -1553,16 +1490,15 @@
       "isArchived": false,
       "isFork": false,
       "createdAt": "2026-05-08T00:48:26Z",
-      "pushedAt": "2026-10-02T05:19:46Z",
-      "stars": 12,
+      "pushedAt": "2026-10-08T02:41:34Z",
+      "stars": 13,
       "forks": 3,
-      "size": 60590,
+      "size": 60753,
       "openIssues": 2,
-      "openPRs": 2,
-      "branches": 5,
+      "openPRs": 1,
+      "branches": 4,
       "branchNames": [
-        "dependabot/pip/huggingface-hub-2.0.0",
-        "dependabot/pip/minor-and-patch-7841e6843d",
+        "dependabot/pip/minor-and-patch-cdce3cdbc5",
         "gh-pages",
         "main",
         "release-please--branches--main"
@@ -1570,45 +1506,45 @@
       "defaultBranch": "main",
       "license": "Apache-2.0",
       "licenseUrl": "https://github.com/ReSerendipity/TTS-MultiModel/blob/main/LICENSE",
-      "releases": 11,
+      "releases": 12,
       "latestRelease": {
-        "tag": "v2.4.0",
-        "name": "v2.4.0",
-        "publishedAt": "2026-10-02T05:19:47Z",
-        "url": "https://github.com/ReSerendipity/TTS-MultiModel/releases/tag/v2.4.0"
+        "tag": "v2.5.0",
+        "name": "v2.5.0",
+        "publishedAt": "2026-10-06T12:22:52Z",
+        "url": "https://github.com/ReSerendipity/TTS-MultiModel/releases/tag/v2.5.0"
       },
       "ci": {
         "state": "通过",
         "cls": "ok",
-        "workflow": "E2E (Playwright)",
+        "workflow": "Self-Purify Check",
         "ref": "main",
-        "ranAt": "2026-10-03T08:01:57Z",
-        "url": "https://github.com/ReSerendipity/TTS-MultiModel/actions/runs/37108325740",
+        "ranAt": "2026-10-08T02:41:30Z",
+        "url": "https://github.com/ReSerendipity/TTS-MultiModel/actions/runs/37719105648",
         "trend": [
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-02T05:22:58Z"
+            "at": "2026-10-08T02:41:30Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-02T08:25:28Z"
+            "at": "2026-10-08T02:41:30Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-02T10:04:12Z"
+            "at": "2026-10-08T02:41:30Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-02T10:41:34Z"
+            "at": "2026-10-08T02:41:30Z"
           },
           {
             "s": "completed",
             "c": "success",
-            "at": "2026-10-03T08:01:57Z"
+            "at": "2026-10-08T02:41:30Z"
           }
         ]
       },
@@ -1616,10 +1552,10 @@
       "langColor": "#3572A5",
       "traffic": null,
       "lastCommit": {
-        "sha": "a31e678082c1398102d57d8294cd152e285611fb",
-        "message": "Merge pull request #173 from ReSerendipity/release-please--branches--main",
-        "at": "2026-10-02T05:19:35Z",
-        "url": "https://github.com/ReSerendipity/TTS-MultiModel/commit/a31e678082c1398102d57d8294cd152e285611fb",
+        "sha": "69c17389513f62104049a9928a125cdea032ff60",
+        "message": "chore(deps): Bump rustls from 0.23.44 to 0.23.45 in /desktop/src-tauri (#184)",
+        "at": "2026-10-08T02:41:26Z",
+        "url": "https://github.com/ReSerendipity/TTS-MultiModel/commit/69c17389513f62104049a9928a125cdea032ff60",
         "files": [],
         "fileCount": 0
       },
@@ -1632,12 +1568,12 @@
         "path": "C:\\Users\\Doro\\TTS-MultiModel",
         "branch": "main",
         "upstream": "origin/main",
-        "head": "a31e678",
-        "dirty": false,
-        "dirtyCount": 0,
+        "head": "bbaa50e",
+        "dirty": true,
+        "dirtyCount": 11,
         "ahead": 0,
         "behind": 0,
-        "lastCommitAt": "2026-10-02T13:19:35+08:00",
+        "lastCommitAt": "2026-10-07T22:29:36+08:00",
         "remoteUrl": "https://github.com/ReSerendipity/TTS-MultiModel.git",
         "localBranches": [
           "main"
@@ -1703,7 +1639,1200 @@
           "rp-main"
         ]
       },
-      "starWeek": null
+      "starWeek": 2
+    },
+    {
+      "name": "Image-MultiModel",
+      "url": "https://github.com/ReSerendipity/Image-MultiModel",
+      "description": "AI 图像生成平台：进程内原生引擎（复用 ComfyUI 源码）驱动 Z-Image Turbo，支持 LoRA 叠加、SeedVR2 超分、批量生成、SSE 进度、DCT 水印溯源，中英日韩界面，便携运行 | Native in-process Z-Image Turbo engine + SeedVR2 upscaler, LoRA stacking, batch + SSE progress, DCT watermark, zh/en/ja/ko UI",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-08-10T03:42:31Z",
+      "pushedAt": "2026-10-07T18:27:22Z",
+      "stars": 1,
+      "forks": 0,
+      "size": 6549,
+      "openIssues": 0,
+      "openPRs": 6,
+      "branches": 10,
+      "branchNames": [
+        "dependabot/npm_and_yarn/tests/jsdom-30.1.1",
+        "dependabot/pip/multidict-7.0.0",
+        "dependabot/pip/networkx-3.7",
+        "dependabot/pip/test-tooling-f431531bb4",
+        "dependabot/pip/wcwidth-0.9.1",
+        "dependabot/pip/web-stack-df50032418",
+        "docs/skill-md-ingest",
+        "feat/db-rating-column",
+        "feat/mlops-landing-20261006",
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Image-MultiModel/blob/main/LICENSE",
+      "releases": 4,
+      "latestRelease": {
+        "tag": "v1.3.0",
+        "name": "v1.3.0",
+        "publishedAt": "2026-10-04T06:47:14Z",
+        "url": "https://github.com/ReSerendipity/Image-MultiModel/releases/tag/v1.3.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Self-Purify Check",
+        "ref": "main",
+        "ranAt": "2026-10-07T18:27:26Z",
+        "url": "https://github.com/ReSerendipity/Image-MultiModel/actions/runs/37666966071",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:27:25Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:27:25Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:27:25Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-07T18:27:25Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:27:26Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "0fc182000938780d20a605d9462142e6bd4ebfcf",
+        "message": "docs: SKILL.md（bilibili-repo-harvest 技能）家族对齐入库 (#117)",
+        "at": "2026-10-07T18:27:22Z",
+        "url": "https://github.com/ReSerendipity/Image-MultiModel/commit/0fc182000938780d20a605d9462142e6bd4ebfcf",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Image-MultiModel",
+        "branch": "feat/db-rating-column",
+        "upstream": "origin/feat/db-rating-column",
+        "head": "57e281d",
+        "dirty": true,
+        "dirtyCount": 12,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-06T20:09:11+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Image-MultiModel.git",
+        "localBranches": [
+          "feat/db-rating-column",
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/dependabot/npm_and_yarn/tests/jsdom-30.1.1",
+          "origin/dependabot/pip/multidict-7.0.0",
+          "origin/dependabot/pip/networkx-3.7",
+          "origin/dependabot/pip/test-tooling-f431531bb4",
+          "origin/dependabot/pip/wcwidth-0.9.1",
+          "origin/dependabot/pip/web-stack-d9ebf55d68",
+          "origin/docs/skill-md-ingest",
+          "origin/feat/db-rating-column",
+          "origin/feat/mlops-landing-20261006",
+          "origin/main"
+        ]
+      },
+      "starWeek": 1
+    },
+    {
+      "name": "SeedVR2-Lite",
+      "url": "https://github.com/ReSerendipity/SeedVR2-Lite",
+      "description": "SeedVR2 视频/图像超分辨率修复工具箱：Tauri 桌面版（一键安装+增量更新）与网页版/便携包，支持 3B/7B/7B-Sharp、FP8、GPU Block Swap 省显存、一键与批量修复、5 种语言界面，无需 ComfyUI | SeedVR2 video & image super-resolution toolkit: Tauri desktop (one-click install + incremental updates) + web/portable, 3B/7B/7B-Sharp & FP8, GPU Block Swap, one-click & batch restore, 5-language UI, no ComfyUI",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-07-23T14:24:11Z",
+      "pushedAt": "2026-10-07T18:09:34Z",
+      "stars": 16,
+      "forks": 3,
+      "size": 133961,
+      "openIssues": 1,
+      "openPRs": 3,
+      "branches": 4,
+      "branchNames": [
+        "dependabot/npm_and_yarn/tests/source-map-js-1.2.2",
+        "dependabot/pip/minor-and-patch-de38e7c8c9",
+        "dependabot/uv/urllib3-2.8.0",
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/SeedVR2-Lite/blob/main/LICENSE",
+      "releases": 21,
+      "latestRelease": {
+        "tag": "v1.6.1",
+        "name": "SeedVR2 v1.6.1",
+        "publishedAt": "2026-10-02T09:21:29Z",
+        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/releases/tag/v1.6.1"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Stale 自动清理",
+        "ref": "main",
+        "ranAt": "2026-10-09T09:43:59Z",
+        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/actions/runs/37913157139",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T08:12:59Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T09:37:25Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-08T20:26:00Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T08:14:05Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-09T09:43:59Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "46427d4a9b613340907d947011a492a272c2bd35",
+        "message": "chore(deps): bump @vue/server-renderer and vue in /website (#156)",
+        "at": "2026-10-07T18:09:24Z",
+        "url": "https://github.com/ReSerendipity/SeedVR2-Lite/commit/46427d4a9b613340907d947011a492a272c2bd35",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\SeedVR2-lite",
+        "branch": "feat/minimal-train-loop",
+        "upstream": null,
+        "head": "60cba9e",
+        "dirty": true,
+        "dirtyCount": 2,
+        "ahead": null,
+        "behind": null,
+        "lastCommitAt": "2026-10-07T22:32:05+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/SeedVR2-Lite.git",
+        "localBranches": [
+          "feat/minimal-train-loop",
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/dependabot/github_actions/actions/cache-6.1.0",
+          "origin/dependabot/github_actions/actions/upload-pages-artifact-5.0.0",
+          "origin/dependabot/github_actions/codecov/codecov-action-7.1.1",
+          "origin/dependabot/github_actions/docker/metadata-action-6.2.0",
+          "origin/dependabot/github_actions/docker/setup-buildx-action-4.4.1",
+          "origin/dependabot/npm_and_yarn/tests/source-map-js-1.2.2",
+          "origin/dependabot/npm_and_yarn/website/multi-8ead12a37c",
+          "origin/dependabot/npm_and_yarn/website/source-map-js-1.2.2",
+          "origin/dependabot/pip/huggingface-hub-2.0.0",
+          "origin/dependabot/pip/minor-and-patch-3f4a731190",
+          "origin/dependabot/uv/urllib3-2.8.0",
+          "origin/main"
+        ]
+      },
+      "starWeek": 6
+    },
+    {
+      "name": "MiniMax-H3-Lite",
+      "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite",
+      "description": "MiniMax H3 本地视频生成时间线工作台：T2V/I2V/R2V 三模式页、多镜头时间线编排，diffusers 进程内推理（官方 ComfyUI 工作流仅作参数契约），单端口 FastAPI + Jinja2，一键启动 / Docker 部署 | One-click local video timeline studio for MiniMax H3: multi-shot T2V/I2V/R2V, in-process diffusers inference, single-port FastAPI + Jinja2 UI",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-08-17T11:04:25Z",
+      "pushedAt": "2026-10-07T18:09:23Z",
+      "stars": 3,
+      "forks": 0,
+      "size": 17130,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 3,
+      "branchNames": [
+        "docs/skill-md-ingest",
+        "main",
+        "security/gitignore-sensitive-patterns"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite/blob/main/LICENSE",
+      "releases": 8,
+      "latestRelease": {
+        "tag": "v2.6.0",
+        "name": "v2.6.0",
+        "publishedAt": "2026-10-05T12:39:27Z",
+        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/releases/tag/v2.6.0"
+      },
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Self-Purify Check",
+        "ref": "main",
+        "ranAt": "2026-10-07T18:09:19Z",
+        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/actions/runs/37664630205",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:09:18Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:09:18Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:09:18Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:09:19Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T18:09:19Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "6e8b155687ee7b020d55c91065b6f08c99984c69",
+        "message": "chore(deps): bump github/codeql-action from 3 to 4 (#89)",
+        "at": "2026-10-07T18:09:15Z",
+        "url": "https://github.com/ReSerendipity/MiniMax-H3-Lite/commit/6e8b155687ee7b020d55c91065b6f08c99984c69",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "29320e3",
+        "dirty": true,
+        "dirtyCount": 4,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T23:02:46+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/chore/git-policy-20260918",
+          "origin/main"
+        ]
+      },
+      "starWeek": 0
+    },
+    {
+      "name": "GalgameShell",
+      "url": "https://github.com/ReSerendipity/GalgameShell",
+      "description": "Android application for running Windows applications with Wine and Box86/Box64",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-22T13:52:04Z",
+      "pushedAt": "2026-10-07T16:11:41Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 747179,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "LGPL-2.1",
+      "licenseUrl": "https://github.com/ReSerendipity/GalgameShell/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Secret Scan (gitleaks)",
+        "ref": "main",
+        "ranAt": "2026-10-07T14:59:23Z",
+        "url": "https://github.com/ReSerendipity/GalgameShell/actions/runs/37641278203",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T14:57:13Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:20Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:20Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:23Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:23Z"
+          }
+        ]
+      },
+      "language": "C",
+      "langColor": "#555555",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "ded608cbd735fc62b26990da4185f65ffef95c9d",
+        "message": "chore(codeowners): 新增 CODEOWNERS——单协作者全局默认指派（Git 合规收尾建议 A2）",
+        "at": "2026-10-07T14:59:13Z",
+        "url": "https://github.com/ReSerendipity/GalgameShell/commit/ded608cbd735fc62b26990da4185f65ffef95c9d",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\GalgameShell",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "ded608c",
+        "dirty": true,
+        "dirtyCount": 1,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:59:13+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/GalgameShell.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main",
+          "upstream",
+          "upstream/main"
+        ]
+      },
+      "starWeek": 0
+    },
+    {
+      "name": "Nekogal-DL",
+      "url": "https://github.com/ReSerendipity/Nekogal-DL",
+      "description": "NekoGAL Downloader：Python 个人下载器，提供网页界面、并发下载与断点续传。仅用于个人备份，请支持正版。 | A personal-use downloader with a web UI and resumable downloads.",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-22T15:31:35Z",
+      "pushedAt": "2026-10-07T14:59:14Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 256,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Secret Scan (gitleaks)",
+        "ref": "main",
+        "ranAt": "2026-10-07T14:59:17Z",
+        "url": "https://github.com/ReSerendipity/Nekogal-DL/actions/runs/37641265203",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T17:01:04Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:13Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:13Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:17Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:17Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "6a62b15394512ea8a6000a203fde088abdaade02",
+        "message": "chore(codeowners): 新增 CODEOWNERS——单协作者全局默认指派（Git 合规收尾建议 A2）",
+        "at": "2026-10-07T14:59:09Z",
+        "url": "https://github.com/ReSerendipity/Nekogal-DL/commit/6a62b15394512ea8a6000a203fde088abdaade02",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "CLI",
+        "detail": "入口文件: nekogal_dl/cli.py",
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "6a62b15",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:59:09+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Nekogal-DL.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
+      "starWeek": 0
+    },
+    {
+      "name": "Image-Scrapers",
+      "url": "https://github.com/ReSerendipity/Image-Scrapers",
+      "description": "米哈游系游戏与 Cosplay 站点素材采集工具集（图片与语音），支持模块化站点适配。 | A modular toolkit for collecting image and audio assets from game and cosplay sites.",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-22T15:31:32Z",
+      "pushedAt": "2026-10-07T14:59:10Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 14407,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Secret Scan (gitleaks)",
+        "ref": "main",
+        "ranAt": "2026-10-07T14:59:12Z",
+        "url": "https://github.com/ReSerendipity/Image-Scrapers/actions/runs/37641256969",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T14:57:08Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T17:02:04Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:08Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:12Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "46d70c57fc58a4e819b3fa0091c9d71ef6054cb9",
+        "message": "chore(codeowners): 新增 CODEOWNERS——单协作者全局默认指派（Git 合规收尾建议 A2）",
+        "at": "2026-10-07T14:59:05Z",
+        "url": "https://github.com/ReSerendipity/Image-Scrapers/commit/46d70c57fc58a4e819b3fa0091c9d71ef6054cb9",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "CLI",
+        "detail": "package.json bin: image-scrapers",
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "46d70c5",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:59:05+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main"
+        ]
+      },
+      "starWeek": 0
+    },
+    {
+      "name": "Github-Repo-Scan",
+      "url": "https://github.com/ReSerendipity/Github-Repo-Scan",
+      "description": "GitHub 账号仓库总览面板：CI / 许可证 / Release / Issue / 分支 / Star·Fork 一张表看完，双击即用 | Local dashboard scanning all your GitHub repos: CI, license, releases, issues, branches, stars - clickable links",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-21T12:56:10Z",
+      "pushedAt": "2026-10-07T14:59:06Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 671,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 2,
+      "branchNames": [
+        "main",
+        "reserendipity-repo-scan-releases"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/Github-Repo-Scan/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Secret Scan (gitleaks)",
+        "ref": "main",
+        "ranAt": "2026-10-07T14:59:08Z",
+        "url": "https://github.com/ReSerendipity/Github-Repo-Scan/actions/runs/37641250063",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T14:57:02Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:04Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:04Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:07Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:08Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "2f55f418267e6cf731fefdd58b87ce3d18f3487a",
+        "message": "chore(codeowners): 新增 CODEOWNERS——单协作者全局默认指派（Git 合规收尾建议 A2）",
+        "at": "2026-10-07T14:59:00Z",
+        "url": "https://github.com/ReSerendipity/Github-Repo-Scan/commit/2f55f418267e6cf731fefdd58b87ce3d18f3487a",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "2f55f41",
+        "dirty": true,
+        "dirtyCount": 2,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:59:00+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main",
+          "origin/reserendipity-repo-scan-releases"
+        ]
+      },
+      "starWeek": 0
+    },
+    {
+      "name": "ComfyUI-Experiment-Toolbox",
+      "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox",
+      "description": "ComfyUI 采样器/调度器受控实验 + 工作流结构改造工具箱（含零依赖 Web 面板，可自动拉起 ComfyUI） | A toolkit for controlled sampler and scheduler experiments, workflow editing, and a lightweight web panel.",
+      "visibility": "PUBLIC",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-27T11:45:50Z",
+      "pushedAt": "2026-10-07T14:59:01Z",
+      "stars": 1,
+      "forks": 0,
+      "size": 8935,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 2,
+      "branchNames": [
+        "main",
+        "reserendipity-github-release-support"
+      ],
+      "defaultBranch": "main",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Secret Scan (gitleaks)",
+        "ref": "main",
+        "ranAt": "2026-10-07T14:59:03Z",
+        "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/actions/runs/37641241164",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-06T14:56:59Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:00Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T04:02:00Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:03Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T14:59:03Z"
+          }
+        ]
+      },
+      "language": "Python",
+      "langColor": "#3572A5",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "075830443e3648996193e630ee0c185d6979d51c",
+        "message": "chore(codeowners): 新增 CODEOWNERS——单协作者全局默认指派（Git 合规收尾建议 A2）",
+        "at": "2026-10-07T14:58:54Z",
+        "url": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox/commit/075830443e3648996193e630ee0c185d6979d51c",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-Experiment-Toolbox",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "0758304",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
+        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:58:54+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin",
+          "origin/main",
+          "origin/reserendipity-github-release-support"
+        ]
+      },
+      "starWeek": 1
+    },
+    {
+      "name": "Website-Honkai-Star-Rail",
+      "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail",
+      "description": "Honkai Star Rail character site (VitePress, zh/en/ja/ko)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-24T02:21:03Z",
+      "pushedAt": "2026-10-07T10:22:05Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 860835,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 3,
+      "branchNames": [
+        "main",
+        "wip/translation-20260924",
+        "wip/translations-final-20260924"
+      ],
+      "defaultBranch": "main",
+      "license": "Other",
+      "licenseUrl": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "失败",
+        "cls": "fail",
+        "workflow": "Docs Lint",
+        "ref": "main",
+        "ranAt": "2026-10-07T10:22:07Z",
+        "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/actions/runs/37606924176",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T03:35:58Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-07T08:22:55Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T08:22:55Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T10:22:07Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-07T10:22:07Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "0fe6c2c242f4f1d4044ab9d16954ffbaf28ada8c",
+        "message": "chore(quality): 84 站身份校验基线完全恢复（wiki 解禁后第四次复扫 exit 0：OK76/REVIEW7/SUSPECT0/ERROR0/无Wiki页1=珍珠未实装；evanescia L1 身份✓ L2 简介 10",
+        "at": "2026-10-07T09:55:36Z",
+        "url": "https://github.com/ReSerendipity/Website-Honkai-Star-Rail/commit/0fe6c2c242f4f1d4044ab9d16954ffbaf28ada8c",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Website-Wuthering-Waves",
+      "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves",
+      "description": "Wuthering Waves character site (VitePress, zh/en/ja/ko)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-24T02:05:39Z",
+      "pushedAt": "2026-10-07T08:23:05Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 93100,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 2,
+      "branchNames": [
+        "main",
+        "wip/translations-ww-20260924"
+      ],
+      "defaultBranch": "main",
+      "license": "Other",
+      "licenseUrl": "https://github.com/ReSerendipity/Website-Wuthering-Waves/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "失败",
+        "cls": "fail",
+        "workflow": "Docs Lint",
+        "ref": "main",
+        "ranAt": "2026-10-07T08:23:08Z",
+        "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves/actions/runs/37593405155",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T06:58:54Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T06:58:54Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T23:02:21Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-07T08:23:08Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-07T08:23:08Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "3117fdb6ad3adfd6bd62762c1e3b79f1d462d621",
+        "message": "fix(052-i18n): ZCode 第五批代验收——卜灵 ja 树 21 页全量回填/订正（1.1~15 章节标题与正文中文化，1.2 名称「ブーリン」→「卜霊」口径同步，1.7 语音等逐页校订；监督方复核 6 门禁全绿）",
+        "at": "2026-10-07T08:22:52Z",
+        "url": "https://github.com/ReSerendipity/Website-Wuthering-Waves/commit/3117fdb6ad3adfd6bd62762c1e3b79f1d462d621",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Website-Genshin-Impact",
+      "url": "https://github.com/ReSerendipity/Website-Genshin-Impact",
+      "description": "Genshin Impact character site (VitePress, zh/en/ja/ko)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-24T02:06:38Z",
+      "pushedAt": "2026-10-05T06:32:58Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 1597363,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 2,
+      "branchNames": [
+        "main",
+        "wip/translations-final-20260924"
+      ],
+      "defaultBranch": "main",
+      "license": "Other",
+      "licenseUrl": "https://github.com/ReSerendipity/Website-Genshin-Impact/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "失败",
+        "cls": "fail",
+        "workflow": "Docs Lint",
+        "ref": "wip/translations-final-20260924",
+        "ranAt": "2026-10-05T06:33:00Z",
+        "url": "https://github.com/ReSerendipity/Website-Genshin-Impact/actions/runs/37272983719",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T03:35:53Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-05T03:35:53Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-05T06:32:53Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T06:32:53Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-05T06:33:00Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "0866dfe439c54249d9a5a0a304e3b2ec1bee1221",
+        "message": "feat(audit): 启发式预筛报告 + 审计管线单元测试 14 例（wiki 禁期收尾包 2/2）",
+        "at": "2026-10-05T05:52:50Z",
+        "url": "https://github.com/ReSerendipity/Website-Genshin-Impact/commit/0866dfe439c54249d9a5a0a304e3b2ec1bee1221",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Website-Zenless-Zone-Zero",
+      "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero",
+      "description": "Zenless Zone Zero character site (VitePress, zh/en/ja/ko)",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-24T02:06:18Z",
+      "pushedAt": "2026-10-05T06:18:11Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 42475,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": "Other",
+      "licenseUrl": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/blob/main/LICENSE",
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "通过",
+        "cls": "ok",
+        "workflow": "Docs Lint",
+        "ref": "main",
+        "ranAt": "2026-10-05T06:18:13Z",
+        "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/actions/runs/37271738577",
+        "trend": [
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-04T16:06:29Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T04:38:37Z"
+          },
+          {
+            "s": "completed",
+            "c": "failure",
+            "at": "2026-10-05T04:38:37Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T06:18:13Z"
+          },
+          {
+            "s": "completed",
+            "c": "success",
+            "at": "2026-10-05T06:18:13Z"
+          }
+        ]
+      },
+      "language": "JavaScript",
+      "langColor": "#f1e05a",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "79bce05fb666fed460f74eda42ec153f51efa9c1",
+        "message": "docs: UPDATE_LOG §十四（Batch6/L-10 批次/D3/TD 偿还）+ 度量快照 + a11y 报告归档",
+        "at": "2026-10-05T04:43:27Z",
+        "url": "https://github.com/ReSerendipity/Website-Zenless-Zone-Zero/commit/79bce05fb666fed460f74eda42ec153f51efa9c1",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "脚本集",
+        "detail": null,
+        "src": "remote"
+      },
+      "local": null,
+      "starWeek": 0
+    },
+    {
+      "name": "Unity",
+      "url": "https://github.com/ReSerendipity/Unity",
+      "description": "住校手记：第一人称中式高中住校生活模拟与心理恐怖游戏（Unity/C#，PC）。 | Dormitory Notes is a first-person school-life simulation with psychological horror, built in Unity/C# for PC.",
+      "visibility": "PRIVATE",
+      "isArchived": false,
+      "isFork": false,
+      "createdAt": "2026-09-22T15:31:23Z",
+      "pushedAt": "2026-10-04T04:44:05Z",
+      "stars": 0,
+      "forks": 0,
+      "size": 14436,
+      "openIssues": 0,
+      "openPRs": 0,
+      "branches": 1,
+      "branchNames": [
+        "main"
+      ],
+      "defaultBranch": "main",
+      "license": null,
+      "licenseUrl": null,
+      "releases": 0,
+      "latestRelease": null,
+      "ci": {
+        "state": "无 CI 记录",
+        "cls": "none",
+        "workflow": null,
+        "ref": null,
+        "ranAt": null,
+        "url": null,
+        "trend": []
+      },
+      "language": "C#",
+      "langColor": "#178600",
+      "traffic": null,
+      "lastCommit": {
+        "sha": "21c40c3395281700eea2bce83f542c10d430d171",
+        "message": "chore(assets): 提交 Unity 重序列化后的场景与材质（水房/灯光相关）",
+        "at": "2026-10-04T04:43:58Z",
+        "url": "https://github.com/ReSerendipity/Unity/commit/21c40c3395281700eea2bce83f542c10d430d171",
+        "files": [],
+        "fileCount": 0
+      },
+      "cli": {
+        "state": "无",
+        "detail": null,
+        "src": "local"
+      },
+      "local": {
+        "path": "C:\\Users\\Doro\\Unity",
+        "branch": "main",
+        "upstream": "origin/main",
+        "head": "31234a8",
+        "dirty": true,
+        "dirtyCount": 3,
+        "ahead": 41,
+        "behind": 0,
+        "lastCommitAt": "2026-10-09T18:25:35+08:00",
+        "remoteUrl": "https://github.com/ReSerendipity/Unity.git",
+        "localBranches": [
+          "main"
+        ],
+        "remoteBranches": [
+          "origin/main"
+        ]
+      },
+      "starWeek": 0
     },
     {
       "name": "ReSerendipity",
@@ -1770,27 +2899,7 @@
         "detail": null,
         "src": "local"
       },
-      "local": {
-        "path": "C:\\Users\\Doro\\ReSerendipity",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "61cc395",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-10-01T00:30:45+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/ReSerendipity.git",
-        "localBranches": [
-          "main",
-          "reserendipity-canonical-readme-ci-improvements"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main",
-          "origin/reserendipity-canonical-readme-ci-improvements"
-        ]
-      },
+      "local": null,
       "starWeek": 0
     },
     {
@@ -1869,105 +2978,6 @@
       "starWeek": 0
     },
     {
-      "name": "Free-Model-Probe",
-      "url": "https://github.com/ReSerendipity/Free-Model-Probe",
-      "description": "免费模型清单调研与连通性测试台：ModelScope / OpenRouter 免费模型清单、魔粒费用与编程基准调研，附纯标准库的通用连通性测试 Web UI（单轮 / 多轮负载 / 扫描新增）| Free-model list research & connectivity test bench for ModelScope / OpenRouter, with a stdlib-only Web UI",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-30T14:39:47Z",
-      "pushedAt": "2026-09-30T14:44:48Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 1795,
-      "openIssues": 0,
-      "openPRs": 2,
-      "branches": 3,
-      "branchNames": [
-        "dependabot/github_actions/actions/checkout-7",
-        "dependabot/github_actions/actions/setup-python-7",
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Free-Model-Probe/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "github_actions in /. - Update #1602100308",
-        "ref": "main",
-        "ranAt": "2026-10-01T07:48:01Z",
-        "url": "https://github.com/ReSerendipity/Free-Model-Probe/actions/runs/36832438399",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-30T14:40:58Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-30T14:43:44Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-30T14:43:44Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-30T14:44:50Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-10-01T07:48:01Z"
-          }
-        ]
-      },
-      "language": "HTML",
-      "langColor": "#e34c26",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "45290e657926ff7ee7bd3e552636a3a80ec1cd12",
-        "message": "chore(ci): 移除临时 runner 探针（结论：非配置问题，属账号级 runner 分配阻塞）",
-        "at": "2026-09-30T14:44:39Z",
-        "url": "https://github.com/ReSerendipity/Free-Model-Probe/commit/45290e657926ff7ee7bd3e552636a3a80ec1cd12",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\TODO\\Free-Model-Probe",
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "45290e6",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "lastCommitAt": "2026-09-30T22:44:39+08:00",
-        "remoteUrl": "https://github.com/ReSerendipity/Free-Model-Probe.git",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/dependabot/github_actions/actions/checkout-7",
-          "origin/dependabot/github_actions/actions/setup-python-7",
-          "origin/main"
-        ]
-      },
-      "starWeek": null
-    },
-    {
       "name": "ComfyUI-BatchPromptLoader",
       "url": "https://github.com/ReSerendipity/ComfyUI-BatchPromptLoader",
       "description": "ComfyUI custom node: load and encode prompts from TXT files with fixed/increment/decrement/random modes",
@@ -2026,828 +3036,6 @@
       "starWeek": 1
     },
     {
-      "name": "Health-Info-Card",
-      "url": "https://github.com/ReSerendipity/Health-Info-Card",
-      "description": "安心牌 · 老人急救信息卡（FoloToy AI Passport 玩法） | Emergency information card for older adults, inspired by FoloToy AI Passport.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-21T07:48:21Z",
-      "pushedAt": "2026-09-30T01:36:09Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 11341,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 3,
-      "branchNames": [
-        "main",
-        "reserendipity-docs-landing-page",
-        "reserendipity-github-pages-deployment"
-      ],
-      "defaultBranch": "main",
-      "license": "MIT",
-      "licenseUrl": "https://github.com/ReSerendipity/Health-Info-Card/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "跳过",
-        "cls": "none",
-        "workflow": "Upstream Sync",
-        "ref": "main",
-        "ranAt": "2026-09-30T04:06:03Z",
-        "url": "https://github.com/ReSerendipity/Health-Info-Card/actions/runs/36667351111",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:10Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:31:52Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:36:12Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:36:12Z"
-          },
-          {
-            "s": "completed",
-            "c": "skipped",
-            "at": "2026-09-30T04:06:03Z"
-          }
-        ]
-      },
-      "language": "C",
-      "langColor": "#555555",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "9e203ebe242555b6f48581ee3ac07b7e66662eaa",
-        "message": "Merge pull request #2 from ReSerendipity/reserendipity-docs-landing-page",
-        "at": "2026-09-30T01:36:09Z",
-        "url": "https://github.com/ReSerendipity/Health-Info-Card/commit/9e203ebe242555b6f48581ee3ac07b7e66662eaa",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "RTX-VSR-Lite",
-      "url": "https://github.com/ReSerendipity/RTX-VSR-Lite",
-      "description": "Standalone NVIDIA RTX Video Super Resolution (VSR) video upscaler CLI - upscale videos via the nvvfx SDK, no ComfyUI required.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-12T15:40:28Z",
-      "pushedAt": "2026-09-30T01:26:17Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 56,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-rtx-vsr-lite-releases"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/RTX-VSR-Lite/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "CI",
-        "ref": "main",
-        "ranAt": "2026-09-30T01:26:20Z",
-        "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/actions/runs/36655109986",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T07:29:10Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:00:58Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:20Z"
-          }
-        ]
-      },
-      "language": "TypeScript",
-      "langColor": "#3178c6",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "a514154f790d569140144c549242ee15f02fa24b",
-        "message": "Merge pull request #1 from ReSerendipity/reserendipity-rtx-vsr-lite-releases",
-        "at": "2026-09-30T01:26:17Z",
-        "url": "https://github.com/ReSerendipity/RTX-VSR-Lite/commit/a514154f790d569140144c549242ee15f02fa24b",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Multi-Tracker",
-      "url": "https://github.com/ReSerendipity/Multi-Tracker",
-      "description": "Multi-platform video creator tracking toolkit — download videos, sync to Feishu, fetch comments & AI transcription across Bilibili, Douyin, Kuaishou and Xiaohongshu.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-08-06T01:16:33Z",
-      "pushedAt": "2026-09-30T01:26:14Z",
-      "stars": 1,
-      "forks": 0,
-      "size": 12243,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-github-release-support"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Multi-Tracker/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "CI",
-        "ref": "main",
-        "ranAt": "2026-09-30T01:26:16Z",
-        "url": "https://github.com/ReSerendipity/Multi-Tracker/actions/runs/36655106360",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T07:29:12Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T08:49:24Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T08:52:49Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:00:52Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:16Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "5934f72621e835f9f07a418f5c4581eb2105ea49",
-        "message": "Merge pull request #1 from ReSerendipity/reserendipity-github-release-support",
-        "at": "2026-09-30T01:26:14Z",
-        "url": "https://github.com/ReSerendipity/Multi-Tracker/commit/5934f72621e835f9f07a418f5c4581eb2105ea49",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": null,
-      "starWeek": 0
-    },
-    {
-      "name": "Mooncake-Deconstruction",
-      "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction",
-      "description": "月饼解构可视化存档：Three.js 3D + SVG 零构建单 HTML Demo，附无头验证方法论。Apache-2.0。 | A single-file Three.js and SVG demo exploring mooncake structure.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-27T09:25:43Z",
-      "pushedAt": "2026-09-30T01:26:10Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 9355,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 2,
-      "branchNames": [
-        "main",
-        "reserendipity-github-pages-deployment"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Mooncake-Deconstruction/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Deploy GitHub Pages",
-        "ref": "main",
-        "ranAt": "2026-09-30T01:26:13Z",
-        "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction/actions/runs/36655101896",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-29T07:29:15Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T07:33:39Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:00:46Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:13Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:26:13Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "80d12e3f2b5c05b40162d5892c8807c0db7ec0db",
-        "message": "Merge pull request #1 from ReSerendipity/reserendipity-github-pages-deployment",
-        "at": "2026-09-30T01:26:10Z",
-        "url": "https://github.com/ReSerendipity/Mooncake-Deconstruction/commit/80d12e3f2b5c05b40162d5892c8807c0db7ec0db",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "local"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Card-Studio",
-      "url": "https://github.com/ReSerendipity/Card-Studio",
-      "description": "Browser-based multi-view 3D holographic card generator with cutout, layered compositing, and interactive rotation",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-10T02:15:01Z",
-      "pushedAt": "2026-09-30T01:25:54Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 131863,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 3,
-      "branchNames": [
-        "feature/upgrade-and-enhance",
-        "main",
-        "reserendipity-card-studio-pages"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Card-Studio/blob/main/LICENSE",
-      "releases": 1,
-      "latestRelease": {
-        "tag": "v1.0.0",
-        "name": "Card Studio v1.0.0",
-        "publishedAt": "2026-09-13T15:50:02Z",
-        "url": "https://github.com/ReSerendipity/Card-Studio/releases/tag/v1.0.0"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Deploy to GitHub Pages",
-        "ref": "main",
-        "ranAt": "2026-09-30T01:25:57Z",
-        "url": "https://github.com/ReSerendipity/Card-Studio/actions/runs/36655079258",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-13T14:50:39Z"
-          },
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-13T14:54:08Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-13T15:14:19Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-13T15:41:57Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-30T01:25:57Z"
-          }
-        ]
-      },
-      "language": "TypeScript",
-      "langColor": "#3178c6",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "b4f9072acd12095f426e8ea982824b68ce7a8590",
-        "message": "Merge pull request #1 from ReSerendipity/reserendipity-card-studio-pages",
-        "at": "2026-09-30T01:25:54Z",
-        "url": "https://github.com/ReSerendipity/Card-Studio/commit/b4f9072acd12095f426e8ea982824b68ce7a8590",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "local"
-      },
-      "local": null,
-      "starWeek": 0
-    },
-    {
-      "name": "Image-MultiModel-KeyBackup",
-      "url": "https://github.com/ReSerendipity/Image-MultiModel-KeyBackup",
-      "description": "Private encrypted backup of Image_MultiModel Tauri release signing key",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-29T09:02:43Z",
-      "pushedAt": "2026-09-29T09:04:36Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 1,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": null,
-      "langColor": "#8b949e",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "71515c46f6568e72a30ddbce516b1938f227fa9b",
-        "message": "chore: initial encrypted key backup (2026-09-29)",
-        "at": "2026-09-29T09:03:57Z",
-        "url": "https://github.com/ReSerendipity/Image-MultiModel-KeyBackup/commit/71515c46f6568e72a30ddbce516b1938f227fa9b",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "SeedVR2-Lite-KeyBackup",
-      "url": "https://github.com/ReSerendipity/SeedVR2-Lite-KeyBackup",
-      "description": "Private encrypted backup of SeedVR2-lite Tauri release signing key",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-29T09:02:39Z",
-      "pushedAt": "2026-09-29T09:04:33Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 1,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": null,
-      "langColor": "#8b949e",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "fc6005e231b7227adeb3334395cd03b4a7dc117b",
-        "message": "chore: initial encrypted key backup (2026-09-29)",
-        "at": "2026-09-29T09:03:55Z",
-        "url": "https://github.com/ReSerendipity/SeedVR2-Lite-KeyBackup/commit/fc6005e231b7227adeb3334395cd03b4a7dc117b",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "TTS-MultiModel-KeyBackup",
-      "url": "https://github.com/ReSerendipity/TTS-MultiModel-KeyBackup",
-      "description": "Private encrypted backup of TTS_MultiModel release signing keys (RSA private key + cert + Tauri rsign key)",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-29T09:02:36Z",
-      "pushedAt": "2026-09-29T09:04:30Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 3,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": null,
-      "langColor": "#8b949e",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "67c04a0525b3bf7ea178c3d32c447f3fda45a7e3",
-        "message": "chore: initial encrypted key backup (2026-09-29)",
-        "at": "2026-09-29T09:03:52Z",
-        "url": "https://github.com/ReSerendipity/TTS-MultiModel-KeyBackup/commit/67c04a0525b3bf7ea178c3d32c447f3fda45a7e3",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Lineart-Painter",
-      "url": "https://github.com/ReSerendipity/Lineart-Painter",
-      "description": "Local AI image and video line-art redraw workstation with staged coloring, neural models, and a browser UI",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-10T02:15:01Z",
-      "pushedAt": "2026-09-29T08:52:12Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 2826,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Lineart-Painter/blob/main/LICENSE",
-      "releases": 1,
-      "latestRelease": {
-        "tag": "v1.0.0",
-        "name": "v1.0.0",
-        "publishedAt": "2026-09-13T14:46:24Z",
-        "url": "https://github.com/ReSerendipity/Lineart-Painter/releases/tag/v1.0.0"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "Release",
-        "ref": "v1.0.0",
-        "ranAt": "2026-09-29T08:52:14Z",
-        "url": "https://github.com/ReSerendipity/Lineart-Painter/actions/runs/36545462067",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "failure",
-            "at": "2026-09-13T14:33:51Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-13T14:45:27Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T08:52:14Z"
-          }
-        ]
-      },
-      "language": "Python",
-      "langColor": "#3572A5",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "b2c5cf9fe5c6e09665fbaa380b43bf264d856a04",
-        "message": "chore: 提交本地未提交改动（批量同步）",
-        "at": "2026-09-23T04:48:47Z",
-        "url": "https://github.com/ReSerendipity/Lineart-Painter/commit/b2c5cf9fe5c6e09665fbaa380b43bf264d856a04",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "DraftPeek-KeyBackup",
-      "url": "https://github.com/ReSerendipity/DraftPeek-KeyBackup",
-      "description": "Private encrypted backup of DraftPeek release signing material",
-      "visibility": "PRIVATE",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-24T03:09:53Z",
-      "pushedAt": "2026-09-24T03:09:58Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 4,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": null,
-      "licenseUrl": null,
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "无 CI 记录",
-        "cls": "none",
-        "workflow": null,
-        "ref": null,
-        "ranAt": null,
-        "url": null,
-        "trend": []
-      },
-      "language": null,
-      "langColor": "#8b949e",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "38c01d3dd74dcaa5fa947083aa10de690ba53882",
-        "message": "chore: encrypted backup of DraftPeek release signing material (2026-09-24)",
-        "at": "2026-09-24T03:09:29Z",
-        "url": "https://github.com/ReSerendipity/DraftPeek-KeyBackup/commit/38c01d3dd74dcaa5fa947083aa10de690ba53882",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "无",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
-      "name": "Unfading-Wall",
-      "url": "https://github.com/ReSerendipity/Unfading-Wall",
-      "description": "黑板·上的话 — 教师节师生印象墙：学生手书的信贴上老师的黑板墙，零后端链接分享（Apache-2.0） | A backend-free Teachers Day message wall for students and teachers, shareable by link.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-08T12:56:48Z",
-      "pushedAt": "2026-09-23T04:50:36Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 2283,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Unfading-Wall/blob/main/LICENSE",
-      "releases": 1,
-      "latestRelease": {
-        "tag": "v1.0.0",
-        "name": "v1.0.0 黑板·上的话 · 师者印象墙",
-        "publishedAt": "2026-09-08T13:21:59Z",
-        "url": "https://github.com/ReSerendipity/Unfading-Wall/releases/tag/v1.0.0"
-      },
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "pages build and deployment",
-        "ref": "main",
-        "ranAt": "2026-09-29T10:15:04Z",
-        "url": "https://github.com/ReSerendipity/Unfading-Wall/actions/runs/36554388272",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-08T13:28:05Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-22T12:05:09Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-23T04:50:38Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T10:01:13Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T10:15:04Z"
-          }
-        ]
-      },
-      "language": "JavaScript",
-      "langColor": "#f1e05a",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "e836446e439ec0489541e0ae87dd07b732913e7e",
-        "message": "chore: 提交本地未提交改动（批量同步）",
-        "at": "2026-09-23T04:50:10Z",
-        "url": "https://github.com/ReSerendipity/Unfading-Wall/commit/e836446e439ec0489541e0ae87dd07b732913e7e",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": 0
-    },
-    {
-      "name": "Offer-Landing-Kit",
-      "url": "https://github.com/ReSerendipity/Offer-Landing-Kit",
-      "description": "到岗前作战包 · Offer→入职 衔接工具：离职交接清单 / 社保断档测算 / 试用期100天台账。纯前端单文件，数据不出本机。 | A privacy-first, local-only toolkit for the transition from job offer to onboarding.",
-      "visibility": "PUBLIC",
-      "isArchived": false,
-      "isFork": false,
-      "createdAt": "2026-09-21T11:26:15Z",
-      "pushedAt": "2026-09-23T04:49:58Z",
-      "stars": 0,
-      "forks": 0,
-      "size": 1281,
-      "openIssues": 0,
-      "openPRs": 0,
-      "branches": 1,
-      "branchNames": [
-        "main"
-      ],
-      "defaultBranch": "main",
-      "license": "Apache-2.0",
-      "licenseUrl": "https://github.com/ReSerendipity/Offer-Landing-Kit/blob/main/LICENSE",
-      "releases": 0,
-      "latestRelease": null,
-      "ci": {
-        "state": "通过",
-        "cls": "ok",
-        "workflow": "pages build and deployment",
-        "ref": "main",
-        "ranAt": "2026-09-29T10:14:58Z",
-        "url": "https://github.com/ReSerendipity/Offer-Landing-Kit/actions/runs/36554377821",
-        "trend": [
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-21T15:55:23Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-22T10:47:23Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-23T04:50:00Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T10:01:07Z"
-          },
-          {
-            "s": "completed",
-            "c": "success",
-            "at": "2026-09-29T10:14:58Z"
-          }
-        ]
-      },
-      "language": "TypeScript",
-      "langColor": "#3178c6",
-      "traffic": null,
-      "lastCommit": {
-        "sha": "c238ba47378ff60081a47277526e1636c2ab582a",
-        "message": "chore: 提交本地未提交改动（批量同步）",
-        "at": "2026-09-23T04:49:32Z",
-        "url": "https://github.com/ReSerendipity/Offer-Landing-Kit/commit/c238ba47378ff60081a47277526e1636c2ab582a",
-        "files": [],
-        "fileCount": 0
-      },
-      "cli": {
-        "state": "脚本集",
-        "detail": null,
-        "src": "remote"
-      },
-      "local": null,
-      "starWeek": null
-    },
-    {
       "name": "Hugging-Face",
       "url": "https://github.com/ReSerendipity/Hugging-Face",
       "description": "Hugging Face 模型批量下载与台账管理工具链 | Tools for batch downloading and tracking Hugging Face models.",
@@ -2896,7 +3084,7 @@
         "src": "local"
       },
       "local": null,
-      "starWeek": null
+      "starWeek": 0
     },
     {
       "name": "Bilibili-Follow-Manager",
@@ -2947,19 +3135,19 @@
         "src": "local"
       },
       "local": null,
-      "starWeek": null
+      "starWeek": 0
     }
   ],
   "scanInfo": {
     "mode": "incremental",
-    "total": 36,
+    "total": 39,
     "deepScanned": 14,
-    "reused": 22,
+    "reused": 25,
     "full": false,
-    "durationMs": 33230
+    "durationMs": 15810
   },
   "localScan": {
-    "scannedAt": "2026-10-04T06:40:26.622Z",
+    "scannedAt": "2026-10-09T11:31:31.020Z",
     "roots": [
       "C:\\Users\\Doro",
       "C:\\Users\\Doro\\Desktop",
@@ -2967,48 +3155,11 @@
       "C:\\Users\\Doro\\Downloads"
     ],
     "depth": 4,
-    "count": 15,
+    "count": 12,
     "repos": [
       {
-        "path": "C:\\Users\\Doro\\agent-knowledge",
-        "name": "agent-knowledge",
-        "remoteUrl": "https://github.com/ReSerendipity/agent-knowledge.git",
-        "remotes": [
-          {
-            "name": "origin",
-            "url": "https://github.com/ReSerendipity/agent-knowledge.git"
-          }
-        ],
-        "github": {
-          "owner": "ReSerendipity",
-          "repo": "agent-knowledge",
-          "host": "github.com",
-          "isGitHub": true
-        },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "40a8795",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main"
-        ],
-        "lastCommitAt": "2026-10-04T08:16:13+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "bare": false,
-        "error": null,
-        "matched": true,
-        "matchType": "owner/repo",
-        "matchedRepo": "agent-knowledge"
-      },
-      {
-        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-实验与改造工具箱",
-        "name": "ComfyUI-实验与改造工具箱",
+        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-Experiment-Toolbox",
+        "name": "ComfyUI-Experiment-Toolbox",
         "remoteUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox.git",
         "remotes": [
           {
@@ -3024,7 +3175,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "dea7278",
+        "head": "0758304",
         "localBranches": [
           "main"
         ],
@@ -3033,7 +3184,7 @@
           "origin/main",
           "origin/reserendipity-github-release-support"
         ],
-        "lastCommitAt": "2026-10-04T12:57:52+08:00",
+        "lastCommitAt": "2026-10-07T22:58:54+08:00",
         "dirty": false,
         "dirtyCount": 0,
         "ahead": 0,
@@ -3062,7 +3213,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "eb25732",
+        "head": "2f55f41",
         "localBranches": [
           "main"
         ],
@@ -3071,9 +3222,9 @@
           "origin/main",
           "origin/reserendipity-repo-scan-releases"
         ],
-        "lastCommitAt": "2026-10-04T12:32:06+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
+        "lastCommitAt": "2026-10-07T22:59:00+08:00",
+        "dirty": true,
+        "dirtyCount": 2,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3100,7 +3251,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "aecbc3a",
+        "head": "46d70c5",
         "localBranches": [
           "main"
         ],
@@ -3108,7 +3259,7 @@
           "origin",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T12:32:41+08:00",
+        "lastCommitAt": "2026-10-07T22:59:05+08:00",
         "dirty": false,
         "dirtyCount": 0,
         "ahead": 0,
@@ -3137,7 +3288,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "cd95e01",
+        "head": "6a62b15",
         "localBranches": [
           "main"
         ],
@@ -3145,7 +3296,7 @@
           "origin",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-03T16:12:13+08:00",
+        "lastCommitAt": "2026-10-07T22:59:09+08:00",
         "dirty": false,
         "dirtyCount": 0,
         "ahead": 0,
@@ -3155,45 +3306,6 @@
         "matched": true,
         "matchType": "owner/repo",
         "matchedRepo": "Nekogal-DL"
-      },
-      {
-        "path": "C:\\Users\\Doro\\Desktop\\TODO\\Free-Model-Probe",
-        "name": "Free-Model-Probe",
-        "remoteUrl": "https://github.com/ReSerendipity/Free-Model-Probe.git",
-        "remotes": [
-          {
-            "name": "origin",
-            "url": "https://github.com/ReSerendipity/Free-Model-Probe.git"
-          }
-        ],
-        "github": {
-          "owner": "ReSerendipity",
-          "repo": "Free-Model-Probe",
-          "host": "github.com",
-          "isGitHub": true
-        },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "45290e6",
-        "localBranches": [
-          "main"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/dependabot/github_actions/actions/checkout-7",
-          "origin/dependabot/github_actions/actions/setup-python-7",
-          "origin/main"
-        ],
-        "lastCommitAt": "2026-09-30T22:44:39+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "bare": false,
-        "error": null,
-        "matched": true,
-        "matchType": "owner/repo",
-        "matchedRepo": "Free-Model-Probe"
       },
       {
         "path": "C:\\Users\\Doro\\DraftPeek",
@@ -3213,7 +3325,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "73a52f1",
+        "head": "15cd978",
         "localBranches": [
           "main"
         ],
@@ -3227,14 +3339,14 @@
           "origin/dependabot/gradle/org.junit.vintage-junit-vintage-engine-6.1.3",
           "origin/dependabot/gradle/paparazzi-2.0.0-alpha04",
           "origin/dependabot/npm_and_yarn/minor-and-patch-6791b5ace6",
-          "origin/dependabot/npm_and_yarn/multi-b04dc22ff7",
           "origin/dependabot/pip/server/minor-and-patch-c29cde29e7",
+          "origin/docs/skill-md-ingest",
           "origin/gh-pages",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T11:44:28+08:00",
+        "lastCommitAt": "2026-10-09T19:07:41+08:00",
         "dirty": true,
-        "dirtyCount": 6,
+        "dirtyCount": 21,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3265,19 +3377,17 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "9289635",
+        "head": "ded608c",
         "localBranches": [
-          "main",
-          "reserendipity-github-release-support"
+          "main"
         ],
         "remoteBranches": [
           "origin",
           "origin/main",
-          "origin/reserendipity-github-release-support",
           "upstream",
           "upstream/main"
         ],
-        "lastCommitAt": "2026-10-04T11:03:11+08:00",
+        "lastCommitAt": "2026-10-07T22:59:13+08:00",
         "dirty": true,
         "dirtyCount": 1,
         "ahead": 0,
@@ -3304,11 +3414,11 @@
           "host": "github.com",
           "isGitHub": true
         },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "cc15a96",
+        "branch": "feat/db-rating-column",
+        "upstream": "origin/feat/db-rating-column",
+        "head": "57e281d",
         "localBranches": [
-          "feat/agent-p0-remaining",
+          "feat/db-rating-column",
           "main"
         ],
         "remoteBranches": [
@@ -3319,11 +3429,14 @@
           "origin/dependabot/pip/test-tooling-f431531bb4",
           "origin/dependabot/pip/wcwidth-0.9.1",
           "origin/dependabot/pip/web-stack-d9ebf55d68",
+          "origin/docs/skill-md-ingest",
+          "origin/feat/db-rating-column",
+          "origin/feat/mlops-landing-20261006",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T10:54:03+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
+        "lastCommitAt": "2026-10-06T20:09:11+08:00",
+        "dirty": true,
+        "dirtyCount": 12,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3350,19 +3463,18 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "d93404f",
+        "head": "29320e3",
         "localBranches": [
-          "main",
-          "reserendipity-ghcr-container-publishing"
+          "main"
         ],
         "remoteBranches": [
           "origin",
           "origin/chore/git-policy-20260918",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T12:14:47+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
+        "lastCommitAt": "2026-10-07T23:02:46+08:00",
+        "dirty": true,
+        "dirtyCount": 4,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3370,45 +3482,6 @@
         "matched": true,
         "matchType": "owner/repo",
         "matchedRepo": "MiniMax-H3-Lite"
-      },
-      {
-        "path": "C:\\Users\\Doro\\ReSerendipity",
-        "name": "ReSerendipity",
-        "remoteUrl": "https://github.com/ReSerendipity/ReSerendipity.git",
-        "remotes": [
-          {
-            "name": "origin",
-            "url": "https://github.com/ReSerendipity/ReSerendipity.git"
-          }
-        ],
-        "github": {
-          "owner": "ReSerendipity",
-          "repo": "ReSerendipity",
-          "host": "github.com",
-          "isGitHub": true
-        },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "61cc395",
-        "localBranches": [
-          "main",
-          "reserendipity-canonical-readme-ci-improvements"
-        ],
-        "remoteBranches": [
-          "origin",
-          "origin/main",
-          "origin/reserendipity-canonical-readme-ci-improvements"
-        ],
-        "lastCommitAt": "2026-10-01T00:30:45+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
-        "bare": false,
-        "error": null,
-        "matched": true,
-        "matchType": "owner/repo",
-        "matchedRepo": "ReSerendipity"
       },
       {
         "path": "C:\\Users\\Doro\\SeedVR2-lite",
@@ -3426,10 +3499,11 @@
           "host": "github.com",
           "isGitHub": true
         },
-        "branch": "main",
-        "upstream": "origin/main",
-        "head": "9291dbf",
+        "branch": "feat/minimal-train-loop",
+        "upstream": null,
+        "head": "60cba9e",
         "localBranches": [
+          "feat/minimal-train-loop",
           "main"
         ],
         "remoteBranches": [
@@ -3439,17 +3513,19 @@
           "origin/dependabot/github_actions/codecov/codecov-action-7.1.1",
           "origin/dependabot/github_actions/docker/metadata-action-6.2.0",
           "origin/dependabot/github_actions/docker/setup-buildx-action-4.4.1",
-          "origin/dependabot/npm_and_yarn/desktop/minor-and-patch-9d03d0a864",
-          "origin/dependabot/npm_and_yarn/tests/minor-and-patch-ffb689ce8f",
+          "origin/dependabot/npm_and_yarn/tests/source-map-js-1.2.2",
+          "origin/dependabot/npm_and_yarn/website/multi-8ead12a37c",
+          "origin/dependabot/npm_and_yarn/website/source-map-js-1.2.2",
           "origin/dependabot/pip/huggingface-hub-2.0.0",
           "origin/dependabot/pip/minor-and-patch-3f4a731190",
+          "origin/dependabot/uv/urllib3-2.8.0",
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T12:56:18+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
-        "behind": 0,
+        "lastCommitAt": "2026-10-07T22:32:05+08:00",
+        "dirty": true,
+        "dirtyCount": 2,
+        "ahead": null,
+        "behind": null,
         "bare": false,
         "error": null,
         "matched": true,
@@ -3474,7 +3550,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "fab0164",
+        "head": "0e0b55c",
         "localBranches": [
           "ci/perf-xvfb",
           "main"
@@ -3490,15 +3566,19 @@
           "origin/dependabot/npm_and_yarn/jsdom-30.1.1",
           "origin/dependabot/npm_and_yarn/lucide-react-1.48.0",
           "origin/dependabot/npm_and_yarn/minor-and-patch-4e7a1ce1a4",
+          "origin/dependabot/npm_and_yarn/modelcontextprotocol/sdk-1.31.0",
+          "origin/dependabot/npm_and_yarn/proxy-addr-2.0.8",
+          "origin/dependabot/npm_and_yarn/sharp-0.35.5",
+          "origin/dependabot/npm_and_yarn/source-map-js-1.2.2",
           "origin/dependabot/npm_and_yarn/vitejs/plugin-react-5.2.0",
           "origin/gh-pages",
           "origin/main",
           "origin/sync/main-local-20260918"
         ],
-        "lastCommitAt": "2026-10-04T13:02:08+08:00",
-        "dirty": true,
-        "dirtyCount": 6,
-        "ahead": 12,
+        "lastCommitAt": "2026-10-08T13:41:40+08:00",
+        "dirty": false,
+        "dirtyCount": 0,
+        "ahead": 0,
         "behind": 0,
         "bare": false,
         "error": null,
@@ -3524,7 +3604,7 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "a31e678",
+        "head": "bbaa50e",
         "localBranches": [
           "main"
         ],
@@ -3588,9 +3668,9 @@
           "pr-73",
           "rp-main"
         ],
-        "lastCommitAt": "2026-10-02T13:19:35+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
+        "lastCommitAt": "2026-10-07T22:29:36+08:00",
+        "dirty": true,
+        "dirtyCount": 11,
         "ahead": 0,
         "behind": 0,
         "bare": false,
@@ -3617,17 +3697,17 @@
         },
         "branch": "main",
         "upstream": "origin/main",
-        "head": "21c40c3",
+        "head": "31234a8",
         "localBranches": [
           "main"
         ],
         "remoteBranches": [
           "origin/main"
         ],
-        "lastCommitAt": "2026-10-04T12:43:58+08:00",
-        "dirty": false,
-        "dirtyCount": 0,
-        "ahead": 0,
+        "lastCommitAt": "2026-10-09T18:25:35+08:00",
+        "dirty": true,
+        "dirtyCount": 3,
+        "ahead": 41,
         "behind": 0,
         "bare": false,
         "error": null,
@@ -3636,9 +3716,9 @@
         "matchedRepo": "Unity"
       }
     ],
-    "filteredOut": 9,
-    "matched": 15,
+    "filteredOut": 3,
+    "matched": 12,
     "localOnlyCount": 0
   },
-  "starWeekRef": "2026-09-27T01:43:51.917Z"
+  "starWeekRef": "2026-09-30T04:08:33.816Z"
 }
