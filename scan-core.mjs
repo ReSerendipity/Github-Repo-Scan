@@ -988,12 +988,17 @@ export function appendAudit(entry, filePath = AUDIT_FILE) {
   } catch { return null; }
 }
 
-/* 快照入库前脱敏：localScan.repos[].path 与 rows[].local.path 相对化为 ~/…（非主目录路径原样保留） */
+/* 快照入库前脱敏：localScan.repos[].path、localScan.roots 与 rows[].local.path 相对化为 ~/…（非主目录路径原样保留） */
 function maskSnapshotPaths(data) {
   if (!data) return;
   const ls = data.localScan;
-  if (ls && Array.isArray(ls.repos)) {
-    for (const r of ls.repos) if (r && r.path) r.path = maskLocalPath(r.path);
+  if (ls) {
+    if (Array.isArray(ls.repos)) {
+      for (const r of ls.repos) if (r && r.path) r.path = maskLocalPath(r.path);
+    }
+    if (Array.isArray(ls.roots)) {
+      for (let i = 0; i < ls.roots.length; i++) ls.roots[i] = maskLocalPath(ls.roots[i]);
+    }
   }
   if (Array.isArray(data.rows)) {
     for (const r of data.rows) {
