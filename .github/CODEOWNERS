@@ -1,8 +1,23 @@
 # ============================================================
 # CODEOWNERS — Github-Repo-Scan 分区变更负责人
 # 当前仓库仅一名协作者，所有路径默认指派 @ReSerendipity；
-# 新增协作者或接入机器人时按区收窄授权，而不必重新摸索敏感路径。
+# 分区按「核心逻辑 / 安全门禁 / 测试 / 文档」划分：新增协作者或接入机器人时，
+# 只需在对应区行内收窄授权，而不必重新摸索敏感路径。
+# 触及核心模块的跨模块改动须先开 PR 评审后合并（见 AGENTS.md「变更评审约定」）。
 # ============================================================
 
 # 全局默认 —— 所有 PR 默认指派
 * @ReSerendipity
+
+# 核心逻辑与取数（改动影响面最大）
+scan-core.mjs render-dashboard.mjs shared.mjs modelscope.mjs scan.mjs server.mjs @ReSerendipity
+assets/ @ReSerendipity
+
+# 安全与工程门禁（密钥防泄露、CI、钩子）
+hooks/ .github/ .pre-commit-config.yaml gitleaks.toml .gitignore .gitattributes @ReSerendipity
+
+# 测试
+tests/ @ReSerendipity
+
+# 文档（对内/对外分层）
+DOCS/ AGENTS.md readme.md LICENSE @ReSerendipity

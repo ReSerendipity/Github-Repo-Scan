@@ -13,3 +13,8 @@
 2. `AGENTS.md`
 3. `README.md` / `docs/**`
 4. `DOCS/adr/`（架构决策记录）与 `DOCS/tech-debt.md`（技术债登记）
+
+## 变更评审约定
+
+- 触及核心模块（`scan-core.mjs` / `render-dashboard.mjs` / `shared.mjs` / `assets/`）或门禁配置（`.github/`、`hooks/`、`gitleaks.toml`、`.pre-commit-config.yaml`）的跨模块改动，**先开 PR 评审后合并**；单人阶段至少保留变更说明（提交信息注明对应评估/落地建议）。
+- 分区负责人见 `.github/CODEOWNERS`：新增协作者或接入机器人时按区收窄授权。
