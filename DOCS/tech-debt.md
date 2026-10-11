@@ -11,6 +11,8 @@
 | 4 | Node 版本基线不一致 | readme「前置：Node 18+」vs `.github/workflows/release.yml` `node-version: 22` | 本地运行与 CI 验证版本漂移风险 | 极低（文档声明） | P2 | 已统一声明：Node ≥18 运行、CI 以 22 验证（readme「依赖说明」段） | 已偿清 |
 | 5 | 生成物快照入库产生大 diff | `scan-data.json` 单次扫描 ±3112 行、`dashboard.html`、`all_repos_report.txt`、`scan_run*.txt` 均被跟踪 | 提交噪声、评审负担；与代码变更耦合 | 中（迁移成本） | P2 | 策略已定：保留回溯价值、接受大 diff、快照与代码分批提交（见 `DOCS/adr/0003-snapshot-committing.md`） | 已偿清（策略落地） |
 | 6 | 文档声明与实际文件漂移（历史遗留，已修复） | `AGENTS.md` 曾引用不存在的 `CHANGELOG.md` | AI/协作者按声明找不到文档 | 极低 | P2 | 已随 P1-1 修正：改为指向 `DOCS/adr/` 与 `DOCS/tech-debt.md` | 已偿清 |
+| 7 | 外部 CLI（gh/git/python）版本未锁定 | `scan-core.mjs` / `modelscope.mjs` 直接调用 PATH 上的 gh/git/python，无最低版本约束（ADR-0002 声明「gh 未锁定版本」登记于本表，2026-10-11 补登） | 行为随本机工具版本漂移，升级破坏难追溯 | 低（文档声明最低版本） | P2 | 下轮评估时定义 gh/git/python 最低版本并写入 readme「依赖说明」；当前保持现状 | 待偿清 |
+| 8 | CI actions 曾用浮动 tag 引用 | 原 `gitleaks.yml`/`release.yml` 用 `actions/checkout@v4` 等 tag | tag 可被上游改写，供应链风险 | 低（一次替换） | P2 | 已固定为 tag 抓取时的 commit SHA（2026-10-11，见三个 workflow 内注释） | 已偿清 |
 
 ---
 

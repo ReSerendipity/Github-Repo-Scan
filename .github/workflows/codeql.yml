@@ -1,0 +1,37 @@
+name: CodeQL
+
+# R2 P2-6（对应评估报告待改进项 6）：补上 gitleaks 之外的静态安全分析。
+# 零依赖项目无需构建步骤；CodeQL 对 JavaScript 直接做 AST 分析（含 .mjs ES Module）。
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # 每周日 01:30 UTC，与 gitleaks 全量历史扫描错峰
+    - cron: '30 1 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # 上传 SARIF 结果所需（CodeQL 官方要求）
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codeql:
+    name: CodeQL (JavaScript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # actions/checkout@v4 tag 指向 SHA（2026-10-11 抓取）
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@cf12ceefebab2c867b9c35d7f907e059681d37ab
+        with:
+          languages: javascript
+          queries: security-extended
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@cf12ceefebab2c867b9c35d7f907e059681d37ab

@@ -88,6 +88,7 @@
 - **排序、筛选、明暗切换**：纯浏览器 JS，零依赖，离线可用。
 - **扫描取数**：需要一个带凭据的 GitHub API 通道。当前实现复用本机 **gh CLI**（登录态存在系统 keyring，token 不落盘）；本地服务只是把 gh 的调用包成页面可点的按钮。
 - 不想装 gh：设 `GH_TOKEN`（或 `GITHUB_TOKEN`）环境变量即自动走 **token 直连兜底通道**（REST+GraphQL，gh 缺失或未登录时自动生效）；token 走环境变量、不落盘。
+- 直连通道默认严格校验 TLS 证书；仅当本机代理拦截证书链导致校验失败时，设 `SCAN_INSECURE_TLS=1` 显式放宽（仅对 api.github.com 放宽重试一次，对应评估报告 R2 P2-4）。
 
 前置：Node ≥ 18（CI 在 Node 22 上验证，见 `.github/workflows/release.yml`）；扫描功能需要 gh CLI 已登录（`gh auth login`）。
 
@@ -104,11 +105,12 @@
 - `scan-data.json` —— 最近一次扫描的数据快照（schema 3，含本地对照结果）
 - `scan-config.json` —— 本地扫描配置（可选；含本机路径不入库，面板「本地目录…」会写入）
 - `scan-data-history.json` —— Star 周增长趋势的本地快照历史（按天累积，纯本地运行时数据，已加入 `.gitignore` 不入库）
+- `scan-audit.jsonl` —— 扫描审计日志（结构化 JSONL，本机留痕不入库；设 `SCAN_AUDIT_KEY` 可启用逐行 HMAC 防篡改，对应评估报告 R2 P2-8）
 - `tests/core.test.mjs` —— 冒烟测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
 - `DOCS/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
 
-**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `DOCS/adr/0003-snapshot-committing.md`。
+**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `DOCS/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
 
 ## 测试
 
