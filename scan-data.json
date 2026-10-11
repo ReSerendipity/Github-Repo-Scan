@@ -112,7 +112,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\DraftPeek",
+        "path": "~/DraftPeek",
         "branch": "main",
         "upstream": "origin/main",
         "head": "15cd978",
@@ -1445,7 +1445,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\SpiritPal",
+        "path": "~/SpiritPal",
         "branch": "main",
         "upstream": "origin/main",
         "head": "0e0b55c",
@@ -1565,7 +1565,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\TTS-MultiModel",
+        "path": "~/TTS-MultiModel",
         "branch": "main",
         "upstream": "origin/main",
         "head": "bbaa50e",
@@ -1730,7 +1730,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Image-MultiModel",
+        "path": "~/Image-MultiModel",
         "branch": "feat/db-rating-column",
         "upstream": "origin/feat/db-rating-column",
         "head": "57e281d",
@@ -1843,7 +1843,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\SeedVR2-lite",
+        "path": "~/SeedVR2-lite",
         "branch": "feat/minimal-train-loop",
         "upstream": null,
         "head": "60cba9e",
@@ -1957,7 +1957,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
+        "path": "~/MiniMax-H3-lite",
         "branch": "main",
         "upstream": "origin/main",
         "head": "29320e3",
@@ -2053,7 +2053,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\GalgameShell",
+        "path": "~/GalgameShell",
         "branch": "main",
         "upstream": "origin/main",
         "head": "ded608c",
@@ -2150,7 +2150,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
+        "path": "~/Desktop/Nekogal-DL",
         "branch": "main",
         "upstream": "origin/main",
         "head": "6a62b15",
@@ -2240,7 +2240,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
+        "path": "~/Desktop/image-scrapers",
         "branch": "main",
         "upstream": "origin/main",
         "head": "46d70c5",
@@ -2336,7 +2336,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
+        "path": "~/Desktop/Github-Repo-Scan",
         "branch": "main",
         "upstream": "origin/main",
         "head": "2f55f41",
@@ -2433,7 +2433,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-Experiment-Toolbox",
+        "path": "~/Desktop/ComfyUI-Experiment-Toolbox",
         "branch": "main",
         "upstream": "origin/main",
         "head": "0758304",
@@ -2815,7 +2815,7 @@
         "src": "local"
       },
       "local": {
-        "path": "C:\\Users\\Doro\\Unity",
+        "path": "~/Unity",
         "branch": "main",
         "upstream": "origin/main",
         "head": "31234a8",
@@ -3149,16 +3149,16 @@
   "localScan": {
     "scannedAt": "2026-10-09T11:31:31.020Z",
     "roots": [
-      "C:\\Users\\Doro",
-      "C:\\Users\\Doro\\Desktop",
-      "C:\\Users\\Doro\\Documents",
-      "C:\\Users\\Doro\\Downloads"
+      "~",
+      "~/Desktop",
+      "~/Documents",
+      "~/Downloads"
     ],
     "depth": 4,
     "count": 12,
     "repos": [
       {
-        "path": "C:\\Users\\Doro\\Desktop\\ComfyUI-Experiment-Toolbox",
+        "path": "~/Desktop/ComfyUI-Experiment-Toolbox",
         "name": "ComfyUI-Experiment-Toolbox",
         "remoteUrl": "https://github.com/ReSerendipity/ComfyUI-Experiment-Toolbox.git",
         "remotes": [
@@ -3196,7 +3196,7 @@
         "matchedRepo": "ComfyUI-Experiment-Toolbox"
       },
       {
-        "path": "C:\\Users\\Doro\\Desktop\\Github-Repo-Scan",
+        "path": "~/Desktop/Github-Repo-Scan",
         "name": "Github-Repo-Scan",
         "remoteUrl": "https://github.com/ReSerendipity/Github-Repo-Scan.git",
         "remotes": [
@@ -3234,7 +3234,7 @@
         "matchedRepo": "Github-Repo-Scan"
       },
       {
-        "path": "C:\\Users\\Doro\\Desktop\\image-scrapers",
+        "path": "~/Desktop/image-scrapers",
         "name": "image-scrapers",
         "remoteUrl": "https://github.com/ReSerendipity/Image-Scrapers.git",
         "remotes": [
@@ -3271,7 +3271,7 @@
         "matchedRepo": "Image-Scrapers"
       },
       {
-        "path": "C:\\Users\\Doro\\Desktop\\Nekogal-DL",
+        "path": "~/Desktop/Nekogal-DL",
         "name": "Nekogal-DL",
         "remoteUrl": "https://github.com/ReSerendipity/Nekogal-DL.git",
         "remotes": [
@@ -3308,7 +3308,7 @@
         "matchedRepo": "Nekogal-DL"
       },
       {
-        "path": "C:\\Users\\Doro\\DraftPeek",
+        "path": "~/DraftPeek",
         "name": "DraftPeek",
         "remoteUrl": "https://github.com/ReSerendipity/DraftPeek.git",
         "remotes": [
@@ -3356,7 +3356,7 @@
         "matchedRepo": "DraftPeek"
       },
       {
-        "path": "C:\\Users\\Doro\\GalgameShell",
+        "path": "~/GalgameShell",
         "name": "GalgameShell",
         "remoteUrl": "https://github.com/ReSerendipity/GalgameShell.git",
         "remotes": [
@@ -3399,7 +3399,7 @@
         "matchedRepo": "GalgameShell"
       },
       {
-        "path": "C:\\Users\\Doro\\Image-MultiModel",
+        "path": "~/Image-MultiModel",
         "name": "Image-MultiModel",
         "remoteUrl": "https://github.com/ReSerendipity/Image-MultiModel.git",
         "remotes": [
@@ -3446,7 +3446,7 @@
         "matchedRepo": "Image-MultiModel"
       },
       {
-        "path": "C:\\Users\\Doro\\MiniMax-H3-lite",
+        "path": "~/MiniMax-H3-lite",
         "name": "MiniMax-H3-lite",
         "remoteUrl": "https://github.com/ReSerendipity/MiniMax-H3-Lite.git",
         "remotes": [
@@ -3484,7 +3484,7 @@
         "matchedRepo": "MiniMax-H3-Lite"
       },
       {
-        "path": "C:\\Users\\Doro\\SeedVR2-lite",
+        "path": "~/SeedVR2-lite",
         "name": "SeedVR2-lite",
         "remoteUrl": "https://github.com/ReSerendipity/SeedVR2-Lite.git",
         "remotes": [
@@ -3533,7 +3533,7 @@
         "matchedRepo": "SeedVR2-Lite"
       },
       {
-        "path": "C:\\Users\\Doro\\SpiritPal",
+        "path": "~/SpiritPal",
         "name": "SpiritPal",
         "remoteUrl": "https://github.com/ReSerendipity/SpiritPal.git",
         "remotes": [
@@ -3587,7 +3587,7 @@
         "matchedRepo": "SpiritPal"
       },
       {
-        "path": "C:\\Users\\Doro\\TTS-MultiModel",
+        "path": "~/TTS-MultiModel",
         "name": "TTS-MultiModel",
         "remoteUrl": "https://github.com/ReSerendipity/TTS-MultiModel.git",
         "remotes": [
@@ -3680,7 +3680,7 @@
         "matchedRepo": "TTS-MultiModel"
       },
       {
-        "path": "C:\\Users\\Doro\\Unity",
+        "path": "~/Unity",
         "name": "Unity",
         "remoteUrl": "https://github.com/ReSerendipity/Unity.git",
         "remotes": [
