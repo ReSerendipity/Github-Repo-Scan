@@ -5,10 +5,10 @@ import { execFileSync, execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots } from "./shared.mjs";
+import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
 import { renderDashboard } from "./render-dashboard.mjs";
 
-export { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, renderDashboard };
+export { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath, renderDashboard };
 const execFileP = promisify(execFile);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // 置 SCAN_WITH_TRAFFIC=1 时额外拉取每仓近 14 天流量（views/clones，各 +1 次 REST 调用，需 push 权限）
@@ -927,8 +927,26 @@ export function writeOutputs(data, withHistory = false) {
     try { recordStarHistory(data); } catch { /* 历史写入失败不影响主产物 */ }
     try { computeStarWeek(data); } catch { /* 同上 */ }
   }
-  writeFileSync(join(HERE, "scan-data.json"), JSON.stringify(data, null, 2), "utf8");
-  writeFileSync(join(HERE, "dashboard.html"), renderDashboard(data), "utf8");
+  // 快照脱敏（R2 P1-3）：深拷贝后对 local.path 相对化为 ~/… 再入库；
+  // 内存中的 data 保留真实路径，供 console 汇总与 /api/scan 返回使用。
+  const out = JSON.parse(JSON.stringify(data));
+  maskSnapshotPaths(out);
+  writeFileSync(join(HERE, "scan-data.json"), JSON.stringify(out, null, 2), "utf8");
+  writeFileSync(join(HERE, "dashboard.html"), renderDashboard(out), "utf8");
+}
+
+/* 快照入库前脱敏：localScan.repos[].path 与 rows[].local.path 相对化为 ~/…（非主目录路径原样保留） */
+function maskSnapshotPaths(data) {
+  if (!data) return;
+  const ls = data.localScan;
+  if (ls && Array.isArray(ls.repos)) {
+    for (const r of ls.repos) if (r && r.path) r.path = maskLocalPath(r.path);
+  }
+  if (Array.isArray(data.rows)) {
+    for (const r of data.rows) {
+      if (r && r.local && r.local.path) r.local.path = maskLocalPath(r.local.path);
+    }
+  }
 }
 
 export function printSummary(data) {

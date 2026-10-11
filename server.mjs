@@ -22,7 +22,7 @@ import http from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
-import { collectData, collectLocal, mergeLocalSnapshot, writeOutputs, readLocalConfig, writeLocalConfig, HERE } from "./scan-core.mjs";
+import { collectData, collectLocal, mergeLocalSnapshot, writeOutputs, readLocalConfig, writeLocalConfig, HERE, defaultLocalRoots, unmaskLocalPath } from "./scan-core.mjs";
 import { getMoli } from "./modelscope.mjs";
 
 const args = process.argv.slice(2);
@@ -64,14 +64,24 @@ function decideStartupScan() {
   return false;
 }
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+/* CORS 条件回显（R2 P1-1）：仅对本地来源（127.0.0.1/localhost 任意端口）回显 Origin；
+ * 无 Origin 的来源（同源页面 GET、curl 等本地客户端）放行；非本地来源不返回任何 CORS 头，
+ * 浏览器将按 SOP 拦截响应体，跨站页面无法读取本机数据。 */
+function corsHeadersFor(req) {
+  const origin = req.headers.origin || "";
+  if (!origin) return { "Access-Control-Allow-Origin": "*" };
+  if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
+    return {
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+  }
+  return {};
+}
 
-function sendJson(res, code, obj) {
-  res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", ...CORS });
+function sendJson(req, res, code, obj) {
+  res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", ...corsHeadersFor(req) });
   res.end(JSON.stringify(obj));
 }
 
@@ -89,6 +99,19 @@ function sameOriginOk(req) {
   return !origin || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin);
 }
 
+/* 路径白名单（R2 P1-2）：/api/open 只允许打开本地扫描根目录内的路径（含 scan-config 配置根与默认根） */
+function withinScanRoots(p) {
+  const norm = (x) => String(x).replace(/[\\/]+$/, "").toLowerCase();
+  const cfgRoots = (readLocalConfig().localScanRoots || []).filter((x) => typeof x === "string");
+  const rawRoots = cfgRoots.length ? cfgRoots : defaultLocalRoots().map((r) => (typeof r === "string" ? r : (r && r.path) || ""));
+  const pp = norm(p);
+  return rawRoots.some((r) => {
+    if (!r) return false;
+    const rn = norm(r);
+    return pp === rn || pp.startsWith(rn + "\\") || pp.startsWith(rn + "/");
+  });
+}
+
 function bootstrapPage() {
   return '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>GitHub 仓库总览</title>' +
     '<body style="font-family:sans-serif;background:#0d1117;color:#c9d1d9;display:grid;place-items:center;height:100vh">' +
@@ -99,10 +122,11 @@ function bootstrapPage() {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://127.0.0.1");
-  if (req.method === "OPTIONS") { res.writeHead(204, CORS); return res.end(); }
+  if (req.method === "OPTIONS") { res.writeHead(204, corsHeadersFor(req)); return res.end(); }
   try {
     if (url.pathname === "/api/status" && req.method === "GET") {
-      return sendJson(res, 200, { ok: true, busy, status: scanState });
+      if (!sameOriginOk(req)) return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
+      return sendJson(req, res, 200, { ok: true, busy, status: scanState });
     }
     if ((url.pathname === "/" || url.pathname === "/dashboard.html") && req.method === "GET") {
       const f = join(HERE, "dashboard.html");
@@ -110,19 +134,20 @@ const server = http.createServer(async (req, res) => {
       return res.end(existsSync(f) ? readFileSync(f) : bootstrapPage());
     }
     if (url.pathname === "/api/data" && req.method === "GET") {
+      if (!sameOriginOk(req)) return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
       try {
         const data = JSON.parse(readFileSync(join(HERE, "scan-data.json"), "utf8"));
-        return sendJson(res, 200, { ok: true, data });
+        return sendJson(req, res, 200, { ok: true, data });
       } catch {
-        return sendJson(res, 404, { ok: false, error: "尚无扫描数据：点击页面里的「重新扫描」，或运行 node scan.mjs" });
+        return sendJson(req, res, 404, { ok: false, error: "尚无扫描数据：点击页面里的「重新扫描」，或运行 node scan.mjs" });
       }
     }
     if (url.pathname === "/api/scan" && req.method === "POST") {
       // 阻断跨站触发：浏览器发起的跨域 POST 必带 Origin 头；curl 等本地客户端无 Origin，放行
       if (!sameOriginOk(req)) {
-        return sendJson(res, 403, { ok: false, error: "拒绝跨域来源的扫描请求：" + (req.headers.origin || "") });
+        return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的扫描请求：" + (req.headers.origin || "") });
       }
-      if (busy) return sendJson(res, 409, { ok: false, error: "已有一次扫描正在进行，请稍候" });
+      if (busy) return sendJson(req, res, 409, { ok: false, error: "已有一次扫描正在进行，请稍候" });
       busy = true;
       const body = await readBody(req);
       const full = !!(body && body.full);
@@ -133,11 +158,11 @@ const server = http.createServer(async (req, res) => {
         writeOutputs(data, true);
         const si = data.scanInfo || {};
         console.log("✔ 扫描完成：" + data.totals.repos + " 个仓库 · " + (si.mode || "?") + " · " + ((si.durationMs || 0) / 1000).toFixed(1) + "s · CI 通过 " + data.totals.ciOk + "/" + data.totals.ciDone + " · dashboard.html / scan-data.json 已更新");
-        return sendJson(res, 200, { ok: true, data });
+        return sendJson(req, res, 200, { ok: true, data });
       } catch (e) {
         console.error("✖ 扫描失败：" + (e?.message ?? e));
         scanState.error = String(e?.message ?? e);
-        return sendJson(res, 500, { ok: false, error: String(e?.message ?? e) });
+        return sendJson(req, res, 500, { ok: false, error: String(e?.message ?? e) });
       } finally {
         busy = false;
         scanState.scanning = false;
@@ -146,9 +171,9 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api/scan-local" && req.method === "POST") {
       if (!sameOriginOk(req)) {
-        return sendJson(res, 403, { ok: false, error: "拒绝跨域来源的扫描请求：" + (req.headers.origin || "") });
+        return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的扫描请求：" + (req.headers.origin || "") });
       }
-      if (busy) return sendJson(res, 409, { ok: false, error: "已有一次扫描正在进行，请稍候" });
+      if (busy) return sendJson(req, res, 409, { ok: false, error: "已有一次扫描正在进行，请稍候" });
       busy = true;
       const body = await readBody(req);
       scanState = { scanning: true, startedAt: new Date().toISOString(), finishedAt: null, mode: "local", source: "local", error: null };
@@ -161,11 +186,11 @@ const server = http.createServer(async (req, res) => {
         const data = mergeLocalSnapshot(localScan);
         writeOutputs(data);
         console.log("✔ 本地扫描完成：" + localScan.count + " 个本地仓库 · 对照上 " + localScan.matched + " 个 · dashboard.html / scan-data.json 已更新");
-        return sendJson(res, 200, { ok: true, data });
+        return sendJson(req, res, 200, { ok: true, data });
       } catch (e) {
         console.error("✖ 本地扫描失败：" + (e?.message ?? e));
         scanState.error = String(e?.message ?? e);
-        return sendJson(res, 500, { ok: false, error: String(e?.message ?? e) });
+        return sendJson(req, res, 500, { ok: false, error: String(e?.message ?? e) });
       } finally {
         busy = false;
         scanState.scanning = false;
@@ -174,20 +199,26 @@ const server = http.createServer(async (req, res) => {
     }
     if (url.pathname === "/api/open" && req.method === "GET") {
       // 点击本地仓库路径 → 在系统文件管理器中打开对应文件夹
-      const p = decodeURIComponent(url.searchParams.get("path") || "");
+      // R2 P1-2：同源校验 + 路径白名单（仅本地扫描根目录内；~ 前缀由服务端展开）
+      if (!sameOriginOk(req)) return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
+      const raw = decodeURIComponent(url.searchParams.get("path") || "");
+      const p = unmaskLocalPath(raw);
       if (!p || !existsSync(p)) {
-        return sendJson(res, 404, { ok: false, error: "本地路径不存在：" + p });
+        return sendJson(req, res, 404, { ok: false, error: "本地路径不存在：" + raw });
+      }
+      if (!withinScanRoots(p)) {
+        return sendJson(req, res, 403, { ok: false, error: "路径不在本地扫描范围内：" + raw });
       }
       const isWin = process.platform === "win32";
       const opener = spawn(isWin ? "explorer" : "xdg-open", [p], { stdio: "ignore", detached: true });
       opener.unref();
-      return sendJson(res, 200, { ok: true, path: p });
+      return sendJson(req, res, 200, { ok: true, path: p });
     }
     if (url.pathname === "/api/config") {
       if (!sameOriginOk(req)) {
-        return sendJson(res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
+        return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
       }
-      if (req.method === "GET") return sendJson(res, 200, { ok: true, config: readLocalConfig() });
+      if (req.method === "GET") return sendJson(req, res, 200, { ok: true, config: readLocalConfig() });
       if (req.method === "POST") {
         const body = await readBody(req);
         const patchCfg = {};
@@ -214,25 +245,25 @@ const server = http.createServer(async (req, res) => {
           else merged[k] = v;
         }
         writeLocalConfig(merged);
-        return sendJson(res, 200, { ok: true, config: merged });
+        return sendJson(req, res, 200, { ok: true, config: merged });
       }
     }
     if (url.pathname === "/api/modelscope" && req.method === "GET") {
       // 魔搭社区魔粒余额：独立小组件，与 GitHub 扫描解耦；同源校验同上
       if (!sameOriginOk(req)) {
-        return sendJson(res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
+        return sendJson(req, res, 403, { ok: false, error: "拒绝跨域来源的请求：" + (req.headers.origin || "") });
       }
       const refresh = url.searchParams.get("refresh") === "1";
       try {
         const m = await getMoli({ refresh });
-        return sendJson(res, 200, { ok: m.ok, moli: m });
+        return sendJson(req, res, 200, { ok: m.ok, moli: m });
       } catch (e) {
-        return sendJson(res, 500, { ok: false, error: String(e?.message ?? e) });
+        return sendJson(req, res, 500, { ok: false, error: String(e?.message ?? e) });
       }
     }
-    return sendJson(res, 404, { ok: false, error: "Not Found" });
+    return sendJson(req, res, 404, { ok: false, error: "Not Found" });
   } catch (e) {
-    return sendJson(res, 500, { ok: false, error: String(e?.message ?? e) });
+    return sendJson(req, res, 500, { ok: false, error: String(e?.message ?? e) });
   }
 });
 

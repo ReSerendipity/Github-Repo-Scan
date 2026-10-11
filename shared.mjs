@@ -41,3 +41,30 @@ export function defaultLocalRoots() {
   }
   return roots;
 }
+
+/* ---------------- 本地路径脱敏（快照入库前相对化，避免本机绝对路径进入公开仓库） ----------------
+ * maskLocalPath：C:\Users\me\Repo → ~/Repo（仅当路径位于用户主目录下；其余路径原样保留）
+ * unmaskLocalPath：~/Repo → C:\Users\me\Repo（服务端 /api/open 展开用）
+ * 往返保证：unmask(mask(p)) === p（对主目录下路径成立）；非主目录路径不受影响。
+ * 对应评估报告 R2 P1-3：scan-data.json / dashboard.html 快照内 local.path 均经此脱敏后再入库。 */
+export function maskLocalPath(p) {
+  if (!p) return p;
+  const s = String(p);
+  const home = homedir();
+  const norm = (x) => x.replace(/[\\/]+$/, "").toLowerCase();
+  const h = norm(home);
+  const n = norm(s);
+  if (n === h) return "~";
+  if (n.startsWith(h + "\\") || n.startsWith(h + "/")) {
+    return "~/" + s.slice(home.length).replace(/^[\\/]+/, "").replace(/\\/g, "/");
+  }
+  return s;
+}
+
+export function unmaskLocalPath(p) {
+  if (!p) return p;
+  const s = String(p);
+  if (s === "~") return homedir();
+  if (s.startsWith("~/") || s.startsWith("~\\")) return join(homedir(), s.slice(2));
+  return s;
+}
