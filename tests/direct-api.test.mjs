@@ -8,11 +8,14 @@ import { directApi, applyJq } from "../scan-core.mjs";
 
 const REAL_HTTPS = globalThis.https;
 const REAL_TOKEN = process.env.GH_TOKEN;
+const REAL_TLS = process.env.SCAN_INSECURE_TLS;
 
 // 桩化传输层：按 scripts 顺序驱动每次 https.request 的结果，
 // 记录 Agent 的 rejectUnauthorized（严格/放宽）与每次请求的 url/options。
-function stubHttps(t, scripts) {
+function stubHttps(t, scripts, opts = {}) {
   process.env.GH_TOKEN = "test-token";
+  if (opts.insecureTls) process.env.SCAN_INSECURE_TLS = "1";
+  else delete process.env.SCAN_INSECURE_TLS;
   const state = { agents: [], requests: [] };
   globalThis.https = {
     Agent: function (opts) {
@@ -46,6 +49,8 @@ function stubHttps(t, scripts) {
     globalThis.https = REAL_HTTPS;
     if (REAL_TOKEN === undefined) delete process.env.GH_TOKEN;
     else process.env.GH_TOKEN = REAL_TOKEN;
+    if (REAL_TLS === undefined) delete process.env.SCAN_INSECURE_TLS;
+    else process.env.SCAN_INSECURE_TLS = REAL_TLS;
   });
   return state;
 }
@@ -81,25 +86,32 @@ test("directApi：REST 返回 >=300 立即放弃并抛出带状态码错误（�
 
 /* ---------------- TLS 严格→放宽的分支选择与重试次数 ---------------- */
 
-test("directApi：严格 TLS 遇证书类错误时放宽校验恰好重试一次", async (t) => {
+test("directApi：设 SCAN_INSECURE_TLS=1 时严格 TLS 遇证书类错误才放宽校验重试一次", async (t) => {
   const s = stubHttps(t, [
     { kind: "error", message: "unable to verify the first certificate" },
     { status: 200, text: JSON.stringify({ login: "octo" }) },
-  ]);
+  ], { insecureTls: true });
   const out = await directApi(["api", "user", "--jq", ".login"]);
   assert.equal(out, "octo", "放宽校验后应拿到最终结果");
   assert.equal(s.requests.length, 2, "证书错误应触发恰好一次重试");
   assert.deepEqual(s.agents, [true, false], "先严格、后放宽（rejectUnauthorized: true → false）");
 });
 
-test("directApi：放宽校验后仍失败则放弃，不再无限重试", async (t) => {
+test("directApi：放宽校验后仍失败则放弃，不再无限重试（显式开关下）", async (t) => {
   const s = stubHttps(t, [
     { kind: "error", message: "self signed certificate" },
     { kind: "error", message: "self signed certificate" },
-  ]);
+  ], { insecureTls: true });
   await assert.rejects(() => directApi(["api", "user"]), /self signed certificate/);
   assert.equal(s.requests.length, 2, "放宽只重试一次，第二次失败即放弃");
   assert.deepEqual(s.agents, [true, false]);
+});
+
+test("directApi：未设 SCAN_INSECURE_TLS 时证书类错误直接放弃，不放宽 TLS（R2 P2-4 默认严格）", async (t) => {
+  const s = stubHttps(t, [{ kind: "error", message: "unable to verify the first certificate" }]);
+  await assert.rejects(() => directApi(["api", "user"]), /unable to verify the first certificate/);
+  assert.equal(s.requests.length, 1, "默认严格模式不应触发证书放宽重试");
+  assert.deepEqual(s.agents, [true], "仅构造严格校验的 Agent");
 });
 
 test("directApi：非证书类网络错误直接放弃，不放宽 TLS", async (t) => {

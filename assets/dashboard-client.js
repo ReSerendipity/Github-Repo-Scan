@@ -675,6 +675,8 @@
   /* ---------- 导出 CSV（当前筛选/排序结果） ---------- */
   function csvCell(v) {
     var s = v == null ? '' : String(v);
+    // 公式注入防护（CWE-1236，R2 P2-5）：以 = + - @ 或制表符开头的字段加 ' 前缀，Excel 按文本打开不执行公式
+    if (/^[=+\-@\t]/.test(s)) s = "'" + s;
     if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
     return s;
   }

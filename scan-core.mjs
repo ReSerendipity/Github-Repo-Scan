@@ -4,6 +4,7 @@
 import { execFileSync, execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { createHmac } from "node:crypto";
 import { join } from "node:path";
 import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
 import { renderDashboard } from "./render-dashboard.mjs";
@@ -85,8 +86,10 @@ export async function directApi(args) {
   return typeof data === "string" ? data : JSON.stringify(data);
 }
 
-/* 直连传输层:严格 TLS 优先;本机代理会拦截证书链(gh CLI 走系统信任库所以无感,Node 不认),
-   此时仅对 api.github.com 放宽校验重试一次。 */
+/* 直连传输层:严格 TLS 优先;本机代理会拦截证书链(gh CLI 走系统信任库所以无感,Node 不认)。
+   默认严格校验;仅当显式设置 SCAN_INSECURE_TLS=1（本机代理场景）时,才对 api.github.com 放宽校验重试一次。
+   对应评估报告 R2 P2-4:把无条件降级改为显式开关,避免默认路径静默关闭证书校验。
+   运行时读取环境变量（而非模块加载时冻结），保证开关在测试/运行中可动态生效。 */
 function httpsJson(url, { method = "GET", headers, body } = {}) {
   return new Promise((resolve, reject) => {
     const attempt = (strict) => {
@@ -98,8 +101,8 @@ function httpsJson(url, { method = "GET", headers, body } = {}) {
       });
       req.on("error", (e) => {
         const msg = String((e && e.message) || e) + " " + String((e && e.cause && e.cause.message) || "");
-        if (strict && /UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO|CERT/i.test(msg)) {
-          console.log("  ? TLS 证书校验失败（本机代理所致），放宽校验重试一次（仅限 api.github.com）");
+        if (strict && process.env.SCAN_INSECURE_TLS === "1" && /UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO|CERT/i.test(msg)) {
+          console.log("  ? TLS 证书校验失败（本机代理所致），已按 SCAN_INSECURE_TLS=1 放宽校验重试一次（仅限 api.github.com）");
           return attempt(false);
         }
         reject(e);
@@ -922,7 +925,7 @@ export function computeStarWeek(data, hist) {
   return data;
 }
 
-export function writeOutputs(data, withHistory = false) {
+export function writeOutputs(data, withHistory = false, source = null) {
   if (withHistory) {
     try { recordStarHistory(data); } catch { /* 历史写入失败不影响主产物 */ }
     try { computeStarWeek(data); } catch { /* 同上 */ }
@@ -933,6 +936,56 @@ export function writeOutputs(data, withHistory = false) {
   maskSnapshotPaths(out);
   writeFileSync(join(HERE, "scan-data.json"), JSON.stringify(out, null, 2), "utf8");
   writeFileSync(join(HERE, "dashboard.html"), renderDashboard(out), "utf8");
+  // 审计留痕（R2 P2-8）：扫描完成事件写入 scan-audit.jsonl（不入库），设 SCAN_AUDIT_KEY 时逐行 HMAC 防篡改
+  try {
+    const si = data.scanInfo || {};
+    appendAudit({
+      ts: new Date().toISOString(),
+      event: "scan_completed",
+      owner: data.owner || null,
+      mode: si.mode || null,
+      source: source || null,
+      repos: (data.totals && data.totals.repos) ?? null,
+      durationMs: si.durationMs ?? null,
+    });
+  } catch { /* 审计写入失败不影响主产物 */ }
+}
+
+/* ---------------- 审计日志（R2 P2-8）：结构化 JSONL，不入库 ----------------
+ * 行格式：{ ts, event, owner, mode, source, repos, durationMs, hmac? }
+ * 防篡改：设 SCAN_AUDIT_KEY 环境变量时逐行附 HMAC-SHA256（对 hmac 之前的行体签名）；
+ * 未设置时 hmac 为 null（明文模式，首次写入提示）。轮转：超过 AUDIT_MAX 行保留最近 AUDIT_MAX 行。
+ * filePath 可注入便于测试，默认写入项目目录 scan-audit.jsonl（.gitignore 已排除）。 */
+const AUDIT_FILE = join(HERE, "scan-audit.jsonl");
+const AUDIT_MAX = 2000;
+
+export function loadAuditRows(filePath = AUDIT_FILE) {
+  try {
+    const text = readFileSync(filePath, "utf8");
+    const rows = text.split("\n").map((l) => l.trim()).filter(Boolean)
+      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+    return rows;
+  } catch { return []; }
+}
+
+let auditKeyWarned = false;
+export function appendAudit(entry, filePath = AUDIT_FILE) {
+  try {
+    const line = JSON.stringify(entry);
+    let hmac = null;
+    const key = process.env.SCAN_AUDIT_KEY;
+    if (key) hmac = createHmac("sha256", key).update(line).digest("hex");
+    else if (!auditKeyWarned) {
+      auditKeyWarned = true;
+      console.log("? 审计日志为明文模式（未设 SCAN_AUDIT_KEY）：设置该环境变量可启用逐行 HMAC 防篡改");
+    }
+    const row = { ...entry, hmac };
+    const rows = loadAuditRows(filePath);
+    rows.push(row);
+    const kept = rows.slice(-AUDIT_MAX);
+    writeFileSync(filePath, kept.map((r) => JSON.stringify(r)).join("\n") + (kept.length ? "\n" : ""), "utf8");
+    return row;
+  } catch { return null; }
 }
 
 /* 快照入库前脱敏：localScan.repos[].path 与 rows[].local.path 相对化为 ~/…（非主目录路径原样保留） */

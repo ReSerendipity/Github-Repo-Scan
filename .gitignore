@@ -16,6 +16,9 @@ scan-data-history.json
 # 魔搭社区魔粒余额本地缓存（运行时数据，不入库）
 modelscope-moli.json
 
+# 扫描审计日志（R2 P2-8：结构化 JSONL，本机留痕不入库）
+scan-audit.jsonl
+
 # 本地编辑备份（不入库，保留在磁盘）
 *.bak-*
 

@@ -1,9 +1,10 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled } from "../scan-core.mjs";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scan-core.mjs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
+import { createHmac } from "node:crypto";
+import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 import vm from "node:vm";
 
@@ -526,4 +527,46 @@ test("renderDashboard:CLI 列已接入表头与脚本", () => {
   assert.ok(html.includes('data-key="cli"'), "应有 CLI 表头");
   assert.ok(html.includes("cliCell"), "脚本应含 cliCell 渲染函数");
   assert.ok(html.includes("cli.sortKey") || html.includes("cli:"), "脚本应含 CLI 排序接入");
+});
+
+/* ---------------- R2 P1-3 / P2-8 落地用例：路径脱敏与审计日志 ---------------- */
+
+test("maskLocalPath/unmaskLocalPath：主目录下相对化且往返一致（R2 P1-3）", () => {
+  const home = homedir();
+  const a = join(home, "Repo");
+  assert.equal(maskLocalPath(a), "~/Repo", "主目录直属仓库应相对化为 ~/Repo");
+  assert.equal(unmaskLocalPath(maskLocalPath(a)), a, "往返应还原为原路径");
+  const b = join(home, "Desktop", "x");
+  assert.equal(unmaskLocalPath(maskLocalPath(b)), b, "子目录往返一致");
+  const c = "D:\\Other\\repo";
+  assert.equal(maskLocalPath(c), c, "非主目录路径原样保留");
+  assert.equal(unmaskLocalPath(c), c, "非主目录路径不受影响");
+  assert.equal(maskLocalPath(null), null);
+  assert.equal(maskLocalPath(""), "");
+  assert.equal(unmaskLocalPath("~"), home, "~ 展开为主目录");
+});
+
+test("appendAudit：JSONL 写入、明文/HMAC 模式与可重算校验（R2 P2-8，临时文件）", (t) => {
+  const tmp = join(tmpdir(), "audit-r2-test-" + process.pid + "-" + Date.now() + ".jsonl");
+  t.after(() => { try { unlinkSync(tmp); } catch { /* 清理临时文件 */ } });
+  const entry1 = { ts: "t1", event: "scan_completed", owner: "me", mode: "full", source: "cli", repos: 3, durationMs: 100 };
+  const row1 = appendAudit(entry1, tmp);
+  assert.equal(row1.hmac, null, "未设 SCAN_AUDIT_KEY 时为明文模式（hmac=null）");
+  const rows1 = loadAuditRows(tmp);
+  assert.equal(rows1.length, 1, "应写入 1 行");
+  assert.equal(rows1[0].event, "scan_completed");
+  assert.equal(rows1[0].source, "cli");
+  process.env.SCAN_AUDIT_KEY = "test-key";
+  try {
+    const entry2 = { ts: "t2", event: "scan_completed", owner: "me", mode: "auto", source: "startup", repos: 5, durationMs: 200 };
+    const row2 = appendAudit(entry2, tmp);
+    assert.ok(row2.hmac && /^[0-9a-f]{64}$/.test(row2.hmac), "HMAC 应为 64 位 hex");
+    const rows2 = loadAuditRows(tmp);
+    assert.equal(rows2.length, 2, "应追加为第 2 行");
+    const expect = createHmac("sha256", "test-key").update(JSON.stringify(entry2)).digest("hex");
+    assert.equal(rows2[1].hmac, expect, "HMAC 可按行体重算验证（防篡改）");
+    assert.equal(rows2[0].hmac, null, "首行仍是明文模式写入时的记录");
+  } finally {
+    delete process.env.SCAN_AUDIT_KEY;
+  }
 });

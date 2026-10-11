@@ -79,12 +79,20 @@ function cookieHeaderFromPickle() {
 }
 
 // 解析凭据：Bearer 优先，session cookie 兜底
+let cfgTokenWarned = false;
 export async function resolveAuth() {
   const envTok = process.env.MODELSCOPE_API_TOKEN || process.env.MODELSCOPE_TOKEN;
   if (envTok && String(envTok).trim()) return { type: "bearer", token: String(envTok).trim() };
   let cfgTok = null;
   try { const cfg = readLocalConfig(); cfgTok = cfg && cfg.modelscopeToken; } catch { /* 无配置 */ }
-  if (cfgTok && String(cfgTok).trim()) return { type: "bearer", token: String(cfgTok).trim() };
+  if (cfgTok && String(cfgTok).trim()) {
+    // R2 P2-10：scan-config.json 为明文存储，提示改用环境变量降低泄露面（只提示一次，不刷屏）
+    if (!cfgTokenWarned) {
+      cfgTokenWarned = true;
+      console.log("? modelscopeToken 来自 scan-config.json（明文存储）：建议改用 MODELSCOPE_API_TOKEN 环境变量，或对该文件收紧访问权限");
+    }
+    return { type: "bearer", token: String(cfgTok).trim() };
+  }
   const cookie = await cookieHeaderFromPickle();
   if (cookie) return { type: "cookie", cookie };
   return { type: "none" };

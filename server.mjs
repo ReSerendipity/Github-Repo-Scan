@@ -155,7 +155,7 @@ const server = http.createServer(async (req, res) => {
       console.log("▸ [" + new Date().toLocaleTimeString("zh-CN", { hour12: false }) + "] 收到扫描请求" + (body.owner ? "（账号 " + body.owner + "）" : "") + (full ? "（强制全量）" : "") + "…");
       try {
         const data = await collectData(body.owner, { full });
-        writeOutputs(data, true);
+        writeOutputs(data, true, "manual");
         const si = data.scanInfo || {};
         console.log("✔ 扫描完成：" + data.totals.repos + " 个仓库 · " + (si.mode || "?") + " · " + ((si.durationMs || 0) / 1000).toFixed(1) + "s · CI 通过 " + data.totals.ciOk + "/" + data.totals.ciDone + " · dashboard.html / scan-data.json 已更新");
         return sendJson(req, res, 200, { ok: true, data });
@@ -184,7 +184,7 @@ const server = http.createServer(async (req, res) => {
         const roots = Array.isArray(body.paths) && body.paths.length ? body.paths : undefined;
         const localScan = await collectLocal({ roots, depth });
         const data = mergeLocalSnapshot(localScan);
-        writeOutputs(data);
+        writeOutputs(data, false, "local");
         console.log("✔ 本地扫描完成：" + localScan.count + " 个本地仓库 · 对照上 " + localScan.matched + " 个 · dashboard.html / scan-data.json 已更新");
         return sendJson(req, res, 200, { ok: true, data });
       } catch (e) {
@@ -302,7 +302,7 @@ function runBackgroundScan(source) {
   console.log("▸ 后台自动扫描开始（" + source + "，模式 " + _scanMode + "；无变更会秒级返回）…");
   collectData()
     .then((d) => {
-      writeOutputs(d, true);
+      writeOutputs(d, true, "startup");
       const si = d.scanInfo || {};
       console.log("✔ 后台扫描完成：" + d.totals.repos + " 个仓库 · " + (si.mode || "?") + " · " + ((si.durationMs || 0) / 1000).toFixed(1) + "s · dashboard.html / scan-data.json 已更新");
     })

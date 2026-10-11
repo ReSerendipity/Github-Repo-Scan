@@ -37,11 +37,11 @@ try {
   } else if (localOnly) {
     const localScan = await collectLocal({ roots: localPaths, depth });
     const data = mergeLocalSnapshot(localScan);
-    writeOutputs(data);
+    writeOutputs(data, false, "cli-local");
     printSummary(data);
   } else {
     const data = await collectData(ownerArg, { local: !remoteOnly, roots: localPaths, depth });
-    writeOutputs(data, true);
+    writeOutputs(data, true, "cli");
     printSummary(data);
   }
 } catch (err) {
