@@ -96,13 +96,19 @@
 - `启动面板.bat` —— 双击启动（UTF-8 无 BOM + `chcp 65001`，中文提示不乱码）
 - `dashboard.html` —— 交互面板（每次扫描重新生成，数据内嵌，双击即开）
 - `server.mjs` —— 本地服务（页面一键扫描的后端；仅监听 127.0.0.1，带跨站来源校验）
-- `scan-core.mjs` —— 扫描与渲染共享核心（并行 / 分页 / 重试 / 增量）
+- `scan-core.mjs` —— 扫描/取数/合并共享核心（并行 / 分页 / 重试 / 增量）
+- `render-dashboard.mjs` —— 面板渲染模块（生成单页 HTML，注入 `assets/dashboard-client.js`）
+- `shared.mjs` —— 路径 / 本地配置 / 大小格式化共享基础
+- `assets/dashboard-client.js` —— 面板客户端应用（纯浏览器 JS，独立资产，渲染时注入）
 - `scan.mjs` —— 命令行扫描入口（`--render-only` 仅重渲染）
 - `scan-data.json` —— 最近一次扫描的数据快照（schema 3，含本地对照结果）
 - `scan-config.json` —— 本地扫描配置（可选；含本机路径不入库，面板「本地目录…」会写入）
 - `scan-data-history.json` —— Star 周增长趋势的本地快照历史（按天累积，纯本地运行时数据，已加入 `.gitignore` 不入库）
 - `tests/core.test.mjs` —— 冒烟测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
+- `DOCS/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
+
+**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `DOCS/adr/0003-snapshot-committing.md`。
 
 ## 测试
 
