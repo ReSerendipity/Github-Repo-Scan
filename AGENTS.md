@@ -18,3 +18,9 @@
 
 - 触及核心模块（`scan-core.mjs` / `render-dashboard.mjs` / `shared.mjs` / `assets/`）或门禁配置（`.github/`、`hooks/`、`gitleaks.toml`、`.pre-commit-config.yaml`）的跨模块改动，**先开 PR 评审后合并**；单人阶段至少保留变更说明（提交信息注明对应评估/落地建议）。
 - 分区负责人见 `.github/CODEOWNERS`：新增协作者或接入机器人时按区收窄授权。
+
+## 推送与分支保护约定
+
+- 本仓为**单协作者项目**：`main` 直推（admin 豁免）为既定工作流；远端分支保护的 PR-only 规则仅作**防误操作与 bot 兜底**，不要求日常变更走 PR。
+- 后续 agent 直推时若收到远端 "Changes must be made through a pull request" 类提示：按本约定属预期行为（admin 直推会被标记 bypass 并放行），**不视为受阻**，照常继续；除非提示为凭据缺失、权限拒绝等真实失败。
+- 若未来新增协作者或接入 bot，再按「变更评审约定」启用 PR 流程并收紧分支保护。
