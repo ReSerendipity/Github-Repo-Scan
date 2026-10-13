@@ -20,4 +20,4 @@ hooks/ .github/ .pre-commit-config.yaml gitleaks.toml .gitignore .gitattributes 
 tests/ @ReSerendipity
 
 # 文档（对内/对外分层）
-docs/ AGENTS.md readme.md LICENSE @ReSerendipity
+docs/ AGENTS.md README.md LICENSE @ReSerendipity
