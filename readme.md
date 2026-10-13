@@ -107,6 +107,7 @@
 - `scan-data-history.json` —— Star 周增长趋势的本地快照历史（按天累积，纯本地运行时数据，已加入 `.gitignore` 不入库）
 - `scan-audit.jsonl` —— 扫描审计日志（结构化 JSONL，本机留痕不入库；设 `SCAN_AUDIT_KEY` 可启用逐行 HMAC 防篡改，对应评估报告 R2 P2-8）
 - `tests/core.test.mjs` —— 冒烟测试
+- `tests/direct-api.test.mjs` —— 直连 API 测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
 - `DOCS/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
 
