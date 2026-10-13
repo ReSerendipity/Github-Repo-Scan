@@ -109,9 +109,9 @@
 - `tests/core.test.mjs` —— 冒烟测试
 - `tests/direct-api.test.mjs` —— 直连 API 测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
-- `DOCS/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
+- `docs/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
 
-**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `DOCS/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
+**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `docs/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
 
 ## 测试
 
@@ -121,7 +121,7 @@ node --test
 
 覆盖：CI 状态映射、相对时间分档、时区格式化、`fmtSize` 大小换算、`computeStarWeek` 周增长（含历史不足 / 无历史）、`repoUnchanged` 变更探测、面板渲染（内嵌数据转义 / XSS 注入防护 / 默认主题 / 配额展示）。
 
-> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明已移至 [`DOCS/README.internal.md`](DOCS/README.internal.md)。
+> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明已移至 [`docs/README.internal.md`](docs/README.internal.md)。
 
 ## 数据口径
 
