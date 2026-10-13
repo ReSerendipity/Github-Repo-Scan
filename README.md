@@ -2,7 +2,7 @@
 
 把 GitHub 账号名下所有仓库的情况（CI / 许可证 / Release / Issue / 分支 / Star·Fork / 健康分 / 可选 14 天流量）拉成本地总览面板，每个单元格都带 GitHub 跳转链接。
 
-远程仓库：<https://github.com/ReSerendipity/github-repo-scan>
+远程仓库：<https://github.com/ReSerendipity/Github-Repo-Scan>
 
 ## 三种用法
 
