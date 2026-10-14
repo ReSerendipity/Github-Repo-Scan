@@ -1,0 +1,32 @@
+name: Tests
+
+# push / PR 到 main 时自动运行冒烟测试（与 hooks/pre-push 同一命令：node --test）。
+# 测试全部离线运行（桩化传输层，不触网、不依赖真实凭据），无需 secrets。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node-test:
+    name: node --test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # actions/checkout@v4 tag 指向 SHA（2026-10-11 抓取，R2 P2-7 供应链锁定）
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      # actions/setup-node@v4 tag 指向 SHA（2026-10-11 抓取，R2 P2-7 供应链锁定）
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - run: node --test
