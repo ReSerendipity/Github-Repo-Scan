@@ -14,7 +14,7 @@
 | BM-5 | **展示与评分口径双份**（scan-core 的服务端副本 ↔ `assets/dashboard-client.js` 的浏览器副本）。改 `scoreOf`/`gradeOf`/`relTime`/`fullTime`/`esc` 必须两处同步并更新断言 | 只改一处的提交；`tests/core.test.mjs` 未同步 |
 | BM-6 | 每个域的外部依赖（Node 内置模块、`gh`/`git` 可执行文件、环境变量开关）必须**显式 import / 显式读取**，禁止依赖运行环境里恰好存在的全局 | 出现未 import 的模块标识符；新增 `SCAN_*` 环境变量未进第 4 节 |
 
-> BM-6 不是纸面规则：D1 的 `httpsJson` 就用了未 `import` 的 `https`，真实运行时报 `ReferenceError: https is not defined`，而 `tests/direct-api.test.mjs` 因为注入 `globalThis.https` 桩而全绿（详见债项 #10）。
+> BM-6 曾被实测违反：D1 的 `httpsJson` 用了未 `import` 的 `https`，而 `globalThis.https` 桩使测试全绿（债#10）。2026-10-15 已偿清：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入（桩不再遮蔽模块绑定）；`tests/direct-api.test.mjs` 末尾有静态守卫防回归。
 
 ## 2. 职责域清单
 
@@ -136,7 +136,7 @@
 
 | 域 | Node 内置 | 外部可执行文件 | 环境变量（运行时读取，非加载冻结） |
 |---|---|---|---|
-| D1 | `node:child_process` `node:util` `node:https`（**当前缺失 import**） | `gh` | `GH_TOKEN` / `GITHUB_TOKEN`、`SCAN_INSECURE_TLS` |
+| D1 | `node:child_process` `node:util` `node:https`（已显式 import，债#10 已偿清） | `gh` | `GH_TOKEN` / `GITHUB_TOKEN`、`SCAN_INSECURE_TLS` |
 | D2 | `node:child_process` `node:fs` `node:path` | `git`（须在 PATH） | — |
 | D3 | `node:fs` `node:path` | — | — |
 | D5 | `node:fs` | `gh` | `SCAN_WITH_TRAFFIC` |
@@ -148,7 +148,7 @@
 
 | 项 | 事实 | 债项 |
 |---|---|---|
-| D1 `httpsJson` 依赖未声明的全局 `https` | 以真实文件形态调用 `directApi` 抛 `ReferenceError: https is not defined`；`node --test` 全绿是因为 `tests/direct-api.test.mjs` 注入了 `globalThis.https` 桩 | `docs/tech-debt.md` #10 |
+| D1 `httpsJson` 依赖未声明的全局 `https` | **已偿清（2026-10-15）**：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入；`tests/direct-api.test.mjs` 尾部静态守卫防 import 缺失回归 | 已闭合（原 `docs/tech-debt.md` #10） |
 | D1 `gh`、D4 `esc` 零调用方 | 全仓（含两个测试文件）无任何调用点 | #9 |
 | D4 `relTime`/`fullTime`/`scoreOf`/`gradeOf` 双份实现 | 面板实际执行 `assets/dashboard-client.js` 的副本；`tests/core.test.mjs` 断言的是 scan-core 的副本 → 测试护的不是发布路径 | #11 |
 
@@ -159,7 +159,7 @@
 3. **查双份**：动 D4 口径 → 同步 `assets/dashboard-client.js`（BM-5）。
 4. **最小验证**（按域，全部为本地无网命令）：
    - 语法：`node --check scan-core.mjs`
-   - D1 直连支路：`node --test tests/direct-api.test.mjs`；⚠ 该用例桩化了 `globalThis.https`，**不能证明真实运行时传输层可用**，改动 D1 传输后需再以文件形态实调一次（`node -e` 里 `globalThis.https` 恰好存在，测不出缺失，必须写成 `.mjs` 文件跑）。
+   - D1 直连支路：`node --test tests/direct-api.test.mjs`（2026-10-15 起桩经 `setHttpsTransport` 显式注入——测试文件本身即文件形态实调 `directApi`，且尾部 BM-6 静态守卫防 import 缺失回归；注入桩遮蔽模块绑定的旧失效模式已消除）。
    - D2/D3/D4/D6/D7/D8/D9：`node --test tests/core.test.mjs`
    - 收口：`node --test` 全绿（`hooks/pre-push` 与 `hooks/post-edit-validate.mjs` 的 `CORE_FILES` 定义与此一致）
    - 端到端（会重写 `scan-data.json` / `dashboard.html`，按 `docs/adr/0003-snapshot-committing.md` 分批提交）：`node scan.mjs --local-only`

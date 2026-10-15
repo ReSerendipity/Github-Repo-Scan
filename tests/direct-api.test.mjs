@@ -1,12 +1,12 @@
 // 无凭据直连兜底通道（directApi + httpsJson）的决策与重试聚焦测试
-// 通过注入桩化的 globalThis.https 传输层，覆盖状态码判定、TLS 严格→放宽的分支选择、
+// 通过 setHttpsTransport 显式注入桩化传输层（债#10 偿清后 globalThis 桩遮蔽不再生效），覆盖状态码判定、TLS 严格→放宽的分支选择、
 // 恰好一次重试与一次放弃，并断言传输调用次数与最终结论；不触网、不依赖真实凭据。
 // 风格沿用 tests/core.test.mjs：node:test + node:assert/strict，直连导入 scan-core 的导出。
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { directApi, applyJq } from "../scan-core.mjs";
+import { readFile } from "node:fs/promises";
+import { directApi, applyJq, setHttpsTransport } from "../scan-core.mjs";
 
-const REAL_HTTPS = globalThis.https;
 const REAL_TOKEN = process.env.GH_TOKEN;
 const REAL_TLS = process.env.SCAN_INSECURE_TLS;
 
@@ -17,7 +17,7 @@ function stubHttps(t, scripts, opts = {}) {
   if (opts.insecureTls) process.env.SCAN_INSECURE_TLS = "1";
   else delete process.env.SCAN_INSECURE_TLS;
   const state = { agents: [], requests: [] };
-  globalThis.https = {
+  const restoreTransport = setHttpsTransport({
     Agent: function (opts) {
       state.agents.push(opts && opts.rejectUnauthorized);
     },
@@ -44,9 +44,9 @@ function stubHttps(t, scripts, opts = {}) {
       };
       return req;
     },
-  };
+  });
   t.after(() => {
-    globalThis.https = REAL_HTTPS;
+    restoreTransport();
     if (REAL_TOKEN === undefined) delete process.env.GH_TOKEN;
     else process.env.GH_TOKEN = REAL_TOKEN;
     if (REAL_TLS === undefined) delete process.env.SCAN_INSECURE_TLS;
@@ -152,4 +152,12 @@ test("applyJq：非点路径表达式抛错（补齐既有基础用例的边界�
   assert.equal(applyJq({ a: { b: 1 } }, ".a.b"), 1);
   assert.throws(() => applyJq({}, ".a | .b"), /兜底通道不支持该 --jq 表达式/);
   assert.throws(() => applyJq({}, "length"), /兜底通道不支持该 --jq 表达式/);
+});
+
+/* ---------------- BM-6 静态守卫（债#10 防回归，2026-10-15） ---------------- */
+
+test("BM-6 守卫：scan-core.mjs 必须显式 import node:https（防再次依赖全局恰好存在的 https）", async () => {
+  const src = await readFile(new URL("../scan-core.mjs", import.meta.url), "utf8");
+  assert.match(src, /import\s+https\s+from\s+["']node:https["']/,
+    "缺 import 时文件形态实调 directApi 将抛 ReferenceError: https is not defined（tech-debt #10）");
 });

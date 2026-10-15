@@ -4,6 +4,7 @@
 import { execFileSync, execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import https from "node:https";
 import { createHmac } from "node:crypto";
 import { join } from "node:path";
 import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
@@ -89,12 +90,20 @@ export async function directApi(args) {
 /* 直连传输层:严格 TLS 优先;本机代理会拦截证书链(gh CLI 走系统信任库所以无感,Node 不认)。
    默认严格校验;仅当显式设置 SCAN_INSECURE_TLS=1（本机代理场景）时,才对 api.github.com 放宽校验重试一次。
    对应评估报告 R2 P2-4:把无条件降级改为显式开关,避免默认路径静默关闭证书校验。
-   运行时读取环境变量（而非模块加载时冻结），保证开关在测试/运行中可动态生效。 */
+   运行时读取环境变量（而非模块加载时冻结），保证开关在测试/运行中可动态生效。
+   传输层可注入（tech-debt #10 偿清动作）：默认 node:https；测试经 setHttpsTransport 显式注入、
+   用例结束恢复——globalThis 桩遮蔽模块绑定的复发条件就此失效。 */
+let httpsOverride = null;
+export function setHttpsTransport(mod) {
+  httpsOverride = mod;
+  return () => { httpsOverride = null; };
+}
 function httpsJson(url, { method = "GET", headers, body } = {}) {
+  const transport = httpsOverride || https;
   return new Promise((resolve, reject) => {
     const attempt = (strict) => {
-      const agent = new https.Agent({ rejectUnauthorized: strict, keepAlive: false });
-      const req = https.request(url, { method, headers, agent, timeout: 25000 }, (res) => {
+      const agent = new transport.Agent({ rejectUnauthorized: strict, keepAlive: false });
+      const req = transport.request(url, { method, headers, agent, timeout: 25000 }, (res) => {
         let data = "";
         res.on("data", (c) => (data += c));
         res.on("end", () => resolve({ status: res.statusCode, text: data }));
