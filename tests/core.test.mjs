@@ -1,8 +1,8 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scan-core.mjs";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
+import { ciStateOf, relTime, esc, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scan-core.mjs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
 import { createHmac } from "node:crypto";
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
@@ -568,5 +568,58 @@ test("appendAudit：JSONL 写入、明文/HMAC 模式与可重算校验（R2 P2-
     assert.equal(rows2[0].hmac, null, "首行仍是明文模式写入时的记录");
   } finally {
     delete process.env.SCAN_AUDIT_KEY;
+  }
+});
+
+/* ---------------- 双份口径对拍（债#11：发布路径=客户端副本，2026-10-15 落地短期方案） ----------------
+ * scan-core.mjs（服务端副本，被单测守护）与 assets/dashboard-client.js（浏览器实际执行）各自持有一份
+ * esc/relTime/fullTime/scoreOf/gradeOf。本用例从客户端源码提取函数体进 vm 沙箱，与服务端副本对拍
+ * 同输入同输出；任何一侧口径漂移都会让门禁变红（tech-debt.md #11 的「单测护的不是发布路径」风险收口）。
+ * 输入集避开 Date.now() 档位边界，保证两端先后调用结果稳定。 */
+
+test("双份口径对拍：esc/relTime/fullTime/scoreOf/gradeOf 服务端副本 ≡ 客户端副本（债#11）", () => {
+  const clientSrc = readFileSync(new URL("../assets/dashboard-client.js", import.meta.url), "utf8");
+  const names = ["esc", "relTime", "fullTime", "scoreOf", "gradeOf"];
+  const extract = (name) => {
+    const i = clientSrc.indexOf("function " + name + "(");
+    assert.ok(i >= 0, "客户端函数缺失：" + name);
+    let depth = 0;
+    const open = clientSrc.indexOf("{", i);
+    for (let k = open; k < clientSrc.length; k++) {
+      if (clientSrc[k] === "{") depth++;
+      else if (clientSrc[k] === "}") { depth--; if (depth === 0) return clientSrc.slice(i, k + 1); }
+    }
+    throw new Error("括号配对失败：" + name);
+  };
+  const client = vm.runInNewContext(names.map(extract).join("\n") + "\n;({ esc, relTime, fullTime, scoreOf, gradeOf });");
+
+  const now = Date.now();
+  const iso = (days) => new Date(now - days * 86400000).toISOString();
+  for (const v of ['<b>&"', "", null, undefined, 0, false, "<script>alert(1)</script>"]) {
+    assert.equal(client.esc(v), esc(v), "esc 漂移：" + String(v));
+  }
+  for (const v of [null, "", iso(2 / 1440), iso(0.08), iso(2), iso(40), iso(400)]) {
+    assert.equal(client.relTime(v), relTime(v), "relTime 漂移：" + String(v));
+  }
+  for (const v of ["2026-09-21T00:00:00Z", null, ""]) {
+    assert.equal(client.fullTime(v), fullTime(v), "fullTime 漂移：" + String(v));
+  }
+  const rows = [
+    null,
+    { ci: { cls: "ok", trend: [{ c: "success" }, { c: "failure" }, { c: "success" }, { c: "timed_out" }, { c: "skipped" }] }, pushedAt: iso(10), openIssues: 3, releases: 2, latestRelease: { publishedAt: iso(30) }, isArchived: false },
+    { ci: { cls: "running" }, pushedAt: iso(100), openIssues: 0, releases: 0, isArchived: false },
+    { ci: { cls: "none" }, pushedAt: iso(400), openIssues: 50, releases: 0, isArchived: false },
+    { ci: { cls: "ok", trend: [] }, pushedAt: iso(5), openIssues: 1, releases: 1, latestRelease: { publishedAt: iso(100) }, isArchived: true },
+    { ci: { cls: "ok", trend: [{ c: "success" }] }, pushedAt: iso(1), openIssues: 2, releases: 1, latestRelease: { publishedAt: iso(400) }, isArchived: false },
+    { ci: null, pushedAt: null, openIssues: null, releases: null, isArchived: false },
+  ];
+  for (const r of rows) {
+    assert.equal(client.scoreOf(r), scoreOf(r), "scoreOf 漂移：" + JSON.stringify(r));
+  }
+  for (const s of [0, 49.9, 50, 69.9, 70, 84.9, 85, 100]) {
+    const c = client.gradeOf(s);
+    const sv = gradeOf(s);
+    assert.equal(c.g, sv.g, "gradeOf.g 漂移：" + s);
+    assert.equal(c.cls, sv.cls, "gradeOf.cls 漂移：" + s);
   }
 });
