@@ -29,4 +29,5 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
-      - run: node --test
+      # v2.9 修复批次5（测试P1-4）：开启实验性覆盖率输出取基线（Node 22 内置，无新增依赖；先取基线不设门禁）
+      - run: node --test --experimental-test-coverage
