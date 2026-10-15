@@ -1,170 +1,17 @@
 // scan-core.mjs —— 扫描/取数/合并共享核心（scan.mjs 命令行 与 server.mjs 本地服务共用）
 // v2：并行扫描 / 仓库分页 / CI 趋势 / API 配额 / 许可证链接增量复用 / schema 2
 // v3：渲染与客户端应用拆至 render-dashboard.mjs + assets/dashboard-client.js，路径/配置/格式化拆至 shared.mjs
-import { execFileSync, execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import https from "node:https";
 import { createHmac } from "node:crypto";
 import { join } from "node:path";
 import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
 import { renderDashboard } from "./render-dashboard.mjs";
+import { execFileP, pool, applyJq, directApi, setHttpsTransport, ghAsync } from "./github-fetch.mjs";
 
 export { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath, renderDashboard };
-const execFileP = promisify(execFile);
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+export { execFileP, pool, applyJq, directApi, setHttpsTransport, ghAsync };
 // 置 SCAN_WITH_TRAFFIC=1 时额外拉取每仓近 14 天流量（views/clones，各 +1 次 REST 调用，需 push 权限）
 const WITH_TRAFFIC = process.env.SCAN_WITH_TRAFFIC === "1";
-
-/* ---------------- gh CLI 封装（同步 + 异步，均带 5xx/429/网络抖动重试） ---------------- */
-function sleepSync(ms) {
-  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-}
-
-export function gh(args, retries = 3) {
-  for (let attempt = 0; ; attempt++) {
-    try {
-      return execFileSync("gh", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }).trim();
-    } catch (e) {
-      const msg = String(e?.message ?? e);
-      const transient = /HTTP 5\d\d|HTTP 429|ETIMEDOUT|ECONNRESET|ECONNREFUSED|socket hang up/i.test(msg);
-      if (attempt < retries && transient) {
-        const waitMs = 2000 * (attempt + 1);
-        console.log("  ↻ GitHub API 暂时不可用，" + Math.round(waitMs / 1000) + " 秒后重试（第 " + (attempt + 1) + "/" + retries + " 次）…");
-        sleepSync(waitMs);
-        continue;
-      }
-      throw e;
-    }
-  }
-}
-
-/* ---------------- GH_TOKEN 直连兜底(兜底矩阵:gh CLI → token 直连) ---------------- */
-function ghToken() {
-  return process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "";
-}
-function canDirectFallback(e, msg) {
-  if (!ghToken()) return false;
-  return e?.code === "ENOENT" || /command not found|not recognized|不是内部或外部命令|gh auth login|not logged/i.test(msg);
-}
-/* 极简 jq 子集:仅支持 .a.b.c 点路径(覆盖本工具全部 --jq 用法) */
-export function applyJq(data, expr) {
-  if (!/^\.[A-Za-z0-9_.]*$/.test(expr)) throw new Error("GH_TOKEN 兜底通道不支持该 --jq 表达式:" + expr);
-  let v = data;
-  for (const k of expr.slice(1).split(".")) { if (v == null) break; v = v[k]; }
-  return v;
-}
-export async function directApi(args) {
-  const headers = { "User-Agent": "github-repo-scan", Authorization: "Bearer " + ghToken(), Accept: "application/vnd.github+json" };
-  if (args[0] !== "api") throw new Error("GH_TOKEN 兜底通道仅支持 api 调用");
-  if (args[1] === "graphql") {
-    const body = {};
-    for (let i = 2; i < args.length; i++) {
-      if (args[i] === "-f" || args[i] === "-F") {
-        const eq = String(args[i + 1] ?? "").indexOf("=");
-        if (eq > 0) body[args[i + 1].slice(0, eq)] = args[i + 1].slice(eq + 1);
-        i++;
-      }
-    }
-    const r = await httpsJson("https://api.github.com/graphql", { method: "POST", headers, body: JSON.stringify(body) });
-    if (r.status >= 300) throw new Error("GraphQL 直连响应异常(HTTP " + r.status + ")");
-    try { return JSON.stringify(JSON.parse(r.text)); }
-    catch (e) { throw new Error("GraphQL 直连响应异常(HTTP " + r.status + ")"); }
-  }
-  const restPath = String(args[1]).replace(/^\//, "");
-  let jq = null;
-  for (let i = 2; i < args.length; i++) {
-    if (args[i] === "--jq") { jq = args[i + 1]; i++; }
-  }
-  const r = await httpsJson("https://api.github.com/" + restPath, { headers });
-  if (r.status >= 300) throw new Error("GitHub API HTTP " + r.status + "(GH_TOKEN 直连)");
-  let data = null;
-  try { data = JSON.parse(r.text); } catch (e) { data = r.text; }
-  if (jq != null) {
-    const v = applyJq(data, jq);
-    return typeof v === "string" ? v : JSON.stringify(v);
-  }
-  return typeof data === "string" ? data : JSON.stringify(data);
-}
-
-/* 直连传输层:严格 TLS 优先;本机代理会拦截证书链(gh CLI 走系统信任库所以无感,Node 不认)。
-   默认严格校验;仅当显式设置 SCAN_INSECURE_TLS=1（本机代理场景）时,才对 api.github.com 放宽校验重试一次。
-   对应评估报告 R2 P2-4:把无条件降级改为显式开关,避免默认路径静默关闭证书校验。
-   运行时读取环境变量（而非模块加载时冻结），保证开关在测试/运行中可动态生效。
-   传输层可注入（tech-debt #10 偿清动作）：默认 node:https；测试经 setHttpsTransport 显式注入、
-   用例结束恢复——globalThis 桩遮蔽模块绑定的复发条件就此失效。 */
-let httpsOverride = null;
-export function setHttpsTransport(mod) {
-  httpsOverride = mod;
-  return () => { httpsOverride = null; };
-}
-function httpsJson(url, { method = "GET", headers, body } = {}) {
-  const transport = httpsOverride || https;
-  return new Promise((resolve, reject) => {
-    const attempt = (strict) => {
-      const agent = new transport.Agent({ rejectUnauthorized: strict, keepAlive: false });
-      const req = transport.request(url, { method, headers, agent, timeout: 25000 }, (res) => {
-        let data = "";
-        res.on("data", (c) => (data += c));
-        res.on("end", () => resolve({ status: res.statusCode, text: data }));
-      });
-      req.on("error", (e) => {
-        const msg = String((e && e.message) || e) + " " + String((e && e.cause && e.cause.message) || "");
-        if (strict && process.env.SCAN_INSECURE_TLS === "1" && /UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO|CERT/i.test(msg)) {
-          console.log("  ? TLS 证书校验失败（本机代理所致），已按 SCAN_INSECURE_TLS=1 放宽校验重试一次（仅限 api.github.com）");
-          return attempt(false);
-        }
-        reject(e);
-      });
-      req.on("timeout", () => { req.destroy(); reject(new Error("timeout")); });
-      req.end(body || undefined);
-    };
-    attempt(true);
-  });
-}
-
-
-export async function ghAsync(args, retries = 3) {
-  for (let attempt = 0; ; attempt++) {
-    try {
-      const { stdout } = await execFileP("gh", args, { maxBuffer: 64 * 1024 * 1024 });
-      return stdout.trim();
-    } catch (e) {
-      const msg = String((e && e.message) || e);
-      const transient = /HTTP 5\d\d|HTTP 429|ETIMEDOUT|ECONNRESET|ECONNREFUSED|socket hang up/i.test(msg);
-      if (attempt < retries && transient) {
-        const waitMs = 2000 * (attempt + 1);
-        console.log("  ↻ GitHub API 暂时不可用，" + Math.round(waitMs / 1000) + " 秒后重试（第 " + (attempt + 1) + "/" + retries + " 次）…");
-        await sleep(waitMs);
-        continue;
-      }
-      if (canDirectFallback(e, msg)) {
-        try {
-          const out = await directApi(args);
-          console.log("  ? gh CLI 不可用，已用 GH_TOKEN 直连兜底通道完成本次调用");
-          return out;
-        } catch (e2) {
-          console.log("  ? GH_TOKEN 直连兜底失败：" + e2.message);
-        }
-      }
-      throw e;
-    }
-  }
-}
-
-/* 简易并发池：items 上按 limit 并发跑 fn，保持结果顺序 */
-async function pool(items, limit, fn) {
-  const results = new Array(items.length);
-  let next = 0;
-  async function worker() {
-    while (next < items.length) {
-      const idx = next++;
-      results[idx] = await fn(items[idx], idx);
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
-  return results;
-}
 
 /* ---------------- 本地 Git 仓库扫描（读本机 .git，不联网、不依赖 gh） ---------------- */
 const SKIP_DIRS = new Set([

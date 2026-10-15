@@ -20,7 +20,7 @@
 
 | 域 | 名称 | 成员（顶层声明） | 对外入口 | 允许依赖 |
 |---|---|---|---|---|
-| D1 | GitHub 取数传输 | `sleepSync` `gh` `ghToken` `canDirectFallback` `applyJq` `directApi` `httpsJson` `ghAsync` `pool` `execFileP` `sleep` | `ghAsync`（内部）、`directApi`/`applyJq`/`gh`（测试与兜底） | 仅 Node 内置 + `gh` 可执行文件 |
+| D1 | GitHub 取数传输（**2026-10-15 已外提 `github-fetch.mjs`**） | `execFileP` `sleep` `ghToken` `canDirectFallback` `applyJq` `directApi` `httpsJson`+`setHttpsTransport` `ghAsync` `pool`（死代码 `gh`/`sleepSync` 已删） | `ghAsync`（内部）、`directApi`/`applyJq`/`setHttpsTransport`（测试与兜底，经 scan-core re-export） | 仅 Node 内置 + `gh` 可执行文件 |
 | D2 | 本地 Git 事实 | `SKIP_DIRS` `parseRemoteUrl` `findGitRepos` `gitOne` `gitInfoFor` `collectLocal` | `collectLocal` `gitInfoFor` `findGitRepos` `parseRemoteUrl` | D1 的 `pool`/`execFileP`、`shared.mjs` 的 `defaultLocalRoots` |
 | D3 | CLI 三态检测 | `CLI_SKIP_DIRS` `CLI_MANIFESTS` `CLI_ENTRY_FILE` `CLI_SCRIPT_DIR` `manifestCliDetail` `classifyCli` `detectCliLocal` `detectCliRemote` | `detectCliLocal` `detectCliRemote` 及三个判定函数 | 仅 `node:fs`；不得触网、不得跑 `git` |
 | D4 | 领域口径与展示原语 | `esc` `LANG_COLORS` `relTime` `fullTime` `ciStateOf` `scoreOf` `gradeOf` `repoUnchanged` | 全部 export（多数只被测试与客户端副本消费） | 纯函数，零依赖 |
@@ -31,13 +31,13 @@
 | D9 | 审计日志 | `AUDIT_FILE` `AUDIT_MAX` `auditKeyWarned` `loadAuditRows` `appendAudit` | `appendAudit` `loadAuditRows` | 仅 `node:fs` + `node:crypto` |
 | D10 | 控制台汇总 | `printSummary` | `printSummary`（仅 `scan.mjs`） | 只读 `data`，不得改数据 |
 
-**外部消费者（谁在用这个单文件）**：`scan.mjs`（`collectData` `collectLocal` `mergeLocalSnapshot` `writeOutputs` `printSummary` + 门面符号）、`server.mjs`（同前四个，无 `printSummary`）、`modelscope.mjs`（仅门面 `HERE`/`readLocalConfig`）、`tests/core.test.mjs`（一次性 import 24 个符号，覆盖 D1–D9）、`tests/direct-api.test.mjs`（只测 D1 直连支路）。`render-dashboard.mjs` **不**反向依赖 scan-core（只 import `shared.mjs`），这条边必须保持。
+**外部消费者（谁在用这个单文件）**：`scan.mjs`（`collectData` `collectLocal` `mergeLocalSnapshot` `writeOutputs` `printSummary` + 门面符号）、`server.mjs`（同前四个，无 `printSummary`）、`modelscope.mjs`（仅门面 `HERE`/`readLocalConfig`）、`tests/core.test.mjs`（一次性 import 24 个符号，覆盖 D1–D9）、`tests/direct-api.test.mjs`（只测 D1 直连支路）。`render-dashboard.mjs` **不**反向依赖 scan-core（只 import `shared.mjs`），这条边必须保持。`github-fetch.mjs`（D1 传输域，2026-10-15 外提）仅被 `scan-core.mjs` 消费并经其 re-export，tests 的既有 import 站点不变。
 
 ## 3. 影响面反向索引（改这个函数 → 谁会受影响）
 
 「内部调用方」= scan-core 内的直接上游；改任一声明，受影响的 = 它的全部内部调用方 + 外部消费者 + 它写出的产物。
 
-### D1 传输
+### D1 传输（2026-10-15 起成员位于 github-fetch.mjs；本节保留作影响面索引，行号已漂移，以函数名为准）
 
 | 声明 | 内部调用方 | 外部消费者 | 改动波及的产物/路径 |
 |---|---|---|---|
@@ -136,7 +136,7 @@
 
 | 域 | Node 内置 | 外部可执行文件 | 环境变量（运行时读取，非加载冻结） |
 |---|---|---|---|
-| D1 | `node:child_process` `node:util` `node:https`（已显式 import，债#10 已偿清） | `gh` | `GH_TOKEN` / `GITHUB_TOKEN`、`SCAN_INSECURE_TLS` |
+| D1（位于 github-fetch.mjs） | `node:child_process` `node:util` `node:https`（已显式 import，债#10 已偿清） | `gh` | `GH_TOKEN` / `GITHUB_TOKEN`、`SCAN_INSECURE_TLS` |
 | D2 | `node:child_process` `node:fs` `node:path` | `git`（须在 PATH） | — |
 | D3 | `node:fs` `node:path` | — | — |
 | D5 | `node:fs` | `gh` | `SCAN_WITH_TRAFFIC` |
@@ -149,7 +149,7 @@
 | 项 | 事实 | 债项 |
 |---|---|---|
 | D1 `httpsJson` 依赖未声明的全局 `https` | **已偿清（2026-10-15）**：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入；`tests/direct-api.test.mjs` 尾部静态守卫防 import 缺失回归 | 已闭合（原 `docs/tech-debt.md` #10） |
-| D1 `gh`、D4 `esc` 零调用方 | 全仓（含两个测试文件）无任何调用点 | #9 |
+| D1 `gh` 零调用方 | **已删除（2026-10-15，随 D1 外提按 tech-debt.md #9 准则清理）**；D4 `esc` 仍零调用，待首个触碰 D4 的变更顺手删除 | 已闭合（D1 部分）/ `docs/tech-debt.md` #9（D4 部分） |
 | D4 `relTime`/`fullTime`/`scoreOf`/`gradeOf` 双份实现 | 面板实际执行 `assets/dashboard-client.js` 的副本；`tests/core.test.mjs` 断言的是 scan-core 的副本 → 测试护的不是发布路径 | #11 |
 
 ## 6. 改动自检流程（每次动 scan-core.mjs 都走一遍）

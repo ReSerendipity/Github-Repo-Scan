@@ -156,8 +156,8 @@ test("applyJq：非点路径表达式抛错（补齐既有基础用例的边界�
 
 /* ---------------- BM-6 静态守卫（债#10 防回归，2026-10-15） ---------------- */
 
-test("BM-6 守卫：scan-core.mjs 必须显式 import node:https（防再次依赖全局恰好存在的 https）", async () => {
-  const src = await readFile(new URL("../scan-core.mjs", import.meta.url), "utf8");
+test("BM-6 守卫：github-fetch.mjs（D1 传输域）必须显式 import node:https（防再次依赖全局恰好存在的 https）", async () => {
+  const src = await readFile(new URL("../github-fetch.mjs", import.meta.url), "utf8");
   assert.match(src, /import\s+https\s+from\s+["']node:https["']/,
-    "缺 import 时文件形态实调 directApi 将抛 ReferenceError: https is not defined（tech-debt #10）");
+    "缺 import 时文件形态实调 directApi 将抛 ReferenceError: https is not defined（tech-debt #10；D1 已外提至 github-fetch.mjs）");
 });
