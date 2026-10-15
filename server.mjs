@@ -17,10 +17,15 @@
  * 仅监听 127.0.0.1。扫描策略：先拉仓库列表与上次快照比对，无变更的仓库复用上次明细（不发额外请求）；
  * 无变更时秒级返回，有变更时只对变更仓库做深度拉取。启动时的自动扫描在后台运行，不阻塞页面打开。
  * CLI：--port 8787 / --scan-on-start=always|stale|first|off / --no-open
+ *
+ * 可测性：安全边界函数（corsHeadersFor / sameOriginOk / withinScanRoots）已导出，供
+ * tests/server-security.test.mjs 直接单测；端口监听收进 isDirectRun() 守卫，被 import 时
+ * 不监听端口、不开浏览器、不触发后台扫描（见文件末尾）。
  */
 import http from "node:http";
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, existsSync, realpathSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { collectData, collectLocal, mergeLocalSnapshot, writeOutputs, readLocalConfig, writeLocalConfig, HERE, defaultLocalRoots, unmaskLocalPath } from "./scan-core.mjs";
 import { getMoli } from "./modelscope.mjs";
@@ -67,7 +72,7 @@ function decideStartupScan() {
 /* CORS 条件回显（R2 P1-1）：仅对本地来源（127.0.0.1/localhost 任意端口）回显 Origin；
  * 无 Origin 的来源（同源页面 GET、curl 等本地客户端）放行；非本地来源不返回任何 CORS 头，
  * 浏览器将按 SOP 拦截响应体，跨站页面无法读取本机数据。 */
-function corsHeadersFor(req) {
+export function corsHeadersFor(req) {
   const origin = req.headers.origin || "";
   if (!origin) return { "Access-Control-Allow-Origin": "*" };
   if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)) {
@@ -94,13 +99,13 @@ function readBody(req) {
   });
 }
 
-function sameOriginOk(req) {
+export function sameOriginOk(req) {
   const origin = req.headers.origin || "";
   return !origin || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin);
 }
 
 /* 路径白名单（R2 P1-2）：/api/open 只允许打开本地扫描根目录内的路径（含 scan-config 配置根与默认根） */
-function withinScanRoots(p) {
+export function withinScanRoots(p) {
   const norm = (x) => String(x).replace(/[\\/]+$/, "").toLowerCase();
   const cfgRoots = (readLocalConfig().localScanRoots || []).filter((x) => typeof x === "string");
   const rawRoots = cfgRoots.length ? cfgRoots : defaultLocalRoots().map((r) => (typeof r === "string" ? r : (r && r.path) || ""));
@@ -310,12 +315,26 @@ function runBackgroundScan(source) {
     .finally(() => { busy = false; scanState.scanning = false; scanState.finishedAt = new Date().toISOString(); });
 }
 
-server.listen(Number.isFinite(basePort) ? basePort : 8787, "127.0.0.1", () => {
-  const port = server.address().port;
-  const url = "http://127.0.0.1:" + port + "/";
-  console.log("▸ GitHub 仓库总览服务已启动：" + url);
-  console.log("▸ 页面内的「重新扫描」依赖本服务；停止服务按 Ctrl+C 或关闭窗口。");
-  if (!args.includes("--no-open")) openBrowser(url);
-  // 页面已可用（用现有快照）；如需自动扫描则在后台跑，不阻塞打开
-  if (decideStartupScan()) runBackgroundScan("startup");
-});
+/* 判定「直接运行 node server.mjs」而非被 tests/ 以模块方式 import：
+ * Node 会把主模块路径解析为 realpath，故除给定路径外再比一次 realpath，
+ * 并忽略 Windows 大小写差异，避免误判导致双击启动后面板无服务。 */
+function isDirectRun() {
+  const arg = process.argv[1];
+  if (!arg) return false;
+  const self = fileURLToPath(import.meta.url).toLowerCase();
+  const given = resolve(arg);
+  if (given.toLowerCase() === self) return true;
+  try { return realpathSync(given).toLowerCase() === self; } catch { return false; }
+}
+
+if (isDirectRun()) {
+  server.listen(Number.isFinite(basePort) ? basePort : 8787, "127.0.0.1", () => {
+    const port = server.address().port;
+    const url = "http://127.0.0.1:" + port + "/";
+    console.log("▸ GitHub 仓库总览服务已启动：" + url);
+    console.log("▸ 页面内的「重新扫描」依赖本服务；停止服务按 Ctrl+C 或关闭窗口。");
+    if (!args.includes("--no-open")) openBrowser(url);
+    // 页面已可用（用现有快照）；如需自动扫描则在后台跑，不阻塞打开
+    if (decideStartupScan()) runBackgroundScan("startup");
+  });
+}
