@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|SearchReplace|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/post-edit-validate.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}

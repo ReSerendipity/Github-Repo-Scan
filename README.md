@@ -109,7 +109,7 @@
 - `tests/core.test.mjs` —— 冒烟测试
 - `tests/direct-api.test.mjs` —— 直连 API 测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
-- `docs/` —— 对内文档（`README.internal.md`、`adr/` 架构决策记录、`tech-debt.md` 技术债登记）
+- `docs/` —— `adr/` 架构决策记录与 `tech-debt.md` 技术债登记随仓库分发；`README.internal.md` 是维护者对内说明，按约定不入库（克隆里取不到）
 
 **快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `docs/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
 
@@ -119,9 +119,25 @@
 node --test
 ```
 
+### 本地门禁：新克隆需要各激活一次
+
+下面三道**落地前**闸门不会随克隆自动生效——未激活时它们惰性存在，改动只能等 push 之后的 CI 兜底。
+
+| 闸门 | 作用 | 激活命令 | 自查命令 |
+| --- | --- | --- | --- |
+| `hooks/pre-push` | 推送前跑 `node --test`，失败即阻断 | `cp hooks/pre-push .git/hooks/pre-push` | `diff hooks/pre-push .git/hooks/pre-push`（无输出即未分叉） |
+| `.pre-commit-config.yaml`（gitleaks） | 提交前扫密钥 | `pre-commit install` | `pre-commit run gitleaks-system --all-files` |
+| `.qoder/settings.json`（编码 agent 编辑后闸门） | 核心模块被编辑即跑 `node --test` | `cp hooks/qoder-settings.example.json .qoder/settings.json` | 向 `node hooks/post-edit-validate.mjs` 送一条 `tool_input.file_path` 指向 `scan-core.mjs` 的 JSON 事件，全绿时应回报 `✓ …（N 项）` |
+
+`.qoder/` 不入库，所以脚本本体（`hooks/post-edit-validate.mjs`）虽随仓库分发，却没有调用方；`hooks/qoder-settings.example.json` 就是那份可复制的调用方注册，内容与本机生效注册逐字一致。已有 `.qoder/settings.json` 的话，把 `hooks.PostToolUse` 这一段并进去即可，别整体覆盖。
+
+`hooks/pre-push` 是版本库内的唯一来源，复制到 `.git/hooks/` 后生效。两份一旦分叉，实际执行的是 `.git/hooks/` 那一份，版本库里的改动不会生效——上面那条 `diff` 就是用来发现这件事的（本仓曾真的分叉过一行注释）。
+
+未采用 `git config core.hooksPath hooks` 这种更省事的接法：它会让 git 不再看 `.git/hooks/pre-commit`，等于顺手关掉 gitleaks 密钥门（`hooks/` 目录里没有 pre-commit 入口）。
+
 覆盖：CI 状态映射、相对时间分档、时区格式化、`fmtSize` 大小换算、`computeStarWeek` 周增长（含历史不足 / 无历史）、`repoUnchanged` 变更探测、面板渲染（内嵌数据转义 / XSS 注入防护 / 默认主题 / 配额展示）。
 
-> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明已移至 [`docs/README.internal.md`](docs/README.internal.md)。
+> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明写在维护者对内文档 `docs/README.internal.md` 里——该文件按约定不入库，克隆里取不到；可机检的等价约束见上表「本地门禁」与 `.github/workflows/test.yml`。
 
 ## 数据口径
 
