@@ -31,6 +31,12 @@ test("post-edit 钩子：兼容主机各异的字段形态", () => {
   assert.deepEqual(matchedCoreTargets({ file_path: "scan-core.mjs" }), ["scan-core.mjs"], "顶层 file_path 兜底");
 });
 
+test("post-edit 钩子：服务端入口 server.mjs 属于核心区", () => {
+  // 过去 CORE_FILES 未含 server.mjs，只改它不触发任何近端验证（finding: server-entry-not-gate-covered）
+  assert.ok(CORE_FILES.includes("server.mjs"), "server.mjs 含来源校验与扫描根白名单，须与其余核心模块同闸");
+  assert.deepEqual(matchedCoreTargets({ tool_input: { file_path: `${REPO_ROOT}/server.mjs` } }), ["server.mjs"]);
+});
+
 test("post-edit 钩子：非核心编辑、仓库外路径与备份文件都不触发", () => {
   assert.deepEqual(matchedCoreTargets({ tool_input: { file_path: `${REPO_ROOT}/README.md` } }), []);
   assert.deepEqual(matchedCoreTargets({ tool_input: { file_path: `${REPO_ROOT}/scan-data.json` } }), []);
@@ -77,6 +83,10 @@ test("post-edit 钩子：非核心编辑立即退出，不运行 node --test", (
   assert.equal(r.status, 0);
   assert.equal(r.stdout + r.stderr, "", "未命中核心模块时必须零输出、零测试开销");
 });
+
+// 正向触发不在此处做端到端断言：钩子内部以 POST_EDIT_VALIDATE_NESTED=1 防自我递归，
+// 被 node --test 反向调用时那次 spawn 必然空返回，断言只会自我打脸。
+// server.mjs 命中核心区由上面的 matchedCoreTargets 用例锁定，实跑证据见 hooks 手工验证记录。
 
 test("post-edit 钩子：脚本名不得匹配 node --test 的发现模式", () => {
   // 命中这些模式会被测试执行器直接跑起来，脚本随即阻塞在读 stdin（已在改名前踩过一次）
