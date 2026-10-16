@@ -7,34 +7,33 @@
  *   node scan.mjs --local-paths "a;b"    覆盖本地扫描根目录（分号分隔）
  *   node scan.mjs --depth 5              覆盖本地扫描深度
  *   node scan.mjs --render-only          不扫描，按现有快照重渲染面板（改样式/默认主题后用）
+ *   node scan.mjs --help                 只看用法：不扫描、不联网、不改写任何产物
+ * 未知 -- 参数一律报错退出，绝不静默落到全量扫描分支。
  * 页面内一键刷新请用：node server.mjs（或双击 启动面板.bat）
  */
 import { writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { collectData, collectLocal, mergeLocalSnapshot, writeOutputs, printSummary, renderDashboard, HERE, readLocalConfig } from "./scan-core.mjs";
+import { resolveCliArgs, CLI_USAGE } from "./shared.mjs";
 
-const args = process.argv.slice(2);
-const renderOnly = args.includes("--render-only");
-const localOnly = args.includes("--local-only");
-const remoteOnly = args.includes("--remote-only");
-const pathsIdx = args.indexOf("--local-paths");
-const depthIdx = args.indexOf("--depth");
-const cfg = readLocalConfig();
-const depth = depthIdx >= 0 ? Number(args[depthIdx + 1]) : (Number.isFinite(cfg.localScanDepth) ? cfg.localScanDepth : 4);
-const localPaths = pathsIdx >= 0
-  ? String(args[pathsIdx + 1] ?? "").split(/[;；]/).map((s) => s.trim()).filter(Boolean)
-  : undefined;
-const ownerArg = args.find((a, i) =>
-  !a.startsWith("--") &&
-  (pathsIdx < 0 || i !== pathsIdx + 1) &&
-  (depthIdx < 0 || i !== depthIdx + 1));
+const cli = resolveCliArgs(process.argv.slice(2), readLocalConfig());
+if (cli.action === "help") {
+  console.log(CLI_USAGE);
+  process.exit(0);
+}
+if (cli.action === "unknown") {
+  console.error("✖ 未知参数：" + cli.unknown.join(" "));
+  console.error(CLI_USAGE);
+  process.exit(2);
+}
+const { mode, owner: ownerArg, localPaths, depth, remoteOnly } = cli;
 
 try {
-  if (renderOnly) {
+  if (mode === "render") {
     const data = JSON.parse(readFileSync(join(HERE, "scan-data.json"), "utf8"));
     writeFileSync(join(HERE, "dashboard.html"), renderDashboard(data), "utf8");
     console.log("✔ 已按现有快照重新渲染 dashboard.html（未重新扫描）");
-  } else if (localOnly) {
+  } else if (mode === "local") {
     const localScan = await collectLocal({ roots: localPaths, depth });
     const data = mergeLocalSnapshot(localScan);
     writeOutputs(data, false, "cli-local");

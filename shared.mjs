@@ -68,3 +68,55 @@ export function unmaskLocalPath(p) {
   if (s.startsWith("~/") || s.startsWith("~\\")) return join(homedir(), s.slice(2));
   return s;
 }
+
+/* ---------------- 命令行参数解析（scan.mjs 入口专用，纯函数便于离线单测） ----------------
+ * 为什么在这里而不是 scan.mjs 里：入口脚本被 import 即执行扫描，测试无法安全加载它。
+ * 过去未知 `--` 参数被静默忽略并落入「远程+本地全量扫描」默认分支，于是 `--help` 这类
+ * 用法探测会触发真实 GitHub 扫描并重写入库快照（scan-data.json / dashboard.html / …）。
+ * 因此 help 与未知参数两条路径必须在任何扫描动作之前返回。 */
+export const CLI_FLAGS = ["--render-only", "--local-only", "--remote-only", "--local-paths", "--depth"];
+
+export const CLI_USAGE = [
+  "用法：node scan.mjs [选项] [owner]",
+  "  （无选项）             远程扫描 + 本地对照",
+  "  --local-only           仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照",
+  "  --remote-only          仅远程扫描，跳过本地对照",
+  "  --local-paths \"a;b\"    覆盖本地扫描根目录（分号分隔）",
+  "  --depth N              覆盖本地扫描深度",
+  "  --render-only          不扫描，按现有快照重渲染面板",
+  "  --help, -h             显示本用法（不触发扫描）",
+].join("\n");
+
+/* 返回 { action: "help" } | { action: "unknown", unknown } | { action: "run", mode, owner, localPaths, depth, remoteOnly } */
+export function resolveCliArgs(argv, cfg = {}) {
+  const args = Array.isArray(argv) ? argv : [];
+  if (args.includes("--help") || args.includes("-h")) return { action: "help" };
+  const unknown = args.filter((a) => typeof a === "string" && a.startsWith("--") && !CLI_FLAGS.includes(a));
+  if (unknown.length) return { action: "unknown", unknown };
+
+  const renderOnly = args.includes("--render-only");
+  const localOnly = args.includes("--local-only");
+  const remoteOnly = args.includes("--remote-only");
+  const pathsIdx = args.indexOf("--local-paths");
+  const depthIdx = args.indexOf("--depth");
+  const depth = depthIdx >= 0
+    ? Number(args[depthIdx + 1])
+    : (Number.isFinite(cfg.localScanDepth) ? cfg.localScanDepth : 4);
+  const localPaths = pathsIdx >= 0
+    ? String(args[pathsIdx + 1] ?? "").split(/[;；]/).map((s) => s.trim()).filter(Boolean)
+    : undefined;
+  const owner = args.find((a, i) =>
+    !a.startsWith("--") &&
+    (pathsIdx < 0 || i !== pathsIdx + 1) &&
+    (depthIdx < 0 || i !== depthIdx + 1));
+
+  return {
+    action: "run",
+    mode: renderOnly ? "render" : localOnly ? "local" : "scan",
+    owner,
+    localPaths,
+    depth,
+    remoteOnly,
+  };
+}
+
