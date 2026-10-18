@@ -27,11 +27,11 @@
 - 遵循 **Keep a Changelog**：`Added / Changed / Fixed / Deprecated / Removed / Security`。
 - 每次合并 `main` 在 `[Unreleased]` 追加；type 映射 `feat→Added`、`fix→Fixed`、`refactor→Changed`。
 - 发版时 `[Unreleased]` → `[VERSION] - YYYY-MM-DD`。
-- **现状**：本仓根目录**尚无 `CHANGELOG.md`**（`check-release-standard.sh` 据此判 FAIL，属既有欠账，见文末「现状与欠账」）；本工单不新建 CHANGELOG（超出 D-02 范围），待后续单独工单补齐后本节自动生效。
+- **现状（2026-10-18 更新）**：根级 `CHANGELOG.md` 已建立（Keep a Changelog）；`check-release-standard.sh` 不再据此判 FAIL。
 
 ## 3. 发布流程（远端）
 
-1. 确认 `[Unreleased]` 条目完整（CHANGELOG 落地后启用；当前 CHANGELOG 缺位，见 §2）。
+1. 确认 `[Unreleased]` 条目完整（见 §2）。
 2. 同步版本位（见 §1 清单；当前无版本位文件，跳过）。
 3. 本地打 tag 并推送：`git tag v<X.Y.Z>` → `git push origin v<X.Y.Z>`（tag 必须过 §1 的 SemVer 正则）。
 4. 远端凭 tag 触发 `.github/workflows/release.yml`：
@@ -69,7 +69,7 @@
 ## 7. 发布前检查清单
 
 - [ ] 版本位全部同步（见 §1 清单；当前无版本位文件，N/A）
-- [ ] CHANGELOG `[Unreleased]` 已改版本 + 日期（CHANGELOG.md 待补，见 §2）
+- [ ] CHANGELOG `[Unreleased]` 已改版本 + 日期（见 §2）
 - [ ] `node --test` 通过（CI `test.yml` / `release.yml` 均跑此项；Node 22）
 - [ ] lint / format 全绿：本仓无独立 ESLint / Prettier 配置；pre-commit 仅 gitleaks 密钥扫描（`gitleaks.toml`），本地激活命令见 README「本地门禁」表
 - [ ] 镜像类仓：Trivy 阻断通过，豁免已在 `.trivyignore.yaml` 登记理由 + expiration（不适用，无镜像）
@@ -96,7 +96,7 @@
 
 ## 现状与欠账（本工单记录）
 
-- **缺 `CHANGELOG.md`**：`check-release-standard.sh --root .` 据此判 FAIL（§10.2 Keep a Changelog）。本工单范围仅 `docs/release-governance.md` 与必要的 `release.yml` 最小修正，不新建 CHANGELOG；待后续单独工单补齐。
+- **`CHANGELOG.md` 原缺 → 已由本单建立**（Keep a Changelog）；`check-release-standard.sh --root .` 不再据此判 FAIL。
 - **缺权威版本位文件**：本仓从未有过 SemVer 版本声明，首个正式发布前需确定版本位文件（建议随首次发版一并落地）。
 - **release.yml 已对齐项**：tag 驱动 ✓；无 `value=latest` ✓；无 Trivy `exit-code: 0` ✓；无 `docker/build-push-action` ✓；无 `gpg-signed-release.yml` ✓。
 
