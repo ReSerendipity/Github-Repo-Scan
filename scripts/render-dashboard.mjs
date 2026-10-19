@@ -286,7 +286,7 @@ export function renderDashboard(data) {
       <div class="scan-meta" id="scanMeta">正在载入数据…</div>
     </div>
     <div class="controls">
-      <button id="scanBtn" class="btn primary" type="button" title="先探测仓库有无变更，只对变更仓库深度扫描（无变更秒级返回）；按住 Shift 点击 = 强制全量扫描。需本地服务已启动：node server.mjs"><span class="ico"></span><span class="lbl">重新扫描</span></button>
+      <button id="scanBtn" class="btn primary" type="button" title="先探测仓库有无变更，只对变更仓库深度扫描（无变更秒级返回）；按住 Shift 点击 = 强制全量扫描。需本地服务已启动：node scripts/server.mjs"><span class="ico"></span><span class="lbl">重新扫描</span></button>
       <button id="scanLocalBtn" class="btn" type="button" title="只扫描本机 Git 仓库并对照/列出（不访问 GitHub，需本地服务）"><span class="ico2"></span><span class="lbl">仅扫本地</span></button>
       <button id="csvBtn" class="btn" type="button" title="导出当前筛选/排序结果为 CSV（Excel 可直接打开，带 UTF-8 BOM）">导出 CSV</button>
       <button id="cloneBtn" class="btn" type="button" title="复制当前可见仓库的 git clone 命令到剪贴板">复制 clone</button>
@@ -401,7 +401,7 @@ export function renderDashboard(data) {
 
   <footer>
     <div id="footExtra"></div>
-    数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node server.mjs</code>），或命令行 <code>node scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
+    数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node scripts/server.mjs</code>），或命令行 <code>node scripts/scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
     排序：点击表头，再点一次切换升降序（选择会记住）· 健康分：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15 · 视图：「＋存视图」保存当前筛选与排序 · 主题：右上角切换（默认浅色）·
     CI 取最近一次 Actions 运行（任意分支/标签）· Issue 数不含 PR（PR 单列）· 远程分支数为 GitHub 上全部分支（不含 tag）·
     表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示本地/远程分支（本地 = 当前检出分支，远程 = 其远程跟踪分支）与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」「只扫本账户」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。

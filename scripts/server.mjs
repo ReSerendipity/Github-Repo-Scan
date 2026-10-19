@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 本地服务：node server.mjs [--port 8787]
+ * 本地服务：node scripts/server.mjs [--port 8787]
  *
  * 路由：
  *   GET  /                → dashboard.html（内嵌最新快照的交互面板）
@@ -144,7 +144,7 @@ const server = http.createServer(async (req, res) => {
         const data = JSON.parse(readFileSync(join(HERE, "scan-data.json"), "utf8"));
         return sendJson(req, res, 200, { ok: true, data });
       } catch {
-        return sendJson(req, res, 404, { ok: false, error: "尚无扫描数据：点击页面里的「重新扫描」，或运行 node scan.mjs" });
+        return sendJson(req, res, 404, { ok: false, error: "尚无扫描数据：点击页面里的「重新扫描」，或运行 node scripts/scan.mjs" });
       }
     }
     if (url.pathname === "/api/scan" && req.method === "POST") {
@@ -315,7 +315,7 @@ function runBackgroundScan(source) {
     .finally(() => { busy = false; scanState.scanning = false; scanState.finishedAt = new Date().toISOString(); });
 }
 
-/* 判定「直接运行 node server.mjs」而非被 tests/ 以模块方式 import：
+/* 判定「直接运行 node scripts/server.mjs」而非被 tests/ 以模块方式 import：
  * Node 会把主模块路径解析为 realpath，故除给定路径外再比一次 realpath，
  * 并忽略 Windows 大小写差异，避免误判导致双击启动后面板无服务。 */
 function isDirectRun() {

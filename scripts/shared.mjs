@@ -6,7 +6,8 @@ import { join, dirname } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 
-export const HERE = dirname(fileURLToPath(import.meta.url));
+// §12.2 结构收敛：脚本迁至 scripts/，HERE 仍须指向仓根（产物 scan-data.json / dashboard.html / assets/ 等按仓根落盘）。
+export const HERE = dirname(dirname(fileURLToPath(import.meta.url)));
 
 // 仓库大小格式化（GitHub API 返回的单位为 KB）
 export function fmtSize(kb) {
@@ -77,7 +78,7 @@ export function unmaskLocalPath(p) {
 export const CLI_FLAGS = ["--render-only", "--local-only", "--remote-only", "--local-paths", "--depth"];
 
 export const CLI_USAGE = [
-  "用法：node scan.mjs [选项] [owner]",
+  "用法：node scripts/scan.mjs [选项] [owner]",
   "  （无选项）             远程扫描 + 本地对照",
   "  --local-only           仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照",
   "  --remote-only          仅远程扫描，跳过本地对照",

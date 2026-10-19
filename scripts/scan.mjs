@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * 命令行入口
- *   node scan.mjs [owner]                远程扫描 + 本地对照（默认）
- *   node scan.mjs --local-only           仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照
- *   node scan.mjs --remote-only          仅远程扫描，跳过本地对照
- *   node scan.mjs --local-paths "a;b"    覆盖本地扫描根目录（分号分隔）
- *   node scan.mjs --depth 5              覆盖本地扫描深度
- *   node scan.mjs --render-only          不扫描，按现有快照重渲染面板（改样式/默认主题后用）
- *   node scan.mjs --help                 只看用法：不扫描、不联网、不改写任何产物
+ *   node scripts/scan.mjs [owner]                远程扫描 + 本地对照（默认）
+ *   node scripts/scan.mjs --local-only           仅扫描本机 Git 仓库（不访问 GitHub），并入现有快照
+ *   node scripts/scan.mjs --remote-only          仅远程扫描，跳过本地对照
+ *   node scripts/scan.mjs --local-paths "a;b"    覆盖本地扫描根目录（分号分隔）
+ *   node scripts/scan.mjs --depth 5              覆盖本地扫描深度
+ *   node scripts/scan.mjs --render-only          不扫描，按现有快照重渲染面板（改样式/默认主题后用）
+ *   node scripts/scan.mjs --help                 只看用法：不扫描、不联网、不改写任何产物
  * 未知 -- 参数一律报错退出，绝不静默落到全量扫描分支。
- * 页面内一键刷新请用：node server.mjs（或双击 启动面板.bat）
+ * 页面内一键刷新请用：node scripts/server.mjs（或双击 启动面板.bat）
  */
 import { writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
