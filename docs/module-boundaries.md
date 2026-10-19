@@ -158,11 +158,11 @@
 2. **判方向**：新增的调用边是否符合 BM-1（只向下）与 BM-2（IO 只在 D1/D2）；不符就先改本文件与 `docs/adr/`。
 3. **查双份**：动 D4 口径 → 同步 `assets/dashboard-client.js`（BM-5）。
 4. **最小验证**（按域，全部为本地无网命令）：
-   - 语法：`node --check scan-core.mjs`
+   - 语法：`node --check scripts/scan-core.mjs`
    - D1 直连支路：`node --test tests/direct-api.test.mjs`（2026-10-15 起桩经 `setHttpsTransport` 显式注入——测试文件本身即文件形态实调 `directApi`，且尾部 BM-6 静态守卫防 import 缺失回归；注入桩遮蔽模块绑定的旧失效模式已消除）。
    - D2/D3/D4/D6/D7/D8/D9：`node --test tests/core.test.mjs`
    - 收口：`node --test` 全绿（`hooks/pre-push` 与 `hooks/post-edit-validate.mjs` 的 `CORE_FILES` 定义与此一致）
-   - 端到端（会重写 `scan-data.json` / `dashboard.html`，按 `docs/adr/0003-snapshot-committing.md` 分批提交）：`node scan.mjs --local-only`
+   - 端到端（会重写 `scan-data.json` / `dashboard.html`，按 `docs/adr/0003-snapshot-committing.md` 分批提交）：`node scripts/scan.mjs --local-only`
 5. **回填**：新增/删除 export、换域、加环境开关 → 同步更新第 2–4 节表格。
 
 ### 示例：要改 `parseRemoteUrl`，影响面是什么

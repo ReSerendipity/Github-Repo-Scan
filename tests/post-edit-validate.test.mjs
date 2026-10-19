@@ -25,16 +25,16 @@ test("post-edit 钩子：绝对路径编辑核心模块应命中", () => {
 });
 
 test("post-edit 钩子：兼容主机各异的字段形态", () => {
-  assert.deepEqual(matchedCoreTargets({ tool_input: { path: "scan-core.mjs" } }), ["scan-core.mjs"], "相对路径同样应解析到仓库根");
-  assert.deepEqual(matchedCoreTargets({ toolInput: { filePath: "shared.mjs" } }), ["shared.mjs"], "驼峰字段");
-  assert.deepEqual(matchedCoreTargets({ tool_input: { edits: [{ path: "render-dashboard.mjs" }] } }), ["render-dashboard.mjs"], "批量 edits 形态");
-  assert.deepEqual(matchedCoreTargets({ file_path: "scan-core.mjs" }), ["scan-core.mjs"], "顶层 file_path 兜底");
+  assert.deepEqual(matchedCoreTargets({ tool_input: { path: "scripts/scan-core.mjs" } }), ["scripts/scan-core.mjs"], "相对路径同样应解析到仓库根");
+  assert.deepEqual(matchedCoreTargets({ toolInput: { filePath: "scripts/shared.mjs" } }), ["scripts/shared.mjs"], "驼峰字段");
+  assert.deepEqual(matchedCoreTargets({ tool_input: { edits: [{ path: "scripts/render-dashboard.mjs" }] } }), ["scripts/render-dashboard.mjs"], "批量 edits 形态");
+  assert.deepEqual(matchedCoreTargets({ file_path: "scripts/scan-core.mjs" }), ["scripts/scan-core.mjs"], "顶层 file_path 兜底");
 });
 
 test("post-edit 钩子：服务端入口 server.mjs 属于核心区", () => {
   // 过去 CORE_FILES 未含 server.mjs，只改它不触发任何近端验证（finding: server-entry-not-gate-covered）
-  assert.ok(CORE_FILES.includes("server.mjs"), "server.mjs 含来源校验与扫描根白名单，须与其余核心模块同闸");
-  assert.deepEqual(matchedCoreTargets({ tool_input: { file_path: `${REPO_ROOT}/server.mjs` } }), ["server.mjs"]);
+  assert.ok(CORE_FILES.includes("scripts/server.mjs"), "server.mjs 含来源校验与扫描根白名单，须与其余核心模块同闸");
+  assert.deepEqual(matchedCoreTargets({ tool_input: { file_path: `${REPO_ROOT}/scripts/server.mjs` } }), ["scripts/server.mjs"]);
 });
 
 test("post-edit 钩子：非核心编辑、仓库外路径与备份文件都不触发", () => {

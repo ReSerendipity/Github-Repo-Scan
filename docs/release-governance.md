@@ -46,7 +46,7 @@
 |---|---|---|---|
 | 无自构建产物（源码运行 Node CLI，见下） | — | tag 即 SemVer `vX.Y.Z`；无 floating `latest` | 无自构资产；GitHub Release 页面自动展示 Source code zip / tar.gz 的 SHA256 |
 
-- **本仓产物形态**：源码运行的 Node.js 工具（`.mjs` 脚本 + `dashboard.html` + 本地 `server.mjs`），用户 clone 后 `node server.mjs` 或双击 `启动面板.bat` 本地运行。**无 wheel / sdist / 容器镜像 / APK / 安装包**，无 `package.json`，无构建步骤。
+- 本仓产物形态**：源码运行的 Node.js 工具（`.mjs` 脚本 + `dashboard.html` + 本地 `scripts/server.mjs`），用户 clone 后 `node scripts/server.mjs` 或双击 `启动面板.bat` 本地运行。**无 wheel / sdist / 容器镜像 / APK / 安装包**，无 `package.json`，无构建步骤。
 - **release.yml 核对结论（2026-10-18，本工单）**：
   - **tag 驱动**：✓ 已对齐——`on: push: tags: "v*"`，无需修改。
   - **产物是否附 SHA256SUMS**：当前不附。判断依据：本仓 §10.3 范畴内无自构建分发包（既非 Python 包、也非容器镜像、也非桌面/移动安装包），§10.1「Release 资产须附 SHA256SUMS.txt」针对的是**自构建分发资产**；本仓 Release 唯一可下载物是 GitHub 自动生成的 Source code 压缩包，其 SHA256 由 GitHub 在 Release 页面直接展示，无需另附 `SHA256SUMS.txt`。**决定：不对 release.yml 做修改**（避免在无产物处凭空加 hash 步骤、避免重构）。**触发再评估的条件**：一旦本仓引入任何自构建分发包（如打包成单文件可执行 / 容器镜像 / npm 包），必须在 `release.yml` 远端构建步骤后补 `SHA256SUMS.txt` 生成与 `gh release upload`，并在本节登记产物行。

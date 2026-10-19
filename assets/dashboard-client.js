@@ -292,7 +292,7 @@
 
   function localCell(r) {
     var d = state.data;
-    if (!d || !d.localScan) return '<span class="muted" title="未启用本地扫描：点「仅扫本地」或运行 node scan.mjs --local-only">—</span>';
+    if (!d || !d.localScan) return '<span class="muted" title="未启用本地扫描：点「仅扫本地」或运行 node scripts/scan.mjs --local-only">—</span>';
     var l = r.local;
     if (!l) return '<span class="badge" title="本机扫描范围内没有对应目录"><span class="dot"></span>本地缺失</span>';
     var bits = [];
@@ -425,7 +425,7 @@
     if (!d) {
       document.getElementById('scanMeta').textContent = '尚未扫描';
       document.getElementById('metrics').innerHTML = '';
-      document.getElementById('tbody').innerHTML = '<tr><td class="empty" colspan="18">暂无数据 —— 点击右上角「重新扫描」开始第一次扫描（需已启动 node server.mjs）</td></tr>';
+      document.getElementById('tbody').innerHTML = '<tr><td class="empty" colspan="18">暂无数据 —— 点击右上角「重新扫描」开始第一次扫描（需已启动 node scripts/server.mjs）</td></tr>';
       return;
     }
     var avatar = document.getElementById('avatar');
@@ -579,9 +579,9 @@
       .catch(function (e) {
         var m = String((e && e.message) || e);
         if (/failed to fetch|networkerror|load failed|fetch failed/i.test(m)) {
-          m = '未检测到本地服务：请在项目文件夹运行 node server.mjs 启动后重试（或用 node scan.mjs 命令行刷新静态快照）';
+          m = '未检测到本地服务：请在项目文件夹运行 node scripts/server.mjs 启动后重试（或用 node scripts/scan.mjs 命令行刷新静态快照）';
         } else if (location.protocol.indexOf('http') === 0 && !/^(127\.0\.0\.1|localhost)$/.test(location.hostname)) {
-          m = '静态托管页面无法扫描（没有本地服务）：请在本地运行 node server.mjs 后使用，或直接浏览内嵌快照';
+          m = '静态托管页面无法扫描（没有本地服务）：请在本地运行 node scripts/server.mjs 后使用，或直接浏览内嵌快照';
         }
         setHint('扫描失败：' + m, 'err');
       })
@@ -616,7 +616,7 @@
       .catch(function (e) {
         var m = String((e && e.message) || e);
         if (/failed to fetch|networkerror|load failed|fetch failed/i.test(m)) {
-          m = '未检测到本地服务：请先运行 node server.mjs，或命令行 node scan.mjs --local-only';
+          m = '未检测到本地服务：请先运行 node scripts/server.mjs，或命令行 node scripts/scan.mjs --local-only';
         }
         setHint('本地扫描失败：' + m, 'err');
       })
@@ -751,7 +751,7 @@
           setHint(roots.length ? '本地目录已保存（' + roots.length + ' 个）：点「重新扫描」或「仅扫本地」生效' : '已清空自定义目录，恢复默认探测：点「重新扫描」或「仅扫本地」生效', 'okc');
         })
         .catch(function () {
-          setHint('保存失败（需本地服务 node server.mjs）；也可命令行临时指定：node scan.mjs --local-paths "目录1;目录2"', 'err');
+          setHint('保存失败（需本地服务 node scripts/server.mjs）；也可命令行临时指定：node scripts/scan.mjs --local-paths "目录1;目录2"', 'err');
         });
     });
     document.getElementById('themeBtn').addEventListener('click', function () {
@@ -774,7 +774,7 @@
       fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ autoScanOnStart: asEl.checked ? 'always' : 'off' }) })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (j) {
-          if (!j.ok) setHint('保存启动扫描偏好失败（需本地服务 node server.mjs）', 'err');
+          if (!j.ok) setHint('保存启动扫描偏好失败（需本地服务 node scripts/server.mjs）', 'err');
           else setHint(asEl.checked ? '已开启：下次启动面板将先自动扫描（约 20–40 秒）再打开页面' : '已关闭启动前自动扫描', 'okc');
         });
     });
@@ -783,7 +783,7 @@
       fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ localOwnerOnly: ooEl.checked }) })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (j) {
-          if (!j.ok) setHint('保存「只扫本账户」偏好失败（需本地服务 node server.mjs）', 'err');
+          if (!j.ok) setHint('保存「只扫本账户」偏好失败（需本地服务 node scripts/server.mjs）', 'err');
           else setHint(ooEl.checked ? '已开启「只扫本账户」：点「重新扫描」后本地对照只保留本账号仓库' : '已关闭「只扫本账户」：点「重新扫描」后本机全部 Git 仓库都会算进来', 'okc');
         });
     });

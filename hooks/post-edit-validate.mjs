@@ -15,7 +15,7 @@ export const REPO_ROOT = resolve(HOOK_DIR, "..");
 /* 与 AGENTS.md 同一份「核心模块」定义：改这些文件必须立刻验证
    server.mjs 于 2026-10-16 纳入：它是面板后端入口、含来源校验与扫描根白名单，
    且已有 tests/server-security.test.mjs 覆盖——过去只改它不会触发任何近端验证。 */
-export const CORE_FILES = ["scan-core.mjs", "render-dashboard.mjs", "shared.mjs", "server.mjs"];
+export const CORE_FILES = ["scripts/scan-core.mjs", "scripts/render-dashboard.mjs", "scripts/shared.mjs", "scripts/server.mjs"];
 export const CORE_DIRS = ["assets", "tests"];
 
 /* 主机的编辑类工具字段名不统一（file_path / path / notebook_path / edits[].path），全部兼容取路径 */

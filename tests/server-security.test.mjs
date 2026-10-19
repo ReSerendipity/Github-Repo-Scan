@@ -5,8 +5,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { homedir } from "node:os";
 import { join, sep } from "node:path";
-import { sameOriginOk, corsHeadersFor, withinScanRoots } from "../server.mjs";
-import { unmaskLocalPath, maskLocalPath, readLocalConfig, defaultLocalRoots } from "../scan-core.mjs";
+import { sameOriginOk, corsHeadersFor, withinScanRoots } from "../scripts/server.mjs";
+import { unmaskLocalPath, maskLocalPath, readLocalConfig, defaultLocalRoots } from "../scripts/scan-core.mjs";
 
 // server.mjs 的安全函数只读 req.headers.origin，用最小请求对象桩化，无需真实 HTTP 连接
 const reqOf = (origin) => ({ headers: origin === undefined ? {} : { origin } });
