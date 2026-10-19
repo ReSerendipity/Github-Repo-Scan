@@ -1,7 +1,7 @@
 // 冒烟测试：node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ciStateOf, relTime, esc, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scan-core.mjs";
+import { ciStateOf, relTime, esc, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scripts/scan-core.mjs";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
 import { createHmac } from "node:crypto";
 import { tmpdir, homedir } from "node:os";

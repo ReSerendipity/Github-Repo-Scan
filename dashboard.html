@@ -275,7 +275,7 @@
       <div class="scan-meta" id="scanMeta">正在载入数据…</div>
     </div>
     <div class="controls">
-      <button id="scanBtn" class="btn primary" type="button" title="先探测仓库有无变更，只对变更仓库深度扫描（无变更秒级返回）；按住 Shift 点击 = 强制全量扫描。需本地服务已启动：node server.mjs"><span class="ico"></span><span class="lbl">重新扫描</span></button>
+      <button id="scanBtn" class="btn primary" type="button" title="先探测仓库有无变更，只对变更仓库深度扫描（无变更秒级返回）；按住 Shift 点击 = 强制全量扫描。需本地服务已启动：node scripts/server.mjs"><span class="ico"></span><span class="lbl">重新扫描</span></button>
       <button id="scanLocalBtn" class="btn" type="button" title="只扫描本机 Git 仓库并对照/列出（不访问 GitHub，需本地服务）"><span class="ico2"></span><span class="lbl">仅扫本地</span></button>
       <button id="csvBtn" class="btn" type="button" title="导出当前筛选/排序结果为 CSV（Excel 可直接打开，带 UTF-8 BOM）">导出 CSV</button>
       <button id="cloneBtn" class="btn" type="button" title="复制当前可见仓库的 git clone 命令到剪贴板">复制 clone</button>
@@ -390,7 +390,7 @@
 
   <footer>
     <div id="footExtra"></div>
-    数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node server.mjs</code>），或命令行 <code>node scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
+    数据为扫描时快照：页面内点「重新扫描」可原地更新（需启动本地服务 <code>node scripts/server.mjs</code>），或命令行 <code>node scripts/scan.mjs</code>（<code>--render-only</code> 仅重渲染）·
     排序：点击表头，再点一次切换升降序（选择会记住）· 健康分：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15 · 视图：「＋存视图」保存当前筛选与排序 · 主题：右上角切换（默认浅色）·
     CI 取最近一次 Actions 运行（任意分支/标签）· Issue 数不含 PR（PR 单列）· 远程分支数为 GitHub 上全部分支（不含 tag）·
     表格内每个单元格都链接到对应的 GitHub 页面 · 本地对照列：本机有对应 Git 仓库时显示本地/远程分支（本地 = 当前检出分支，远程 = 其远程跟踪分支）与工作区状态（干净 / 未提交 n / ↑领先 ↓落后，基于本地缓存的远程 refs，不自动 fetch），扫描范围用「本地目录…」或 <code>scan-config.json</code> 调整 · 「仅本地仓库」模式在下方列出全部本机仓库（含远程账号名下没有的「本地独有」仓库）· <strong>可见性</strong>列可点表头按公开/私有排序，筛选下拉含「仅公开 / 仅私有」· <strong>大小</strong>列为 GitHub 磁盘占用（KB/MB/GB）· <strong>最近变更</strong>列点「N 文件」展开最近一次提交的文件清单（A 增 / M 改 / D 删，带 +− 行数）· 工具栏「隐藏归档」「启动前扫描」「只扫本账户」可记忆式开关 · 右上角「导出 CSV」导出当前视图（UTF-8，Excel 可直接打开）· 「仅低健康分(&lt;50)」可快速定位问题仓库。
@@ -694,7 +694,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
 
   function localCell(r) {
     var d = state.data;
-    if (!d || !d.localScan) return '<span class="muted" title="未启用本地扫描：点「仅扫本地」或运行 node scan.mjs --local-only">—</span>';
+    if (!d || !d.localScan) return '<span class="muted" title="未启用本地扫描：点「仅扫本地」或运行 node scripts/scan.mjs --local-only">—</span>';
     var l = r.local;
     if (!l) return '<span class="badge" title="本机扫描范围内没有对应目录"><span class="dot"></span>本地缺失</span>';
     var bits = [];
@@ -827,7 +827,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
     if (!d) {
       document.getElementById('scanMeta').textContent = '尚未扫描';
       document.getElementById('metrics').innerHTML = '';
-      document.getElementById('tbody').innerHTML = '<tr><td class="empty" colspan="18">暂无数据 —— 点击右上角「重新扫描」开始第一次扫描（需已启动 node server.mjs）</td></tr>';
+      document.getElementById('tbody').innerHTML = '<tr><td class="empty" colspan="18">暂无数据 —— 点击右上角「重新扫描」开始第一次扫描（需已启动 node scripts/server.mjs）</td></tr>';
       return;
     }
     var avatar = document.getElementById('avatar');
@@ -981,9 +981,9 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
       .catch(function (e) {
         var m = String((e && e.message) || e);
         if (/failed to fetch|networkerror|load failed|fetch failed/i.test(m)) {
-          m = '未检测到本地服务：请在项目文件夹运行 node server.mjs 启动后重试（或用 node scan.mjs 命令行刷新静态快照）';
+          m = '未检测到本地服务：请在项目文件夹运行 node scripts/server.mjs 启动后重试（或用 node scripts/scan.mjs 命令行刷新静态快照）';
         } else if (location.protocol.indexOf('http') === 0 && !/^(127\.0\.0\.1|localhost)$/.test(location.hostname)) {
-          m = '静态托管页面无法扫描（没有本地服务）：请在本地运行 node server.mjs 后使用，或直接浏览内嵌快照';
+          m = '静态托管页面无法扫描（没有本地服务）：请在本地运行 node scripts/server.mjs 后使用，或直接浏览内嵌快照';
         }
         setHint('扫描失败：' + m, 'err');
       })
@@ -1018,7 +1018,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
       .catch(function (e) {
         var m = String((e && e.message) || e);
         if (/failed to fetch|networkerror|load failed|fetch failed/i.test(m)) {
-          m = '未检测到本地服务：请先运行 node server.mjs，或命令行 node scan.mjs --local-only';
+          m = '未检测到本地服务：请先运行 node scripts/server.mjs，或命令行 node scripts/scan.mjs --local-only';
         }
         setHint('本地扫描失败：' + m, 'err');
       })
@@ -1153,7 +1153,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
           setHint(roots.length ? '本地目录已保存（' + roots.length + ' 个）：点「重新扫描」或「仅扫本地」生效' : '已清空自定义目录，恢复默认探测：点「重新扫描」或「仅扫本地」生效', 'okc');
         })
         .catch(function () {
-          setHint('保存失败（需本地服务 node server.mjs）；也可命令行临时指定：node scan.mjs --local-paths "目录1;目录2"', 'err');
+          setHint('保存失败（需本地服务 node scripts/server.mjs）；也可命令行临时指定：node scripts/scan.mjs --local-paths "目录1;目录2"', 'err');
         });
     });
     document.getElementById('themeBtn').addEventListener('click', function () {
@@ -1176,7 +1176,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
       fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ autoScanOnStart: asEl.checked ? 'always' : 'off' }) })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (j) {
-          if (!j.ok) setHint('保存启动扫描偏好失败（需本地服务 node server.mjs）', 'err');
+          if (!j.ok) setHint('保存启动扫描偏好失败（需本地服务 node scripts/server.mjs）', 'err');
           else setHint(asEl.checked ? '已开启：下次启动面板将先自动扫描（约 20–40 秒）再打开页面' : '已关闭启动前自动扫描', 'okc');
         });
     });
@@ -1185,7 +1185,7 @@ window.__SCAN_DATA__ = {"schema":3,"owner":"ReSerendipity","avatarUrl":"https://
       fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ localOwnerOnly: ooEl.checked }) })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (j) {
-          if (!j.ok) setHint('保存「只扫本账户」偏好失败（需本地服务 node server.mjs）', 'err');
+          if (!j.ok) setHint('保存「只扫本账户」偏好失败（需本地服务 node scripts/server.mjs）', 'err');
           else setHint(ooEl.checked ? '已开启「只扫本账户」：点「重新扫描」后本地对照只保留本账号仓库' : '已关闭「只扫本账户」：点「重新扫描」后本机全部 Git 仓库都会算进来', 'okc');
         });
     });

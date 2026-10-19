@@ -11,7 +11,7 @@ if errorlevel 1 (
 )
 echo 正在启动 GitHub 仓库总览面板...
 echo 浏览器将自动打开；停止服务请关闭本窗口或按 Ctrl+C。
-node server.mjs
+node scripts/server.mjs
 echo.
 echo 服务已停止。
 pause

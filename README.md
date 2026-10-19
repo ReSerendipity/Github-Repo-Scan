@@ -9,15 +9,15 @@
 | 方式 | 命令 | 说明 |
 |---|---|---|
 | 双击启动（推荐） | `启动面板.bat` | 双击即启动本地服务并自动打开浏览器 |
-| 交互面板 | `node server.mjs` | 同上，命令行方式启动；支持 `--port` 换端口 |
-| 远程+本地对照 | `node scan.mjs [owner]` | 扫远程账号并对照本机 Git 仓库，重新生成 `dashboard.html` + `scan-data.json` |
-| 仅本地扫描 | `node scan.mjs --local-only` | 只扫本机 Git 仓库（不访问 GitHub），并入现有快照 |
-| 本地范围/深度 | `node scan.mjs --local-paths "a;b" --depth 5` | 临时指定本地扫描根目录（分号分隔）与深度 |
-| 仅远程 | `node scan.mjs --remote-only` | 跳过本地对照 |
-| 仅重渲染 | `node scan.mjs --render-only` | 不重新扫描，按现有快照重渲染面板（改样式/主题后用） |
-| 启动前自动扫描 | `node server.mjs --scan-on-start=always` | 启动时若需扫描，会**先开页面（用现有快照）再在后台扫描，不阻塞打开**；模式 `always`/`stale`/`first`/`off`（`--scan-on-start off` 与 `--scan-on-start=off` 两种写法皆可），默认 `stale`（快照比 `autoScanMaxAgeHours` 旧才扫），由 `scan-config.json` 的 `autoScanOnStart` 控制；面板「启动前扫描」开关可联动切换 `always`/`off`。附加 `--no-open` 可禁止自动打开浏览器 |
+| 交互面板 | `node scripts/server.mjs` | 同上，命令行方式启动；支持 `--port` 换端口 |
+| 远程+本地对照 | `node scripts/scan.mjs [owner]` | 扫远程账号并对照本机 Git 仓库，重新生成 `dashboard.html` + `scan-data.json` |
+| 仅本地扫描 | `node scripts/scan.mjs --local-only` | 只扫本机 Git 仓库（不访问 GitHub），并入现有快照 |
+| 本地范围/深度 | `node scripts/scan.mjs --local-paths "a;b" --depth 5` | 临时指定本地扫描根目录（分号分隔）与深度 |
+| 仅远程 | `node scripts/scan.mjs --remote-only` | 跳过本地对照 |
+| 仅重渲染 | `node scripts/scan.mjs --render-only` | 不重新扫描，按现有快照重渲染面板（改样式/主题后用） |
+| 启动前自动扫描 | `node scripts/server.mjs --scan-on-start=always` | 启动时若需扫描，会**先开页面（用现有快照）再在后台扫描，不阻塞打开**；模式 `always`/`stale`/`first`/`off`（`--scan-on-start off` 与 `--scan-on-start=off` 两种写法皆可），默认 `stale`（快照比 `autoScanMaxAgeHours` 旧才扫），由 `scan-config.json` 的 `autoScanOnStart` 控制；面板「启动前扫描」开关可联动切换 `always`/`off`。附加 `--no-open` 可禁止自动打开浏览器 |
 
-指定账号：默认扫当前 gh 登录账号；`node scan.mjs someUser` 可扫指定账号。
+指定账号：默认扫当前 gh 登录账号；`node scripts/scan.mjs someUser` 可扫指定账号。
 
 ## 页面功能
 
@@ -66,14 +66,14 @@
 ## 本地 Git 仓库扫描（对照 + 独立）
 
 - **远程与本地对照**：扫描远程账号的同时遍历本机目录找 Git 仓库，每个远程仓库在「本地」列显示：本地有（本地分支 · 对应远程分支（若有）· 干净 / 未提交 n / ↑领先 ↓落后）或本地缺失。
-- **仅本地扫描**：`node scan.mjs --local-only` 或面板「仅扫本地」——只读本机 `.git`（remote / 分支 / HEAD / status / rev-list），不访问 GitHub、不 fetch、不推送；面板「仅本地仓库」模式列出全部本机仓库。
+- **仅本地扫描**：`node scripts/scan.mjs --local-only` 或面板「仅扫本地」——只读本机 `.git`（remote / 分支 / HEAD / status / rev-list），不访问 GitHub、不 fetch、不推送；面板「仅本地仓库」模式列出全部本机仓库。
 - **本地独有仓库**：本机存在但远程账号名下没有对应的仓库（改名、fork 后删库、纯本地实验仓），单独区块列出。
 - **只保留本账号仓库（默认开启）**：本地对照只保留远程归属为当前 gh 登录账号的仓库——第三方克隆（如 ComfyUI、box64、sd-scripts 等）与无 GitHub 远程的纯本地仓会被忽略，不再出现在本地对照与「本地独有」里（控制台会提示忽略了几个）。面板工具栏「只扫本账户」开关可随时切换，记忆在 `scan-config.json` 的 `localOwnerOnly`，**显式设成 `false` 才关闭**。
 - **扫描范围**：默认 = 用户主目录（只看 1 层）+ 桌面 / 文档 / 下载（深度 4）；`scan-config.json` 的 `localScanRoots`（字符串或 `{ "path": "...", "depth": 2 }`）+ `localScanDepth` 持久配置，`--local-paths` / `--depth` 临时覆盖，面板「本地目录…」可视化保存。隐藏目录、`node_modules` 等重目录、符号链接自动跳过，最多 500 个仓库。
 - **对照规则**：本地 remote URL 解析出 `owner/repo` 与远程精确匹配；无 GitHub remote 或 owner 不同但仓库名唯一时按名字兜底；同名多候选不猜（标记 ambiguous，进「本地独有」）。
 - **依赖**：git 在 PATH 即可，无需 gh 登录；`--remote-only` 可关掉本地对照。
 - **配置文件**：`scan-config.json` 含本机路径，已加入 `.gitignore` 不入库；还可配置 `autoScanOnStart`（启动前自动扫描模式：`always`/`stale`/`first`/`off`，默认 `stale`）、`autoScanMaxAgeHours`（stale 模式下判定「过期」的小时数，默认 6）与 `localOwnerOnly`（只保留本账号仓库，默认 `true`）。
-- **魔搭魔粒（ModelScope）**：面板顶部「魔搭魔粒」条显示你的魔粒余额，来自官方 OpenAPI `GET /openapi/v1/magicubes/balance`。认证三选一（优先级从高到低）：① 设环境变数 `MODELSCOPE_API_TOKEN`（在 `modelscope.cn/my/access/token` 申请，稳定推荐）；② 把 token 写入 `scan-config.json` 的 `modelscopeToken` 字段；③ 零配置复用本机 `modelscope login` 产生的 `~/.modelscope/credentials/cookies` 登录态（cookie 过期后重新 `modelscope login` 即可）。命令行也可直接 `node modelscope.mjs [--refresh]` 打印余额。
+- **魔搭魔粒（ModelScope）**：面板顶部「魔搭魔粒」条显示你的魔粒余额，来自官方 OpenAPI `GET /openapi/v1/magicubes/balance`。认证三选一（优先级从高到低）：① 设环境变数 `MODELSCOPE_API_TOKEN`（在 `modelscope.cn/my/access/token` 申请，稳定推荐）；② 把 token 写入 `scan-config.json` 的 `modelscopeToken` 字段；③ 零配置复用本机 `modelscope login` 产生的 `~/.modelscope/credentials/cookies` 登录态（cookie 过期后重新 `modelscope login` 即可）。命令行也可直接 `node scripts/modelscope.mjs [--refresh]` 打印余额。
 
 ## 性能与增量
 
@@ -96,12 +96,12 @@
 
 - `启动面板.bat` —— 双击启动（UTF-8 无 BOM + `chcp 65001`，中文提示不乱码）
 - `dashboard.html` —— 交互面板（每次扫描重新生成，数据内嵌，双击即开）
-- `server.mjs` —— 本地服务（页面一键扫描的后端；仅监听 127.0.0.1，带跨站来源校验）
-- `scan-core.mjs` —— 扫描/取数/合并共享核心（并行 / 分页 / 重试 / 增量）
-- `render-dashboard.mjs` —— 面板渲染模块（生成单页 HTML，注入 `assets/dashboard-client.js`）
-- `shared.mjs` —— 路径 / 本地配置 / 大小格式化共享基础
+- `scripts/server.mjs` —— 本地服务（页面一键扫描的后端；仅监听 127.0.0.1，带跨站来源校验）
+- `scripts/scan-core.mjs` —— 扫描/取数/合并共享核心（并行 / 分页 / 重试 / 增量）
+- `scripts/render-dashboard.mjs` —— 面板渲染模块（生成单页 HTML，注入 `assets/dashboard-client.js`）
+- `scripts/shared.mjs` —— 路径 / 本地配置 / 大小格式化共享基础
 - `assets/dashboard-client.js` —— 面板客户端应用（纯浏览器 JS，独立资产，渲染时注入）
-- `scan.mjs` —— 命令行扫描入口（`--render-only` 仅重渲染）
+- `scripts/scan.mjs` —— 命令行扫描入口（`--render-only` 仅重渲染）
 - `scan-data.json` —— 最近一次扫描的数据快照（schema 3，含本地对照结果）
 - `scan-config.json` —— 本地扫描配置（可选；含本机路径不入库，面板「本地目录…」会写入）
 - `scan-data-history.json` —— Star 周增长趋势的本地快照历史（按天累积，纯本地运行时数据，已加入 `.gitignore` 不入库）
@@ -127,7 +127,7 @@ node --test
 | --- | --- | --- | --- |
 | `hooks/pre-push` | 推送前跑 `node --test`，失败即阻断 | `cp hooks/pre-push .git/hooks/pre-push` | `diff hooks/pre-push .git/hooks/pre-push`（无输出即未分叉） |
 | `.pre-commit-config.yaml`（gitleaks） | 提交前扫密钥 | `pre-commit install` | `pre-commit run gitleaks-system --all-files` |
-| `.qoder/settings.json`（编码 agent 编辑后闸门） | 核心模块被编辑即跑 `node --test` | `cp hooks/qoder-settings.example.json .qoder/settings.json` | 向 `node hooks/post-edit-validate.mjs` 送一条 `tool_input.file_path` 指向 `scan-core.mjs` 的 JSON 事件，全绿时应回报 `✓ …（N 项）` |
+| `.qoder/settings.json`（编码 agent 编辑后闸门） | 核心模块被编辑即跑 `node --test` | `cp hooks/qoder-settings.example.json .qoder/settings.json` | 向 `node hooks/post-edit-validate.mjs` 送一条 `tool_input.file_path` 指向 `scripts/scan-core.mjs` 的 JSON 事件，全绿时应回报 `✓ …（N 项）` |
 
 `.qoder/` 不入库，所以脚本本体（`hooks/post-edit-validate.mjs`）虽随仓库分发，却没有调用方；`hooks/qoder-settings.example.json` 就是那份可复制的调用方注册，内容与本机生效注册逐字一致。已有 `.qoder/settings.json` 的话，把 `hooks.PostToolUse` 这一段并进去即可，别整体覆盖。
 

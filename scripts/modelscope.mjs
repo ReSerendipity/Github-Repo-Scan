@@ -11,7 +11,7 @@
  *
  * 用法：
  *   import { getMoli } from "./modelscope.mjs";   // 服务端
- *   node modelscope.mjs [--refresh]                // 命令行直接打印魔粒余额
+ *   node scripts/modelscope.mjs [--refresh]       // 命令行直接打印魔粒余额
  *
  * 返回形如：
  *   { ok:true, configured:true, source:"cookie"|"bearer",
@@ -160,7 +160,7 @@ export async function getMoli(opts = {}) {
   return fetchMoliBalance();
 }
 
-// 命令行直接运行：node modelscope.mjs [--refresh]
+// 命令行直接运行：node scripts/modelscope.mjs [--refresh]
 // 用 pathToFileURL 归一化 Windows 反斜杠路径，避免 import.meta.url 比较失败
 if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
   getMoli({ refresh: process.argv.includes("--refresh") })

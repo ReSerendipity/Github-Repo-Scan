@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { collectData, ghAsync, setHttpsTransport } from "../scan-core.mjs";
+import { collectData, ghAsync, setHttpsTransport } from "../scripts/scan-core.mjs";
 
 const REAL_PATH = process.env.PATH;
 const REAL_TOKEN = process.env.GH_TOKEN;

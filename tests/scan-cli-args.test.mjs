@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { resolveCliArgs, CLI_FLAGS, CLI_USAGE, HERE } from "../shared.mjs";
+import { resolveCliArgs, CLI_FLAGS, CLI_USAGE, HERE } from "../scripts/shared.mjs";
 
 /* ---------------- help：只打印用法，绝不进入扫描分支 ---------------- */
 
@@ -72,7 +72,7 @@ test("scan CLI：owner、--local-paths 取值与 --depth 取值", () => {
 /* ---------------- 静态守卫：入口不得在 help/unknown 之前触发扫描 ---------------- */
 
 test("scan CLI：scan.mjs 把 help/unknown 处理排在任何 collectData 之前", () => {
-  const src = readFileSync(join(HERE, "scan.mjs"), "utf8");
+  const src = readFileSync(join(HERE, "scripts", "scan.mjs"), "utf8");
   const help = src.indexOf('cli.action === "help"');
   const unknown = src.indexOf('cli.action === "unknown"');
   const scan = src.indexOf("collectData(");

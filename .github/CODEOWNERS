@@ -10,7 +10,7 @@
 * @ReSerendipity
 
 # 核心逻辑与取数（改动影响面最大）
-scan-core.mjs render-dashboard.mjs shared.mjs modelscope.mjs scan.mjs server.mjs @ReSerendipity
+scripts/scan-core.mjs scripts/render-dashboard.mjs scripts/shared.mjs scripts/modelscope.mjs scripts/scan.mjs scripts/server.mjs @ReSerendipity
 assets/ @ReSerendipity
 
 # 安全与工程门禁（密钥防泄露、CI、钩子）
