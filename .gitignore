@@ -22,8 +22,12 @@ scan-audit.jsonl
 # 本地编辑备份（不入库，保留在磁盘）
 *.bak-*
 
-# 本地 Agent 工具目录（不入库）
+# 本地 Agent 工具目录（不入库，§9 口径统一）
 .qoder/
+.trae/
+.zcode/
+.workbuddy/
+.workbuddy-ai/
 
 # --- 敏感信息防泄露（Git 版本控制安全工程与防泄露最佳实践指南 v1.1 第二章/第八章）---
 .env
