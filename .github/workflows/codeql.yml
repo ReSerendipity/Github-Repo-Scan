@@ -4,9 +4,9 @@ name: CodeQL
 # 零依赖项目无需构建步骤；CodeQL 对 JavaScript 直接做 AST 分析（含 .mjs ES Module）。
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
   schedule:
     # 每周日 01:30 UTC，与 gitleaks 全量历史扫描错峰
     - cron: '30 1 * * 0'
