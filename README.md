@@ -137,7 +137,7 @@ node --test
 
 覆盖：CI 状态映射、相对时间分档、时区格式化、`fmtSize` 大小换算、`computeStarWeek` 周增长（含历史不足 / 无历史）、`repoUnchanged` 变更探测、面板渲染（内嵌数据转义 / XSS 注入防护 / 默认主题 / 配额展示）。
 
-> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明写在维护者对内文档 `docs/README.internal.md` 里——该文件按约定不入库，克隆里取不到；可机检的等价约束见上表「本地门禁」与 `.github/workflows/test.yml`。
+> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明写在维护者对内文档 `local/README.internal.md` 里——该文件按约定不入库，克隆里取不到；可机检的等价约束见上表「本地门禁」与 `.github/workflows/test.yml`。
 
 ## 数据口径
 
