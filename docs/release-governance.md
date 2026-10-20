@@ -11,13 +11,13 @@
 
 发布链的构建、打包、扫描、上传、推送**全部在 GitHub Actions 远端完成**；本地只做三件事：改版本位、落 CHANGELOG、`git tag` + `git push`。本地不执行打包 / 镜像构建 / 发布上传。
 
-本仓当前无自构建产物（见 §4），远端 `release.yml` 只承担「跑测试 → 建 draft Release」两步；本地同样不做任何打包上传。
+本仓当前无自构建产物（见 §4），远端 `release.yml` 只承担「跑测试（`node --test`）→ 建 draft Release」两步；本地同样不做任何打包上传。
 
 ## 1. 版本号规范
 
 - 遵循 **SemVer** `MAJOR.MINOR.PATCH`；预发布用 `-alpha.N` / `-beta.N` / `-rc.N`。
 - **唯一权威版本位**：待定（负责人 + 触发条件：本仓尚无 `package.json` / `pyproject.toml` / `config.yaml` 等版本声明文件，首个 SemVer tag 发布时确定唯一权威版本位文件与字段）。
-- 当前版本：待定（负责人 + 触发条件：现有 tag `v29-p1-1` … `v29-remediate-start` 为阶段 D 之前的流水线标记，**非 SemVer**，不视为发布版本；`release.yml` 的 `draft-release` 步骤已用正则 `^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$` 强制新 tag 必须 SemVer）。
+- 当前版本：待定（负责人 + 触发条件：现有 tag `v29-remediate-start` … `v29-p1-5` 为阶段 D 之前的流水线标记，**非 SemVer**，不视为发布版本；`release.yml` 的 `draft-release` 步骤已用正则 `^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$` 强制新 tag 必须 SemVer）。
 - 必须同步的其它版本位：无（无版本声明文件，故无多点漂移问题；待引入权威版本位文件后再逐项列出并钉住）。
 - 版本位漂移校验入口：待定（负责人 + 触发条件：本仓无 `tests/test_version_consistency.py` 类校验；引入版本位文件时同步补一个 `node --test` 用例，漂一处即判红）。
 - 自动化方式：**手动 tag（人工）**——本仓未启用 release-please，无 `release-please.yml`；发布由人工本地 `git tag vX.Y.Z` → `git push origin vX.Y.Z` 触发远端 `release.yml`。
@@ -96,7 +96,7 @@
 
 ## 现状与欠账（本工单记录）
 
-- **`CHANGELOG.md` 原缺 → 已由本单建立**（Keep a Changelog）；`check-release-standard.sh --root .` 不再据此判 FAIL。
+- **`CHANGELOG.md` 原缺 → 已由本单建立**（Keep a Changelog）；`check-release-standard.sh` 不再据此判 FAIL。
 - **缺权威版本位文件**：本仓从未有过 SemVer 版本声明，首个正式发布前需确定版本位文件（建议随首次发版一并落地）。
 - **release.yml 已对齐项**：tag 驱动 ✓；无 `value=latest` ✓；无 Trivy `exit-code: 0` ✓；无 `docker/build-push-action` ✓；无 `gpg-signed-release.yml` ✓。
 

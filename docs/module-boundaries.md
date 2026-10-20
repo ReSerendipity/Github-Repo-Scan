@@ -1,7 +1,7 @@
 # scan-core.mjs 模块边界约定（职责地图 · 依赖方向 · 影响面）
 
 > 登记依据：`docs/tech-debt.md` 债项 #9「scan-core.mjs 职责集中」。本文件是 `scan-core.mjs` 内部的**唯一权威职责地图**：改动其中任何函数之前，先在第 3 节定位所属域、调用方与最小验证命令，再动手。
-> 快照口径：2026-10-14，`scan-core.mjs` 共 1036 行 / 55 个顶层声明 / 10 个职责域。表中的行号仅供导航，**以函数名为准**（行号随版本漂移）。
+> 快照口径：2026-10-14 首版为 1036 行 / 55 个顶层声明 / 10 个职责域；**2026-10-21 复核为 891 行 / 40 个顶层声明**（D1 传输域外提 `github-fetch.mjs`、死代码 `gh`/`sleepSync` 删除后）。表中的行号仅供导航，**以函数名为准**（行号随版本漂移；第 3 节 D1（成员已移入 `github-fetch.mjs`）与 D7–D10 的行号均为外提/上移前快照值，D4 行号按 2026-10-21 复核校正）。
 
 ## 1. 边界规则（违反即属架构变更，须先改本文件再写代码）
 
@@ -31,7 +31,7 @@
 | D9 | 审计日志 | `AUDIT_FILE` `AUDIT_MAX` `auditKeyWarned` `loadAuditRows` `appendAudit` | `appendAudit` `loadAuditRows` | 仅 `node:fs` + `node:crypto` |
 | D10 | 控制台汇总 | `printSummary` | `printSummary`（仅 `scan.mjs`） | 只读 `data`，不得改数据 |
 
-**外部消费者（谁在用这个单文件）**：`scan.mjs`（`collectData` `collectLocal` `mergeLocalSnapshot` `writeOutputs` `printSummary` + 门面符号）、`server.mjs`（同前四个，无 `printSummary`）、`modelscope.mjs`（仅门面 `HERE`/`readLocalConfig`）、`tests/core.test.mjs`（一次性 import 24 个符号，覆盖 D1–D9）、`tests/direct-api.test.mjs`（只测 D1 直连支路）。`render-dashboard.mjs` **不**反向依赖 scan-core（只 import `shared.mjs`），这条边必须保持。`github-fetch.mjs`（D1 传输域，2026-10-15 外提）仅被 `scan-core.mjs` 消费并经其 re-export，tests 的既有 import 站点不变。
+**外部消费者（谁在用这个单文件）**：`scan.mjs`（`collectData` `collectLocal` `mergeLocalSnapshot` `writeOutputs` `printSummary` + 门面符号）、`server.mjs`（同前四个，无 `printSummary`）、`modelscope.mjs`（仅门面 `HERE`/`readLocalConfig`）、`tests/core.test.mjs`（一次性 import 25 个符号，覆盖 D1–D9）、`tests/direct-api.test.mjs`（只测 D1 直连支路）。`render-dashboard.mjs` **不**反向依赖 scan-core（只 import `shared.mjs`），这条边必须保持。`github-fetch.mjs`（D1 传输域，2026-10-15 外提）仅被 `scan-core.mjs` 消费并经其 re-export，tests 的既有 import 站点不变。
 
 ## 3. 影响面反向索引（改这个函数 → 谁会受影响）
 
@@ -42,9 +42,9 @@
 | 声明 | 内部调用方 | 外部消费者 | 改动波及的产物/路径 |
 |---|---|---|---|
 | `execFileP` (L13) | `ghAsync` `gitOne` `collectLocal` | — | 异步子进程底座：远程取数 + 本地 git 取数 + `git --version` 探测 |
-| `sleep` (L14) | `ghAsync` | — | 重试退避节奏（与 `sleepSync` 并行存在，改一处要同步另一处） |
-| `gh` (L23) | **无（死代码，见 §5）** | 无（测试也未引用） | 仅 export 表面；删除不影响运行 |
-| `sleepSync` (L19) | `gh` | — | 与 `gh` 同生同灭 |
+| `sleep` (L14) | `ghAsync` | — | 重试退避节奏（`sleepSync` 已随死代码 `gh` 一并删除，无需再同步） |
+| `gh` (L23) | **无（死代码，已于 2026-10-15 随 D1 外提删除，见 §5）** | 无（测试也未引用） | 已删除；本行与下一行保留作历史索引 |
+| `sleepSync` (L19) | `gh` | — | 与 `gh` 同生同灭（已于 2026-10-15 一并删除） |
 | `ghToken` (L42) | `canDirectFallback` `directApi` | — | 凭据来源；决定兜底通道是否可用 |
 | `canDirectFallback` (L45) | `ghAsync` | — | 兜底触发条件（ENOENT / 未登录文案） |
 | `applyJq` (L50) | `directApi` | `core.test` `direct-api.test` | 所有 `--jq` 型取数字段 |
@@ -81,7 +81,7 @@
 
 | 声明 | 内部调用方 | 外部消费者 | 改动波及 |
 |---|---|---|---|
-| `esc` (L413) | **无（死代码，见 §5）** | 无 | 面板实际用客户端副本 |
+| `esc` | **无（死代码，scan-core 内零调用，详见 §5）** | 无 | 面板实际用客户端副本 |
 | `LANG_COLORS` (L417) | `collectData` | — | `row.langColor` 入快照 |
 | `relTime` (L519) | 无 | `core.test`（面板用 `dashboard-client.js` 副本） | BM-5 双份口径 |
 | `fullTime` (L529) | 无 | 同上 | 同上 |
@@ -150,7 +150,7 @@
 |---|---|---|
 | D1 `httpsJson` 依赖未声明的全局 `https` | **已偿清（2026-10-15）**：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入；`tests/direct-api.test.mjs` 尾部静态守卫防 import 缺失回归 | 已闭合（原 `docs/tech-debt.md` #10） |
 | D1 `gh` 零调用方 | **已删除（2026-10-15，随 D1 外提按 tech-debt.md #9 准则清理）**；D4 `esc` 仍零调用，待首个触碰 D4 的变更顺手删除 | 已闭合（D1 部分）/ `docs/tech-debt.md` #9（D4 部分） |
-| D4 `relTime`/`fullTime`/`scoreOf`/`gradeOf` 双份实现 | 面板实际执行 `assets/dashboard-client.js` 的副本；`tests/core.test.mjs` 断言的是 scan-core 的副本 → 测试护的不是发布路径 | #11 |
+| D4 展示口径函数（`esc`/`relTime`/`fullTime`/`scoreOf`/`gradeOf`）双份实现 | 面板实际执行 `assets/dashboard-client.js` 的副本；`tests/core.test.mjs` 断言的是 scan-core 的副本 → 测试护的不是发布路径（2026-10-15 起已有「两份实现同输入同输出」对拍断言，漂移即门禁红，单一来源收敛待 #9） | #11 |
 
 ## 6. 改动自检流程（每次动 scan-core.mjs 都走一遍）
 

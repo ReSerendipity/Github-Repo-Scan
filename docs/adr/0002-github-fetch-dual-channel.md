@@ -8,4 +8,4 @@
   - B. 仅 token 直连——否决：token 需自行管理落盘，失去 keyring 不落盘优势。
 - 理由：双通道按环境自动择优，零配置优先；token 走环境变量不落盘，符合仓库密钥防泄露门禁（gitleaks + .gitignore 敏感信息段）。
 - 影响：双通道需各自维护（已由 `direct-api.test.mjs` 以桩化 https 覆盖重试/降级分支）；版本基线：gh 未锁定版本（登记于 docs/tech-debt.md）。
-- 相关：readme.md「依赖说明」；评估报告 P1-1 取数通道决策记录。
+- 相关：`README.md`「依赖说明」；评估报告 P1-1 取数通道决策记录。传输实现已于 2026-10-15 外提至 `scripts/github-fetch.mjs`（经 `scan-core.mjs` re-export）。
