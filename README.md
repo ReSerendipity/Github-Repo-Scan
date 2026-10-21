@@ -4,6 +4,8 @@
 
 远程仓库：<https://github.com/ReSerendipity/Github-Repo-Scan>
 
+> 治理规范：[ReSerendipity/.github/governance](https://github.com/ReSerendipity/.github/tree/main/governance)
+
 ## 三种用法
 
 | 方式 | 命令 | 说明 |
