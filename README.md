@@ -1,6 +1,10 @@
 # GitHub 仓库扫描总览（Github-Repo-Scan）
 
+[![License](https://img.shields.io/badge/license-Apache%202.0-green?style=flat)](LICENSE)
+
 把 GitHub 账号名下所有仓库的情况（CI / 许可证 / Release / Issue / 分支 / Star·Fork / 健康分 / 可选 14 天流量）拉成本地总览面板，每个单元格都带 GitHub 跳转链接。
+
+**English** — a local dashboard that pulls every repository under a GitHub account into one table: CI status, license, releases, issues, branches, stars/forks, health score, and optional 14-day traffic, with a GitHub link on every cell.
 
 远程仓库：<https://github.com/ReSerendipity/Github-Repo-Scan>
 
