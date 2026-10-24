@@ -111,7 +111,14 @@
 - `tests/core.test.mjs` —— 冒烟测试
 - `tests/direct-api.test.mjs` —— 直连 API 测试
 - `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
-- `docs/` —— `adr/` 架构决策记录、`module-boundaries.md` 模块边界与 `tech-debt.md` 技术债登记随仓库分发；维护者对内说明在 `local/README.internal.md`，按约定不入库（克隆里取不到）
+- `docs/` —— 文档索引：
+  - [`docs/adr/`](docs/adr/)：架构决策记录（[0001](docs/adr/0001-render-architecture.md) / [0002](docs/adr/0002-github-fetch-dual-channel.md) / [0003](docs/adr/0003-snapshot-committing.md)）
+  - [`docs/module-boundaries.md`](docs/module-boundaries.md) —— 模块边界
+  - [`docs/tech-debt.md`](docs/tech-debt.md) —— 技术债登记
+  - [`docs/release-governance.md`](docs/release-governance.md) —— 发布与回滚治理
+  - [`docs/agent-contract.md`](docs/agent-contract.md) —— AI agent 契约
+  - [`CHANGELOG.md`](CHANGELOG.md) —— 变更记录
+  - 维护者对内说明在 `local/README.internal.md`，按约定不入库（克隆里取不到）
 
 **快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `docs/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
 
