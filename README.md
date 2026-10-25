@@ -37,19 +37,19 @@ Github-Repo-Scan 是一个零运行时依赖的 Node 脚本集：它通过 **gh 
 
 **默认总览**——聚合指标卡、问题 chip、语言分布与 Star 排行：
 
-![默认总览](docs/assets/readme-github-repo-scan-1.png)
+![默认总览](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-1.png)
 
 **搜索与筛选**——按仓库名/描述搜索，工具栏含语言、状态下拉与命名视图：
 
-![搜索与筛选](docs/assets/readme-github-repo-scan-2.png)
+![搜索与筛选](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-2.png)
 
 **明暗主题**——GitHub 亮/暗两套配色，切换记忆在浏览器本地：
 
-![明暗主题](docs/assets/readme-github-repo-scan-3.png)
+![明暗主题](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-3.png)
 
 **钻取问题仓**——点"CI 失败"chip 过滤出失败仓库，含最近 5 次 Actions 运行的趋势点阵与失败工作流名：
 
-![CI 失败钻取](docs/assets/readme-github-repo-scan-4.png)
+![CI 失败钻取](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-4.png)
 
 ### 快速开始
 
@@ -150,19 +150,19 @@ It deploys nothing, uses no database, and never writes a token to disk. Scan sna
 
 **Default overview** — aggregate metric cards, issue chips, language distribution and Star ranking:
 
-![Default overview](docs/assets/readme-github-repo-scan-1.png)
+![Default overview](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-1.png)
 
 **Search & filter** — search by repo name/description, with language/status dropdowns and named views:
 
-![Search and filter](docs/assets/readme-github-repo-scan-2.png)
+![Search and filter](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-2.png)
 
 **Light/dark theme** — GitHub-style light and dark palettes, remembered in the browser:
 
-![Light and dark theme](docs/assets/readme-github-repo-scan-3.png)
+![Light and dark theme](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-3.png)
 
 **Drill into failing repos** — click the "CI failing" chip to filter failures, including the 5-run CI trend dots and the failing workflow name:
 
-![CI failure drill-down](docs/assets/readme-github-repo-scan-4.png)
+![CI failure drill-down](https://gcore.jsdelivr.net/gh/ReSerendipity/Github-Repo-Scan@main/docs/assets/readme-github-repo-scan-4.png)
 
 ### Quick Start
 
