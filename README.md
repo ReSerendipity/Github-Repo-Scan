@@ -1,164 +1,241 @@
-# GitHub 仓库扫描总览（Github-Repo-Scan）
+# Github-Repo-Scan
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-green?style=flat)](LICENSE)
+> 把一个 GitHub 账号名下所有仓库拉成一张本地总览表：CI 状态、许可证、Release、Issue、分支、Star/Fork、健康分、可选 14 天流量，每个单元格都带 GitHub 跳转链接。
+>
+> A local dashboard that pulls every repository under a GitHub account into one clickable table: CI status, license, releases, issues, branches, stars/forks, a health score, and optional 14-day traffic — with a GitHub link on every cell.
 
-把 GitHub 账号名下所有仓库的情况（CI / 许可证 / Release / Issue / 分支 / Star·Fork / 健康分 / 可选 14 天流量）拉成本地总览面板，每个单元格都带 GitHub 跳转链接。
+[![CI Tests](https://github.com/ReSerendipity/Github-Repo-Scan/actions/workflows/test.yml/badge.svg)](https://github.com/ReSerendipity/Github-Repo-Scan/actions/workflows/test.yml)
+[![License Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE)
+[![Node >= 18](https://img.shields.io/badge/Node-%E2%89%A5%2018-339932?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![JavaScript ESM](https://img.shields.io/badge/JavaScript-ES%20Modules-f7df1e?logo=javascript&logoColor=black)](#快速开始)
+[![Last commit](https://img.shields.io/github/last-commit/ReSerendipity/Github-Repo-Scan)](https://github.com/ReSerendipity/Github-Repo-Scan/commits/main)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#贡献--contributing)
+[![Governance](https://img.shields.io/badge/governance-ReSerendipity%2F.github-blue.svg)](https://github.com/ReSerendipity/.github/tree/main/governance)
 
-**English** — a local dashboard that pulls every repository under a GitHub account into one table: CI status, license, releases, issues, branches, stars/forks, health score, and optional 14-day traffic, with a GitHub link on every cell.
+[中文](#中文) | [English](#english)
 
-远程仓库：<https://github.com/ReSerendipity/Github-Repo-Scan>
+---
 
-> 治理规范：[ReSerendipity/.github/governance](https://github.com/ReSerendipity/.github/tree/main/governance)
+## 中文
 
-## 三种用法
+### 项目简介
 
-| 方式 | 命令 | 说明 |
-|---|---|---|
-| 双击启动（推荐） | `启动面板.bat` | 双击即启动本地服务并自动打开浏览器 |
-| 交互面板 | `node scripts/server.mjs` | 同上，命令行方式启动；支持 `--port` 换端口 |
-| 远程+本地对照 | `node scripts/scan.mjs [owner]` | 扫远程账号并对照本机 Git 仓库，重新生成 `dashboard.html` + `scan-data.json` |
-| 仅本地扫描 | `node scripts/scan.mjs --local-only` | 只扫本机 Git 仓库（不访问 GitHub），并入现有快照 |
-| 本地范围/深度 | `node scripts/scan.mjs --local-paths "a;b" --depth 5` | 临时指定本地扫描根目录（分号分隔）与深度 |
-| 仅远程 | `node scripts/scan.mjs --remote-only` | 跳过本地对照 |
-| 仅重渲染 | `node scripts/scan.mjs --render-only` | 不重新扫描，按现有快照重渲染面板（改样式/主题后用） |
-| 启动前自动扫描 | `node scripts/server.mjs --scan-on-start=always` | 启动时若需扫描，会**先开页面（用现有快照）再在后台扫描，不阻塞打开**；模式 `always`/`stale`/`first`/`off`（`--scan-on-start off` 与 `--scan-on-start=off` 两种写法皆可），默认 `stale`（快照比 `autoScanMaxAgeHours` 旧才扫），由 `scan-config.json` 的 `autoScanOnStart` 控制；面板「启动前扫描」开关可联动切换 `always`/`off`。附加 `--no-open` 可禁止自动打开浏览器 |
+Github-Repo-Scan 是一个零运行时依赖的 Node 脚本集：它通过 **gh CLI**（或 `GH_TOKEN`/`GITHUB_TOKEN` 直连）调用 GitHub GraphQL + REST，把账号名下全部仓库的健康状况聚合成一个**单文件 `dashboard.html`**（数据内嵌、双击即开），并提供一个只监听 `127.0.0.1` 的本地服务做"页面上一键重新扫描"。
 
-指定账号：默认扫当前 gh 登录账号；`node scripts/scan.mjs someUser` 可扫指定账号。
+它不部署任何服务、不需要数据库、不写 token 到磁盘；扫描结果快照（`dashboard.html` / `scan-data.json`）按约定随主分支入库，方便回溯。
 
-## 页面功能
+### 核心特性
 
-| 功能 | 实现 |
-|---|---|
-| 扫描更新 | 页面右上角「重新扫描」→ 本地服务 → gh CLI → GitHub API；完成后表格原地刷新，同时把 dashboard.html 与 scan-data.json 写回磁盘 |
-| 自动刷新 | 工具栏可选每 10 / 30 / 60 分钟自动扫描一次，选择会记住 |
-| 明暗切换 | 右上角主题按钮（默认浅色；GitHub 亮 / 暗两套配色），切换后选择记忆在浏览器 localStorage |
-| 排序 | 全部表头可点击：仓库 / 健康 / CI 状态 / 许可证 / Release / Issue / 远程分支 / 本地分支 / Star / Fork / 语言 / 流量 / 最近推送；再点一次切换升降序，空值恒沉底，排序选择会记住 |
-| 健康评分 | 每仓 0-100 分：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15（归档仓打七折），A/B/C/D 四档，悬停看构成 |
-| 自定义视图 | 「＋存视图」把当前搜索/筛选/排序存成命名视图，下拉一键切换，保存在浏览器 localStorage |
-| 流量（14天） | 设环境变量 `SCAN_WITH_TRAFFIC=1` 后重新扫描，展示近 14 天浏览量与克隆数（每仓多 2 次 API 调用，需 push 权限） |
-| 筛选与搜索 | 按仓库名/描述搜索、按语言筛选、按状态筛选（CI 通过/失败/运行中/无 CI/有 Issue/未声明许可证）、一键隐藏 fork |
-| CI 趋势 | 每仓展示最近 5 次 Actions 运行的点阵（绿=通过、红=失败、黄=运行中），悬停看时间与结论 |
-| 本地对照 | 每仓显示本机是否有对应 Git 仓库（本地有 / 本地缺失），主表「本地分支」列与「本地」列带本地/远程分支标注、脏状态、领先落后；支持按本地状态筛选与排序 |
-| 仅本地视图 | 「仅扫本地」只读本机 .git；「仅本地仓库」模式列出全部本机仓库（含远程账号名下没有的），「本地目录…」设置扫描范围 |
-| API 配额 | 页脚实时显示 GitHub API 剩余额度与重置时间 |
-| CI/CD 状态 | 最近一次 GitHub Actions 运行：通过 / 失败 / 运行中 + 工作流名与触发分支，点击直达该次运行页 |
-| 许可证类型 | SPDX 标识（MIT、Apache-2.0 等），点击直达 LICENSE 文件页 |
-| CLI 形态 | 每仓三态：CLI（有正式命令行入口：manifest bin/entry_points 或 cli 命名入口文件）/ 脚本集（scripts·tools 目录承载命令行脚本但无统一入口）/ 无；本地有克隆的仓按本地代码检测，远程-only 仓走文件树 + 清单（pushedAt 未变复用快照）；悬停看判定依据；`gradlew`、`vitepress build` 之类构建工具链不算仓库自有 CLI |
-| Release | 最新发布 tag + 名称 + 时间，点击直达 release 页 |
-| Issue | 开放 issue 数（不含 PR），点击直达 issues 页；开放 PR 数单独列出并链接 |
-| 分支 | 主表「远程分支」列（GitHub 默认分支名 + 分支总数，带「远程」标签）与「本地分支」列（本机检出分支 + 其远程跟踪分支，带「本地/远程」标签）相邻展示，一眼区分远程与本地；**悬停可查看全部远程分支 / 全部本地分支 / 全部远程跟踪分支名单**（超 50 个截断并显示总数）；过长分支名单行省略号截断、悬停查看全名；点击直达 branches 页 |
-| 仓库信息 | star / fork / 主语言 / 描述 / 可见性 / 最近推送，均链接到对应 GitHub 页面 |
-| 可见性排序/筛选 | 「可见性」列可点表头按公开/私有排序（私有优先）；状态筛选下拉含「仅公开 / 仅私有」；顶部指标卡显示公开/私有数量 |
-| 仓库大小 | 「大小」列显示 GitHub 磁盘占用（自动 KB/MB/GB 换算），可点表头排序；顶部指标卡显示总大小 |
-| 最近变更文件 | 「最近变更」列显示最近一次提交变更的文件数，点「N 文件」就地展开文件清单（A 增 / M 改 / D 删，带 +− 行数，链接到提交页） |
-| 导出 CSV | 右上角「导出 CSV」把当前筛选/排序结果导出为 UTF-8（带 BOM）CSV，Excel 可直接打开 |
-| 隐藏归档 | 工具栏「隐藏归档」复选框一键隐藏 archived 仓库 |
-| 低健康分筛选 | 状态筛选「仅低健康分(<50)」快速定位问题仓库 |
-| 启动前自动扫描 | 面板「启动前扫描」开关 + `scan-config.json` 的 `autoScanOnStart`（always/stale/first/off），双击启动面板可先自动扫描再打开 |
-| 只扫本账户 | 面板「只扫本账户」开关（默认开启）+ `scan-config.json` 的 `localOwnerOnly`；开启后本地对照只保留当前 gh 登录账号名下的仓库，第三方克隆与纯本地仓被忽略 |
-| 创建时间排序 | 「创建时间」列可点表头按仓库创建时间排序 |
-| 语言分布 | 顶部「语言分布」面板按仓库数 Top 8 展示各语言占比条（颜色取自 GitHub 语言色） |
-| 聚合视图 | 顶部「聚合视图」面板一键列出 CI 失败 / 低健康分(<50) / 未声明许可证 / 无 CI 记录 / 本地缺失 的数量，点 chip 直接套用对应筛选 |
-| 复制 clone | 右上角「复制 clone」把当前可见仓库的 `git clone <url>` 命令批量复制到剪贴板（Excel/终端可直接粘贴） |
-| 仅归档筛选 | 状态筛选含「仅归档仓库」；聚合视图面板单独列出归档仓库数量，点 chip 一键筛选 |
-| Star 排行榜 | 顶部「排行 Top5」面板按 Star 数从高到低展示仓库名与占比条；点面板内 Star/Fork/Issue/健康分 按钮可切换排行指标（点击仓库名直达 GitHub） |
-| 归档仓库分区 | 顶部「归档仓库」独立分区汇总列出全部 archived 仓库（含健康分档），不参与活跃度评比；状态筛选另有「仅归档仓库」可一键只看归档 |
-| 聚合视图可折叠 | 顶部「聚合视图」容器（指标卡 + 聚合 chip + 语言分布 + 排行 + 归档分区）可一键折叠/展开，折叠偏好记入浏览器 localStorage，下次打开自动记住 |
-| Star 周增长趋势 | 表格中该列已改为「本地分支」；近 7 天 Star 增量仍在顶部指标卡「本周新增★」与 Star 排行榜 Top5「+N/周」展示（基于 scan-data-history.json 按天累积，红涨绿跌遵循 A 股惯例，需 ≥6 天历史，否则显示「—」不编造数据）；导出 CSV 仍含「近7天★」列 |
-| 先探测再扫描（增量） | 「重新扫描」默认先拉一次仓库列表（1–2 次 GraphQL）与上次快照逐仓比对；**未变的仓库直接复用上次明细（许可证 / CI / 提交 / 流量），不发任何额外请求** —— 无变更时秒级返回。元信息显示「本次：无变更·复用快照 / 增量扫描 N/M / 强制全量 · 用时」。**按住 Shift 点「重新扫描」= 强制全量扫描** |
-| 启动不阻塞 + 自动刷新 | 启动时若触发自动扫描，服务**先开页面（现有快照）再后台扫描**；页面每 3 秒轮询 `/api/status`，扫描完成后自动刷新，无需手工等待或刷新页面 |
-| 魔搭魔粒余额 | 顶部「魔搭魔粒」条展示 ModelScope（魔搭社区）魔粒余额（可用 / 总 / 冻结），点击「刷新」走 `GET /openapi/v1/magicubes/balance` 实时拉取；打开页面只读本地缓存（瞬开、不刷网络）。认证优先 `MODELSCOPE_API_TOKEN` 环境变数，其次 `scan-config.json` 的 `modelscopeToken`，兜底复用本机 `modelscope login` 登录态（零配置） |
+- **一张表看全账号**：CI 通过/失败/运行中、SPDX 许可证、最新 Release、开放 Issue 与 PR、远程/本地分支、Star/Fork、主语言、仓库大小、最近推送——单元格全部可点直达 GitHub。
+- **健康分 0–100**：CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15，分 A/B/C/D 档，归档仓自动七折。
+- **增量扫描**：先比对 listing 字段，未变更的仓库直接复用上次快照、不发额外请求；无变更时秒级返回。按住 **Shift** 点"重新扫描"可强制全量。
+- **本地 Git 对照**：遍历本机目录找对应仓库，标注本地有/缺失、本地分支与远程跟踪分支、干净/未提交/领先/落后；支持 `--local-only` 只扫本机。
+- **聚合与钻取**：顶部指标卡 + "CI 失败 / 低健康分 / 未声明许可证 / 无 CI 记录 / 本地缺失"等 chip，点一下即过滤表格；语言分布、Star 排行 Top5、归档分区一键折叠。
+- **纯浏览器交互**：排序、筛选、搜索、明暗主题、命名视图、CSV 导出全部离线可用，偏好存在 localStorage。
 
-## 本地 Git 仓库扫描（对照 + 独立）
+### 界面展示
 
-- **远程与本地对照**：扫描远程账号的同时遍历本机目录找 Git 仓库，每个远程仓库在「本地」列显示：本地有（本地分支 · 对应远程分支（若有）· 干净 / 未提交 n / ↑领先 ↓落后）或本地缺失。
-- **仅本地扫描**：`node scripts/scan.mjs --local-only` 或面板「仅扫本地」——只读本机 `.git`（remote / 分支 / HEAD / status / rev-list），不访问 GitHub、不 fetch、不推送；面板「仅本地仓库」模式列出全部本机仓库。
-- **本地独有仓库**：本机存在但远程账号名下没有对应的仓库（改名、fork 后删库、纯本地实验仓），单独区块列出。
-- **只保留本账号仓库（默认开启）**：本地对照只保留远程归属为当前 gh 登录账号的仓库——第三方克隆（如 ComfyUI、box64、sd-scripts 等）与无 GitHub 远程的纯本地仓会被忽略，不再出现在本地对照与「本地独有」里（控制台会提示忽略了几个）。面板工具栏「只扫本账户」开关可随时切换，记忆在 `scan-config.json` 的 `localOwnerOnly`，**显式设成 `false` 才关闭**。
-- **扫描范围**：默认 = 用户主目录（只看 1 层）+ 桌面 / 文档 / 下载（深度 4）；`scan-config.json` 的 `localScanRoots`（字符串或 `{ "path": "...", "depth": 2 }`）+ `localScanDepth` 持久配置，`--local-paths` / `--depth` 临时覆盖，面板「本地目录…」可视化保存。隐藏目录、`node_modules` 等重目录、符号链接自动跳过，最多 500 个仓库。
-- **对照规则**：本地 remote URL 解析出 `owner/repo` 与远程精确匹配；无 GitHub remote 或 owner 不同但仓库名唯一时按名字兜底；同名多候选不猜（标记 ambiguous，进「本地独有」）。
-- **依赖**：git 在 PATH 即可，无需 gh 登录；`--remote-only` 可关掉本地对照。
-- **配置文件**：`scan-config.json` 含本机路径，已加入 `.gitignore` 不入库；还可配置 `autoScanOnStart`（启动前自动扫描模式：`always`/`stale`/`first`/`off`，默认 `stale`）、`autoScanMaxAgeHours`（stale 模式下判定「过期」的小时数，默认 6）与 `localOwnerOnly`（只保留本账号仓库，默认 `true`）。
-- **魔搭魔粒（ModelScope）**：面板顶部「魔搭魔粒」条显示你的魔粒余额，来自官方 OpenAPI `GET /openapi/v1/magicubes/balance`。认证三选一（优先级从高到低）：① 设环境变数 `MODELSCOPE_API_TOKEN`（在 `modelscope.cn/my/access/token` 申请，稳定推荐）；② 把 token 写入 `scan-config.json` 的 `modelscopeToken` 字段；③ 零配置复用本机 `modelscope login` 产生的 `~/.modelscope/credentials/cookies` 登录态（cookie 过期后重新 `modelscope login` 即可）。命令行也可直接 `node scripts/modelscope.mjs [--refresh]` 打印余额。
+**默认总览**——聚合指标卡、问题 chip、语言分布与 Star 排行：
 
-## 性能与增量
+![默认总览](docs/assets/readme-github-repo-scan-1.png)
 
-- **变更探测（增量）**：深度扫描前先比对 listing 级字段（pushedAt / star / fork / issue / PR / 分支 / 发布 / 可见性 / 归档 / CI 是否在跑）；未变的仓库跳过每仓 REST 调用、复用上次快照（`repoUnchanged()` 判定）—— **无变更时几乎零请求、秒级返回**；CI 运行中的仓库会重查（可能刚出结果）。
-- 扫描并行化：许可证与 CI 记录按并发 8 并行拉取，全账号全量扫描约 5–15 秒（旧版串行需 30–40 秒）。
-- 仓库分页：GraphQL 每页 100 个、最多 5 页（500 个），超出会在页面提示截断。
-- 许可证链接增量复用：`pushedAt` 未变的仓库直接复用上次快照里的 LICENSE 链接，省一半 REST 调用。
-- 自动重试：GitHub API 5xx / 429 / 网络抖动自动重试（最多 3 次、递增退避）。
+**搜索与筛选**——按仓库名/描述搜索，工具栏含语言、状态下拉与命名视图：
 
-## 依赖说明（是否依赖 gh CLI）
+![搜索与筛选](docs/assets/readme-github-repo-scan-2.png)
 
-- **排序、筛选、明暗切换**：纯浏览器 JS，零依赖，离线可用。
-- **扫描取数**：需要一个带凭据的 GitHub API 通道。当前实现复用本机 **gh CLI**（登录态存在系统 keyring，token 不落盘）；本地服务只是把 gh 的调用包成页面可点的按钮。
-- 不想装 gh：设 `GH_TOKEN`（或 `GITHUB_TOKEN`）环境变量即自动走 **token 直连兜底通道**（REST+GraphQL，gh 缺失或未登录时自动生效）；token 走环境变量、不落盘。
-- 直连通道默认严格校验 TLS 证书；仅当本机代理拦截证书链导致校验失败时，设 `SCAN_INSECURE_TLS=1` 显式放宽（仅对 api.github.com 放宽重试一次，对应评估报告 R2 P2-4）。
+**明暗主题**——GitHub 亮/暗两套配色，切换记忆在浏览器本地：
 
-前置：Node ≥ 18（CI 在 Node 22 上验证，见 `.github/workflows/release.yml`）；扫描功能需要 gh CLI 已登录（`gh auth login`）。
+![明暗主题](docs/assets/readme-github-repo-scan-3.png)
 
-## 文件
+**钻取问题仓**——点"CI 失败"chip 过滤出失败仓库，含最近 5 次 Actions 运行的趋势点阵与失败工作流名：
 
-- `启动面板.bat` —— 双击启动（UTF-8 无 BOM + `chcp 65001`，中文提示不乱码）
-- `dashboard.html` —— 交互面板（每次扫描重新生成，数据内嵌，双击即开）
-- `scripts/server.mjs` —— 本地服务（页面一键扫描的后端；仅监听 127.0.0.1，带跨站来源校验）
-- `scripts/scan-core.mjs` —— 扫描/取数/合并共享核心（并行 / 分页 / 重试 / 增量）
-- `scripts/render-dashboard.mjs` —— 面板渲染模块（生成单页 HTML，注入 `assets/dashboard-client.js`）
-- `scripts/shared.mjs` —— 路径 / 本地配置 / 大小格式化共享基础
-- `assets/dashboard-client.js` —— 面板客户端应用（纯浏览器 JS，独立资产，渲染时注入）
-- `scripts/scan.mjs` —— 命令行扫描入口（`--render-only` 仅重渲染）
-- `scan-data.json` —— 最近一次扫描的数据快照（schema 3，含本地对照结果）
-- `scan-config.json` —— 本地扫描配置（可选；含本机路径不入库，面板「本地目录…」会写入）
-- `scan-data-history.json` —— Star 周增长趋势的本地快照历史（按天累积，纯本地运行时数据，已加入 `.gitignore` 不入库）
-- `scan-audit.jsonl` —— 扫描审计日志（结构化 JSONL，本机留痕不入库；设 `SCAN_AUDIT_KEY` 可启用逐行 HMAC 防篡改，对应评估报告 R2 P2-8）
-- `tests/core.test.mjs` —— 冒烟测试
-- `tests/direct-api.test.mjs` —— 直连 API 测试
-- `hooks/pre-push` —— 推送前自动跑 `node --test` 的冒烟测试门闸（需复制到 `.git/hooks/` 启用）
-- `docs/` —— 文档索引：
-  - [`docs/adr/`](docs/adr/)：架构决策记录（[0001](docs/adr/0001-render-architecture.md) / [0002](docs/adr/0002-github-fetch-dual-channel.md) / [0003](docs/adr/0003-snapshot-committing.md)）
-  - [`docs/module-boundaries.md`](docs/module-boundaries.md) —— 模块边界
-  - [`docs/tech-debt.md`](docs/tech-debt.md) —— 技术债登记
-  - [`docs/release-governance.md`](docs/release-governance.md) —— 发布与回滚治理
-  - [`docs/agent-contract.md`](docs/agent-contract.md) —— AI agent 契约
-  - [`CHANGELOG.md`](CHANGELOG.md) —— 变更记录
-  - 维护者对内说明在 `local/README.internal.md`，按约定不入库（克隆里取不到）
+![CI 失败钻取](docs/assets/readme-github-repo-scan-4.png)
 
-**快照入库策略**：`scan-data.json` / `dashboard.html` / `all_repos_report.txt` / `scan_run*.txt` 为生成物快照，按约定随主分支入库以保留每次扫描的可回溯性（接受大 diff）；快照刷新与代码变更分批提交。决策细节见 `docs/adr/0003-snapshot-committing.md`。**路径脱敏**（对应评估报告 R2 P1-3）：入库快照中的本地路径已相对化为 `~/…`（不含本机用户目录名），页面点击「打开文件夹」由本地服务展开还原并校验路径在扫描根目录内。
+### 快速开始
 
-## 测试
+前置条件：
+
+- **Node.js ≥ 18**（CI 在 Node 22 上验证，无需 `npm install`，项目零运行时依赖）。
+- 扫描功能需要一个 GitHub 凭据：已登录的 **gh CLI**（`gh auth login`），或环境变量 `GH_TOKEN` / `GITHUB_TOKEN`。纯前端交互（排序/筛选/主题）不需要任何凭据。
 
 ```bash
-node --test
+# 1. 克隆
+git clone https://github.com/ReSerendipity/Github-Repo-Scan.git
+cd Github-Repo-Scan
+
+# 2. 启动本地面板（默认端口 8787，自动打开浏览器）
+node scripts/server.mjs
+
+# 3. 最小验证：浏览器打开
+#    http://127.0.0.1:8787/dashboard.html
+#    看到指标卡与仓库表格即成功；页面右上角"重新扫描"会用 gh 拉最新数据。
 ```
 
-### 本地门禁：新克隆需要各激活一次
+Windows 用户可直接双击 `启动面板.bat`。常用命令：
 
-下面三道**落地前**闸门不会随克隆自动生效——未激活时它们惰性存在，改动只能等 push 之后的 CI 兜底。
+| 目的 | 命令 |
+|---|---|
+| 启动交互面板 | `node scripts/server.mjs`（`--port 9000` 换端口，`--no-open` 不自动开浏览器，`--scan-on-start=off` 启动不自动扫描） |
+| 扫远程账号 + 本地对照 | `node scripts/scan.mjs`（默认扫当前 gh 登录账号；`node scripts/scan.mjs someUser` 扫指定账号） |
+| 只扫本机 Git 仓库 | `node scripts/scan.mjs --local-only` |
+| 只重渲染、不联网 | `node scripts/scan.mjs --render-only` |
+| 跑测试 | `node --test` |
 
-| 闸门 | 作用 | 激活命令 | 自查命令 |
-| --- | --- | --- | --- |
-| `hooks/pre-push` | 推送前跑 `node --test`，失败即阻断 | `cp hooks/pre-push .git/hooks/pre-push` | `diff hooks/pre-push .git/hooks/pre-push`（无输出即未分叉） |
-| `.pre-commit-config.yaml`（gitleaks） | 提交前扫密钥 | `pre-commit install` | `pre-commit run gitleaks-system --all-files` |
-| `.qoder/settings.json`（编码 agent 编辑后闸门） | 核心模块被编辑即跑 `node --test` | `cp hooks/qoder-settings.example.json .qoder/settings.json` | 向 `node hooks/post-edit-validate.mjs` 送一条 `tool_input.file_path` 指向 `scripts/scan-core.mjs` 的 JSON 事件，全绿时应回报 `✓ …（N 项）` |
+### 系统要求与兼容性
 
-`.qoder/` 不入库，所以脚本本体（`hooks/post-edit-validate.mjs`）虽随仓库分发，却没有调用方；`hooks/qoder-settings.example.json` 就是那份可复制的调用方注册，内容与本机生效注册逐字一致。已有 `.qoder/settings.json` 的话，把 `hooks.PostToolUse` 这一段并进去即可，别整体覆盖。
+- Node.js ≥ 18（CI 在 Node 22 验证）；纯 ESM（`.mjs`），无第三方运行时依赖。
+- 凭据通道：优先复用本机 `gh CLI` 登录态（token 存系统 keyring）；检测不到 gh 时自动走 `GH_TOKEN`/`GITHUB_TOKEN` 直连 REST + GraphQL。
+- 面向**个人账号**（查询走 `user(login:)`），组织账号暂不支持。
+- 本地服务仅监听 `127.0.0.1`，带跨站来源校验；macOS / Linux / Windows 均可运行，`.bat` 为 Windows 一键启动。
 
-`hooks/pre-push` 是版本库内的唯一来源，复制到 `.git/hooks/` 后生效。两份一旦分叉，实际执行的是 `.git/hooks/` 那一份，版本库里的改动不会生效——上面那条 `diff` 就是用来发现这件事的（本仓曾真的分叉过一行注释）。
+### 使用示例
 
-未采用 `git config core.hooksPath hooks` 这种更省事的接法：它会让 git 不再看 `.git/hooks/pre-commit`，等于顺手关掉 gitleaks 密钥门（`hooks/` 目录里没有 pre-commit 入口）。
+```bash
+# 换端口启动，且启动时不自动扫描（直接用仓库自带快照）
+node scripts/server.mjs --port 9000 --scan-on-start=off
 
-覆盖：CI 状态映射、相对时间分档、时区格式化、`fmtSize` 大小换算、`computeStarWeek` 周增长（含历史不足 / 无历史）、`repoUnchanged` 变更探测、面板渲染（内嵌数据转义 / XSS 注入防护 / 默认主题 / 配额展示）。
+# 扫描另一个公开账号并重新生成 dashboard.html
+node scripts/scan.mjs torvalds
 
-> **维护者须知**：客户端脚本专项守卫与「提交前必须运行 `node --test`」的开发纪律说明写在维护者对内文档 `local/README.internal.md` 里——该文件按约定不入库，克隆里取不到；可机检的等价约束见上表「本地门禁」与 `.github/workflows/test.yml`。
+# 只扫本机仓库，不访问 GitHub
+node scripts/scan.mjs --local-only
 
-## 数据口径
+# 改完样式后按现有快照重渲染面板
+node scripts/scan.mjs --render-only
+```
 
-- CI 取最近一次工作流运行（Actions runs 接口，任意分支/标签），显示工作流名与触发分支；从无运行记录显示「无 CI 记录」。
-- Issue 数为开放 issue，不含 PR（GraphQL 的 issues 连接天然排除 PR；PR 数单列）。
-- 分支数为 GitHub 远程分支总数（不含 tag）；面板「远程分支」列与「本地」列的 本地/远程 标注区分 GitHub 分支与本机检出分支。
-- 许可证链接来自 `GET /repos/{owner}/{repo}/license`；根目录没有标准 LICENSE 文件时只显示标识、不带链接。
-- CLI 判定为静态启发式：入口 = 根清单（package.json `bin` / pyproject `[project.scripts]`·`[tool.poetry.scripts]` / setup.py·setup.cfg entry_points / Cargo `[[bin]]`）或 `cli.py`·`__main__.py` 等 cli 命名入口文件；仅散装命令行脚本（scripts/tools 目录）计为「脚本集」；判定不实跑命令，仅为面板参考。
-- 本工具面向个人账号（查询走 `user(login:)`），组织账号暂不支持。
-- Star 周增长趋势：每仓「近7天★」= 当前 Star 数 − 约 7 天前本地快照里的 Star 数；历史来自 `scan-data-history.json`（每次远程全量扫描按自然日去重追加一条）。历史不足 6 天时显示「—」，不会凭空推算增量。红涨绿跌遵循 A 股涨跌配色惯例。
-- 本地对照：`↑n` 本地领先远程 n 个提交、`↓n` 落后 n 个（基于本地缓存的远程 refs，不自动 fetch，需要刷新先手动 `git fetch`）；「未提交 n」为工作区改动文件数（含未跟踪）；「本地缺失」= 远程有但扫描范围内没有对应目录。分支标注：「本地」= 本机当前检出的本地分支，「远程」= 该分支的远程跟踪分支（如 `origin/main`，同样来自本地缓存的 refs，不自动 fetch）；无远程跟踪分支（未 push 的纯本地分支）只显示「本地」。
+### 常见问题
+
+- **端口被占用？** 用 `node scripts/server.mjs --port 9000` 指定其他端口。
+- **提示未登录 gh？** 运行 `gh auth login`；或 `export GH_TOKEN=...`（一个有 `repo` 范围的 Personal Access Token）后重试。token 只走环境变量，不落盘。
+- **扫描很慢？** 默认增量扫描，未变更仓库复用快照、秒级返回；首次全量或按 **Shift** 强制全量时，全账号约 5–15 秒（并发 8）。
+- **不想扫本地目录？** 加 `--remote-only`；或在面板里切"仅远程"。本地对照默认只保留当前 gh 登录账号名下的仓库。
+- **直接双击 `dashboard.html` 打不开数据？** 数据已内嵌在 HTML 里应能直接看；若需要"页面上一键重新扫描"，请通过 `node scripts/server.mjs` 启动，因为该按钮需要本地后端代理 gh 调用。
+
+### 文档与治理
+
+- 架构决策记录：[`docs/adr/0001`](docs/adr/0001-render-architecture.md) · [`0002`](docs/adr/0002-github-fetch-dual-channel.md) · [`0003`](docs/adr/0003-snapshot-committing.md)
+- [模块边界](docs/module-boundaries.md) · [技术债](docs/tech-debt.md) · [发布与回滚治理](docs/release-governance.md) · [AI Agent 契约](docs/agent-contract.md)
+- 变更记录见 [CHANGELOG.md](CHANGELOG.md)。
+- 治理规范：[ReSerendipity/.github/governance](https://github.com/ReSerendipity/.github/tree/main/governance)。
+
+### 贡献
+
+欢迎 Issue 与 PR。提交前请本地跑一遍 `node --test`，并按需激活 `hooks/pre-push` 推送前门闸；提交信息建议带签名（`git commit -s`）。安全问题请按仓库治理与 SECURITY 流程私下反馈，勿直接开公开 issue 暴露凭据。
+
+### 许可证
+
+基于 [Apache-2.0](LICENSE) 协议开源。
+
+---
+
+## English
+
+### Overview
+
+Github-Repo-Scan is a zero-runtime-dependency Node script set. It uses the **gh CLI** (or a `GH_TOKEN`/`GITHUB_TOKEN` direct channel) to call the GitHub GraphQL + REST APIs and aggregate every repository under an account into a **single self-contained `dashboard.html`** (data embedded, opens by double-click). A tiny local server bound to `127.0.0.1` powers a "re-scan from the page" button.
+
+It deploys nothing, uses no database, and never writes a token to disk. Scan snapshots (`dashboard.html` / `scan-data.json`) are committed to `main` by convention for traceability.
+
+### Features
+
+- **One table for the whole account**: CI pass/fail/running, SPDX license, latest release, open issues & PRs, remote/local branches, stars/forks, primary language, repo size, last push — every cell links to GitHub.
+- **0–100 health score**: CI 40 + freshness 30 + issue hygiene 15 + release cadence 15, graded A/B/C/D; archived repos are discounted to 70%.
+- **Incremental scans**: listing-level diff first; unchanged repos reuse the previous snapshot with zero extra requests — near-instant when nothing changed. Hold **Shift** while clicking "重新扫描" for a forced full scan.
+- **Local Git cross-check**: walks local directories to match repos, flagging present/missing, local vs. remote-tracking branches, clean/dirty/ahead/behind; `--local-only` scans only local repos.
+- **Aggregate drill-down**: top metric cards + chips for "CI failing / low health / no license / no CI record / local missing" filter the table in one click; language distribution, Star Top-5 and the archived section collapse as needed.
+- **Pure browser UX**: sorting, filtering, search, light/dark theme, named views and CSV export all work offline; preferences persist in localStorage.
+
+### Screenshots
+
+**Default overview** — aggregate metric cards, issue chips, language distribution and Star ranking:
+
+![Default overview](docs/assets/readme-github-repo-scan-1.png)
+
+**Search & filter** — search by repo name/description, with language/status dropdowns and named views:
+
+![Search and filter](docs/assets/readme-github-repo-scan-2.png)
+
+**Light/dark theme** — GitHub-style light and dark palettes, remembered in the browser:
+
+![Light and dark theme](docs/assets/readme-github-repo-scan-3.png)
+
+**Drill into failing repos** — click the "CI failing" chip to filter failures, including the 5-run CI trend dots and the failing workflow name:
+
+![CI failure drill-down](docs/assets/readme-github-repo-scan-4.png)
+
+### Quick Start
+
+Requirements:
+
+- **Node.js ≥ 18** (CI verified on Node 22). No `npm install` — zero runtime dependencies.
+- Scanning needs a GitHub credential: a logged-in **gh CLI** (`gh auth login`), or `GH_TOKEN` / `GITHUB_TOKEN` in the environment. Pure UI work (sort/filter/theme) needs no credential.
+
+```bash
+# 1. Clone
+git clone https://github.com/ReSerendipity/Github-Repo-Scan.git
+cd Github-Repo-Scan
+
+# 2. Start the local panel (default port 8787, opens the browser)
+node scripts/server.mjs
+
+# 3. Minimal check: open
+#    http://127.0.0.1:8787/dashboard.html
+#    Metric cards and the repo table mean it works; "重新扫描" pulls fresh data via gh.
+```
+
+Windows users can double-click `启动面板.bat`. Common commands:
+
+| Goal | Command |
+|---|---|
+| Start the panel | `node scripts/server.mjs` (`--port 9000` to change port, `--no-open` to skip opening the browser, `--scan-on-start=off` to skip auto-scan) |
+| Scan remote account + local cross-check | `node scripts/scan.mjs` (defaults to the current gh account; `node scripts/scan.mjs someUser` scans another account) |
+| Local Git repos only | `node scripts/scan.mjs --local-only` |
+| Re-render only, no network | `node scripts/scan.mjs --render-only` |
+| Run tests | `node --test` |
+
+### Requirements & Compatibility
+
+- Node.js ≥ 18 (CI on Node 22); pure ESM (`.mjs`), no third-party runtime dependencies.
+- Auth: prefers the local **gh CLI** login (token in the system keyring); falls back to a `GH_TOKEN`/`GITHUB_TOKEN` REST + GraphQL direct channel.
+- Built for **personal accounts** (queries use `user(login:)`); organization accounts are not supported yet.
+- The local server listens only on `127.0.0.1` with cross-origin checks; runs on macOS, Linux and Windows (`.bat` for one-click Windows launch).
+
+### Examples
+
+```bash
+# Start on another port, using the bundled snapshot without auto-scanning
+node scripts/server.mjs --port 9000 --scan-on-start=off
+
+# Scan another public account and regenerate dashboard.html
+node scripts/scan.mjs torvalds
+
+# Scan only local Git repos, no GitHub calls
+node scripts/scan.mjs --local-only
+
+# Re-render the panel from the existing snapshot after styling tweaks
+node scripts/scan.mjs --render-only
+```
+
+### FAQ
+
+- **Port in use?** Run `node scripts/server.mjs --port 9000`.
+- **Not logged in to gh?** Run `gh auth login`, or `export GH_TOKEN=...` (a Personal Access Token with `repo` scope) and retry. The token stays in the environment and is never written to disk.
+- **Scanning is slow?** The default incremental scan reuses snapshots for unchanged repos and returns in seconds; the first full run (or a Shift-forced full scan) takes about 5–15 seconds for a whole account at concurrency 8.
+- **Skip local directories?** Add `--remote-only`, or switch to remote-only in the panel. Local cross-check keeps only repos belonging to the current gh account by default.
+- **Double-clicking `dashboard.html` shows no data?** Data is embedded in the HTML and should render directly; for the on-page "re-scan" button you need `node scripts/server.mjs`, because that button calls the local backend which proxies gh.
+
+### Docs & Governance
+
+- Architecture decision records: [`docs/adr/0001`](docs/adr/0001-render-architecture.md) · [`0002`](docs/adr/0002-github-fetch-dual-channel.md) · [`0003`](docs/adr/0003-snapshot-committing.md)
+- [Module boundaries](docs/module-boundaries.md) · [Tech debt](docs/tech-debt.md) · [Release & rollback governance](docs/release-governance.md) · [AI agent contract](docs/agent-contract.md)
+- See [CHANGELOG.md](CHANGELOG.md) for release history.
+- Governance: [ReSerendipity/.github/governance](https://github.com/ReSerendipity/.github/tree/main/governance).
+
+### Contributing
+
+Issues and PRs are welcome. Run `node --test` before submitting and enable `hooks/pre-push` as a pre-push gate when useful; prefer signed commits (`git commit -s`). Please report security issues privately per the repository's security process rather than filing a public issue that exposes credentials.
+
+### License
+
+Released under the [Apache-2.0](LICENSE) license.
