@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { collectData, ghAsync, setHttpsTransport } from "../scripts/scan-core.mjs";
+import { collectData, ghAsync, setHttpsTransport, repoUnchanged } from "../scripts/scan-core.mjs";
 
 const REAL_PATH = process.env.PATH;
 const REAL_TOKEN = process.env.GH_TOKEN;
@@ -125,4 +125,31 @@ test("collectData：单页单仓全量编排的字段契约与 scanInfo 统计",
   assert.equal(data.rate.remaining, 4999);
   // 编排内请求次数守卫：显式传 owner 时跳过 /user 探测（collectData 内 ownerArg || ...），实际序 = graphql + actions + commits + trees + rate_limit = 5；不得有 license/contents 等多余请求
   assert.equal(state.requests.length, 5, "实际请求序（显式 owner 跳过 /user 探测）：" + state.requests.map((r) => r.url).join(", "));
+});
+
+/* ---------------- 降级留痕：失败与「真的没有」必须可区分，且不得被增量复用固化 ---------------- */
+
+test("collectData：Actions 接口失败 → 该行标记 fetchErrors，且不会被判为可复用", async (t) => {
+  isolate(t);
+  setToken("test-token");
+  scriptHttps(t, [
+    { match: (u) => u.includes("/graphql"), status: 200, text: JSON.stringify({
+        data: { user: { login: "octo", avatarUrl: "", repositories: {
+          totalCount: 1, pageInfo: { hasNextPage: false, endCursor: null }, nodes: [REPO_NODE] } } } }) },
+    // 403 非 transient（重试只认 5xx/429），一次就落到 catch
+    { match: (u) => u.includes("/actions/runs"), status: 403, text: JSON.stringify({ message: "Forbidden" }) },
+    { match: (u) => u.includes("/commits"), status: 200, text: JSON.stringify([]) },
+    { match: (u) => u.includes("/git/trees"), status: 200, text: JSON.stringify({ tree: [] }) },
+    { match: (u) => u.includes("/rate_limit"), status: 200, text: JSON.stringify({ resources: { core: { limit: 5000, remaining: 4999, reset: 1789999999 } } }) },
+  ]);
+  const data = await collectData("octo", { local: false });
+  const row = data.rows[0];
+  assert.deepEqual(row.fetchErrors, ["actions"], "接口失败必须留痕，而不是与「无 CI 记录」同形");
+  assert.equal(data.scanInfo.fetchErrorRows, 1);
+
+  // 同一行再来一次：列表字段没变，但上次有字段没取到 ⇒ 必须重扫，不能把失败结论缓存成事实
+  assert.equal(repoUnchanged(row, { ...row }), false, "有 fetchErrors 的行不得判为可复用");
+  const clean = { ...row };
+  delete clean.fetchErrors;
+  assert.equal(repoUnchanged(clean, clean), true, "无失败标记的同构行仍应按原口径复用");
 });

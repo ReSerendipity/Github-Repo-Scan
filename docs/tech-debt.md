@@ -7,7 +7,7 @@
 | # | 债项 | 证据（可指认） | 影响 | 偿还成本 | 优先级 | 处置准则 | 状态 |
 |---|---|---|---|---|---|---|---|
 | 1 | 根目录残留核心备份文件 ×2 | `scan-core.mjs.bak-20260924113023`（113KB）、`scan-core.mjs.bak-20260929194141`（133KB），靠 `*.bak-*` gitignore 兜底 | 源码根目录混杂备份；无轮换/恢复策略，易误提交、占用目录 | 低（移动或删除） | P2 | 本落地全部完成后 ≥1 个月（回滚窗口过后）清理，或按用户备份习惯移入备份目录；删除前确认无回滚需求 | 待偿清 |
-| 2 | AI 评审工具产物入库 | `.qoder/better-harness/2026-09-23/085241-github-repo-scan/`（canvas.json / findings.json / report.canvas.tsx，被 git 跟踪，含本机路径引用 `~/.qoder/plugins/...`） | 工具产物与产品代码混库；含机器相关路径，易误导协作者 | 低（git rm 后可回溯） | P2 | 2026-10-17 已就地标注：同目录新增 `SUPERSEDED.md`，逐条列出被现状反驳的断言并给出可自查命令；是否 `git rm --cached` 移出版本库仍由仓库 owner 决策（属删除跟踪文件，需人工确认） | 修复中（已标注取代，移除仍待决策） |
+| 2 | AI 评审工具产物入库 | 原登记指向 `.qoder/better-harness/2026-09-23/085241-github-repo-scan/`（canvas.json / findings.json / report.canvas.tsx）。**2026-10-29 复核：版本库里没有任何 `.qoder/` 文件（`git ls-files .qoder` 为空），该日期目录在磁盘上也已不存在** | 登记与实际不符会误导接手者（按此执行 `git rm --cached` 必然失败，或误以为仍跟踪着工具产物）；实际风险已不存在 | 无 | P2 | 以后再出现工具产物入库时，用 `git ls-files .qoder` 自查后再登记；本仓 `.qoder/` 整片被忽略 | 已偿清（2026-10-29 复核：未被跟踪） |
 | 3 | fmtSize 双份实现 | 服务端 `shared.mjs` 导出 `fmtSize`；客户端 `assets/dashboard-client.js` 内另有 `function fmtSize` 副本（line ~1488） | 改口径需两处同步，属复制粘贴式小债；当前行为一致 | 低 | P2 | 保持现状（客户端不可 import 服务端模块），若口径变更须双处同步并更新 `tests/core.test.mjs` 断言 | 待偿清 |
 | 4 | Node 版本基线不一致 | README（对外）「前置：Node 18+」vs `.github/workflows/release.yml` `node-version: 22` | 本地运行与 CI 验证版本漂移风险 | 极低（文档声明） | P2 | 已统一声明：Node ≥18 运行、CI 以 22 验证（README「依赖说明」段） | 已偿清 |
 | 5 | 生成物快照入库产生大 diff | `scan-data.json` 单次扫描 ±3112 行、`dashboard.html`、`all_repos_report.txt`、`scan_run*.txt` 均被跟踪 | 提交噪声、评审负担；与代码变更耦合 | 中（迁移成本） | P2 | 策略已定：保留回溯价值、接受大 diff、快照与代码分批提交（见 `docs/adr/0003-snapshot-committing.md`） | 已偿清（策略落地） |

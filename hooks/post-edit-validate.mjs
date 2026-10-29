@@ -1,6 +1,7 @@
 // hooks/post-edit-validate.mjs —— Agent 生命周期钩子：核心模块被编辑后立即跑冒烟测试
 // 注册位置：.qoder/settings.json 的 hooks.PostToolUse（写/编辑类工具）。事件 JSON 由 stdin 传入。
-// 退出码：0 放行；2 阻断并把失败摘要写入 stderr 回喂 agent（对应 AGENTS.md「编辑后即时验证」）。
+// 退出码：0 放行；2 阻断并把失败摘要写入 stderr 回喂 agent（本钩子即「编辑后即时验证」的唯一定义处；
+// 根 AGENTS.md 只有开工前/硬约束/交付前三节，不含本条，勿去那里核对）。
 // 命名约束：文件名不得匹配 node --test 的发现模式（*-test.mjs / *.test.mjs），否则会被测试执行。
 // 设计约束：不相关编辑零开销退出；读不到/解析不了事件、找不到 node、stdin 是终端时一律 fail-open，
 // 绝不把钩子变成 agent 的新故障源。策略函数全部导出，便于用 fixture JSON 做单元验证。
@@ -12,7 +13,8 @@ import { fileURLToPath } from "node:url";
 export const HOOK_DIR = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HOOK_DIR, "..");
 
-/* 与 AGENTS.md 同一份「核心模块」定义：改这些文件必须立刻验证
+/* 「核心模块」清单的唯一权威定义就在下面两行（不再声称与 AGENTS.md 同源——那份文件没有这一节，
+   改清单只改这里，并同步 tests/post-edit-validate.test.mjs 的夹具）。
    server.mjs 于 2026-10-16 纳入：它是面板后端入口、含来源校验与扫描根白名单，
    且已有 tests/server-security.test.mjs 覆盖——过去只改它不会触发任何近端验证。 */
 export const CORE_FILES = ["scripts/scan-core.mjs", "scripts/render-dashboard.mjs", "scripts/shared.mjs", "scripts/server.mjs"];

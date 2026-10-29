@@ -2,7 +2,7 @@
 ▸ 拉到 30 个仓库（账号名下 30 个，GraphQL 1 页）
 ▸ 变更探测后并行拉取明细（并发 8，仅变更仓库走网络）…
 ▸ 扫描结果：增量 · 深度扫描 1 个 · 复用 29 个 · 用时 7.7s
-? 本地扫描根目录：C:\Users\Doro ; C:\Users\Doro\Desktop ; C:\Users\Doro\Documents ; C:\Users\Doro\Downloads（深度 4）→ 找到 13 个 Git 仓库，并发读取状态…
+? 本地扫描根目录：<本地路径> ; <本地路径> ; <本地路径> ; <本地路径> 4）→ 找到 13 个 Git 仓库，并发读取状态…
 ✔ 扫描完成：30 个仓库 · ★ 26 · Fork 6 · 开放 Issue 4（另有 PR 1） · 发布 45 · CI 通过 19/24
 ▸ 本次扫描：增量 · 深度 1 个 · 复用 29 个 · 7.7s
    comfyui-experiment-toolbox CI:通过     许可:Apache-2.0   Release:—              分支:main/1  ★0
@@ -37,19 +37,19 @@
    bilibili-follow-manager  CI:无 CI 记录 许可:未声明          Release:—              分支:main/1  ★0
 ▸ 本地对照：本机 13 个 Git 仓库 · 对上 12 · 本地独有 1 · 远程有本地缺 18
   ⚠ 远程有但本地没扫到：health-info-card, mooncake-deconstruction, ReSerendipity, .github, Multi-Tracker, RTX_VSR-lite, Card-Studio, ComfyUI-BatchPromptLoader, website-honkai-star-rail, website-wuthering-waves, DraftPeek-key-backup, website-genshin-impact, website-zenlesszonezero, Unfading-Wall, offer-landing-kit, Lineart_Painter, hugging-face, bilibili-follow-manager
-   ＋ComfyUI                  本地:master 远程:origin/master     干净             C:\Users\Doro\APP\ComfyUI-aki-v3\ComfyUI
-   ✔ ComfyUI-实验与改造工具箱         本地:main 远程:origin/main         干净             C:\Users\Doro\Desktop\ComfyUI-实验与改造工具箱
-   ✔ github-repo-scan         本地:main 远程:origin/main         未提交12          C:\Users\Doro\Desktop\github-repo-scan
-   ✔ image-scrapers           本地:main 远程:origin/main         干净             C:\Users\Doro\Desktop\image-scrapers
-   ✔ nekogal-dl               本地:main 远程:origin/main         干净             C:\Users\Doro\Desktop\nekogal-dl
-   ✔ DraftPeek                本地:main 远程:origin/main         未提交5 ↓2        C:\Users\Doro\DraftPeek
-   ✔ GalgameShell             本地:main 远程:origin/main         干净             C:\Users\Doro\GalgameShell
-   ✔ Image_MultiModel         本地:main 远程:origin/main         干净             C:\Users\Doro\Image_MultiModel
-   ✔ MiniMax-H3-lite          本地:main 远程:origin/main         干净             C:\Users\Doro\MiniMax-H3-lite
-   ✔ SeedVR2-lite             本地:main 远程:origin/main         干净             C:\Users\Doro\SeedVR2-lite
-   ✔ SpiritPal                本地:main 远程:origin/main         未提交6           C:\Users\Doro\SpiritPal
-   ✔ TTS_MultiModel           本地:main 远程:origin/main         干净             C:\Users\Doro\TTS_MultiModel
-   ✔ Unity                    本地:master 远程:origin/master     ↑3             C:\Users\Doro\Unity
+   ＋ComfyUI                  本地:master 远程:origin/master     干净             <本地路径>
+   ✔ ComfyUI-实验与改造工具箱         本地:main 远程:origin/main         干净             <本地路径>
+   ✔ github-repo-scan         本地:main 远程:origin/main         未提交12          <本地路径>
+   ✔ image-scrapers           本地:main 远程:origin/main         干净             <本地路径>
+   ✔ nekogal-dl               本地:main 远程:origin/main         干净             <本地路径>
+   ✔ DraftPeek                本地:main 远程:origin/main         未提交5 ↓2        <本地路径>
+   ✔ GalgameShell             本地:main 远程:origin/main         干净             <本地路径>
+   ✔ Image_MultiModel         本地:main 远程:origin/main         干净             <本地路径>
+   ✔ MiniMax-H3-lite          本地:main 远程:origin/main         干净             <本地路径>
+   ✔ SeedVR2-lite             本地:main 远程:origin/main         干净             <本地路径>
+   ✔ SpiritPal                本地:main 远程:origin/main         未提交6           <本地路径>
+   ✔ TTS_MultiModel           本地:main 远程:origin/main         干净             <本地路径>
+   ✔ Unity                    本地:master 远程:origin/master     ↑3             <本地路径>
 ▸ GitHub API 余量：5000/5000
-▸ 面板：C:\Users\Doro\Desktop\github-repo-scan\dashboard.html
-▸ 快照：C:\Users\Doro\Desktop\github-repo-scan\scan-data.json（schema 3）
+▸ 面板：<本地路径>
+▸ 快照：<本地路径> 3）

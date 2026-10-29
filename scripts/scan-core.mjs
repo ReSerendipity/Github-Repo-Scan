@@ -483,6 +483,7 @@ export function repoUnchanged(prevRow, next) {
     && prevRow.isArchived === next.isArchived
   && prevRow.visibility === next.visibility
   && !!prevRow.cli // 旧快照缺 CLI 检测结果 → 视为有变更，深扫一次后随 pushedAt 缓存
+  && !(prevRow.fetchErrors && prevRow.fetchErrors.length) // 上次有字段没取到 ⇒ 必须重扫，别把失败当事实缓存
   && (!prevRow.ci || prevRow.ci.cls !== "running"); // CI 运行中的仓库需重查（可能刚出结果）
 }
 
@@ -574,6 +575,8 @@ export async function collectData(ownerArg, opts = {}) {
       };
     }
     deepScanned++;
+    /* 字段级失败要留痕：留空与「真的没有」必须在产物里可区分，否则增量复用会把一次失败当成长期事实 */
+    const fetchErrors = [];
     let licenseUrl = null;
     if (r.licenseInfo) {
       if (p && p.pushedAt === r.pushedAt && p.licenseUrl) {
@@ -581,14 +584,14 @@ export async function collectData(ownerArg, opts = {}) {
       } else {
         try {
           licenseUrl = await ghAsync(["api", "repos/" + owner + "/" + r.name + "/license", "--jq", ".html_url"]);
-        } catch { /* 根目录没有标准 LICENSE 文件，忽略 */ }
+        } catch { fetchErrors.push("license"); /* 根目录没有标准 LICENSE 文件，或接口失败 */ }
       }
     }
 
     let runs = [];
     try {
       runs = JSON.parse(await ghAsync(["api", "repos/" + owner + "/" + r.name + "/actions/runs?per_page=5"])).workflow_runs ?? [];
-    } catch { /* Actions API 不可用时按无记录处理 */ }
+    } catch { fetchErrors.push("actions"); /* Actions API 不可用 ⇒ 记未取到，不记「无 CI」 */ }
     const run = runs[0] ?? null;
     const trend = runs.slice().reverse().map((x) => ({ s: x.status, c: x.conclusion, at: x.created_at })); // 旧 → 新
 
@@ -600,7 +603,7 @@ export async function collectData(ownerArg, opts = {}) {
         const sum = (arr, k) => (arr || []).reduce((a, x) => a + (x[k] || 0), 0);
         traffic = { views: sum(v.views, "count"), viewUniques: sum(v.views, "uniques"),
                     clones: sum(c.clones, "count"), cloneUniques: sum(c.clones, "uniques") };
-      } catch { /* 无权限或无数据时留空 */ }
+      } catch { fetchErrors.push("traffic"); /* 无权限或无数据时留空 */ }
     }
 
     // 最近一次提交的变更文件（用于「最近变更」列；每个仓库 +1 次 REST 调用）
@@ -619,7 +622,7 @@ export async function collectData(ownerArg, opts = {}) {
           fileCount: (cm.files || []).length,
         };
       }
-    } catch { /* 无提交或接口不可用时留空 */ }
+    } catch { fetchErrors.push("commits"); /* 无提交或接口不可用时留空 */ }
 
     // CLI 检测（远程-only 仓的唯一来源；有本地克隆的仓稍后被 matchLocalToRemote 用本地检测覆盖）：
     // 拉一次文件树 + 最多 2 份根目录清单；pushedAt 未变的仓库走复用路径不进这里。
@@ -633,7 +636,7 @@ export async function collectData(ownerArg, opts = {}) {
         try { manifests[mf] = await ghAsync(["api", "repos/" + owner + "/" + r.name + "/contents/" + mf, "-H", "Accept: application/vnd.github.raw"]); } catch { /* 拉不到就跳过 */ }
       }
       cli = detectCliRemote(paths, manifests);
-    } catch { /* 文件树不可用时 CLI 列留空 */ }
+    } catch { fetchErrors.push("tree"); /* 文件树不可用时 CLI 列留空 */ }
 
     const state = ciStateOf(run);
     const lic = r.licenseInfo;
@@ -674,6 +677,7 @@ export async function collectData(ownerArg, opts = {}) {
       traffic,
       lastCommit,
       cli,
+      ...(fetchErrors.length ? { fetchErrors } : {}),
     };
   });
 
@@ -696,16 +700,19 @@ export async function collectData(ownerArg, opts = {}) {
     sizeTotal: rows.reduce((a, r) => a + (r.size || 0), 0),
   };
 
+  const fetchErrorRows = rows.filter((r) => (r.fetchErrors || []).length).length;
   const scanInfo = {
     mode: forceFull ? "full" : (deepScanned === 0 ? "reuse" : "incremental"),
     total: rows.length,
     deepScanned,
     reused,
+    fetchErrorRows,
     full: forceFull,
     durationMs: Date.now() - scanStart,
   };
   console.log("▸ 扫描结果：" + (scanInfo.mode === "reuse" ? "无变更，完全复用快照（0 次深度请求）"
     : (scanInfo.mode === "full" ? "强制全量" : "增量") + " · 深度扫描 " + deepScanned + " 个 · 复用 " + reused + " 个")
+    + (fetchErrorRows ? " · ⚠ 有字段没取到 " + fetchErrorRows + " 个（下次强制重扫）" : "")
     + " · 用时 " + (scanInfo.durationMs / 1000).toFixed(1) + "s");
   const data = { schema: 3, owner: login, avatarUrl, scannedAt: new Date().toISOString(), truncated, rate, totals, rows, scanInfo };
   for (const r of data.rows) r.local = null;
@@ -868,7 +875,7 @@ export function printSummary(data) {
   console.log("✔ 扫描完成：" + t.repos + " 个仓库 · ★ " + t.stars + " · Fork " + t.forks + " · 开放 Issue " + t.openIssues + "（另有 PR " + t.openPRs + "） · 发布 " + t.releases + " · CI 通过 " + t.ciOk + "/" + t.ciDone);
   if (data.scanInfo) {
     const si = data.scanInfo;
-    console.log("▸ 本次扫描：" + (si.mode === "reuse" ? "无变更·复用快照（0 次深度请求）" : (si.mode === "full" ? "强制全量" : "增量") + " · 深度 " + si.deepScanned + " 个 · 复用 " + si.reused + " 个") + " · " + (si.durationMs / 1000).toFixed(1) + "s");
+    console.log("▸ 本次扫描：" + (si.mode === "reuse" ? "无变更·复用快照（0 次深度请求）" : (si.mode === "full" ? "强制全量" : "增量") + " · 深度 " + si.deepScanned + " 个 · 复用 " + si.reused + " 个") + (si.fetchErrorRows ? " · ⚠ 有字段没取到 " + si.fetchErrorRows + " 个" : "") + " · " + (si.durationMs / 1000).toFixed(1) + "s");
   }
   for (const r of data.rows) {
     console.log("   " + r.name.padEnd(24) + " CI:" + r.ci.state.padEnd(6) + " 许可:" + (r.license ?? "未声明").padEnd(12) + " Release:" + (r.latestRelease ? r.latestRelease.tag : "—").padEnd(14) + " 分支:" + r.defaultBranch + "/" + r.branches + "  ★" + r.stars);
@@ -882,7 +889,7 @@ export function printSummary(data) {
     for (const lr of ls.repos) {
       const st = [lr.dirty ? "未提交" + (lr.dirtyCount || 0) : "", (lr.ahead || 0) > 0 ? "↑" + lr.ahead : "", (lr.behind || 0) > 0 ? "↓" + lr.behind : ""].filter(Boolean).join(" ") || "干净";
       const br = (lr.branch ? "本地:" + lr.branch : "—") + (lr.upstream ? " 远程:" + lr.upstream : "");
-      console.log("   " + (lr.matched ? "✔ " : "＋") + lr.name.padEnd(24) + " " + br.padEnd(30) + " " + st.padEnd(14) + " " + lr.path);
+      console.log("   " + (lr.matched ? "✔ " : "＋") + lr.name.padEnd(24) + " " + br.padEnd(30) + " " + st.padEnd(14) + " " + maskLocalPath(lr.path));
     }
   }
   if (data.rate) console.log("▸ GitHub API 余量：" + data.rate.remaining + "/" + data.rate.limit);
