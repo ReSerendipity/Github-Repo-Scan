@@ -34,4 +34,4 @@ jobs:
           languages: javascript
           queries: security-extended
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@cf12ceefebab2c867b9c35d7f907e059681d37ab
+        uses: github/codeql-action/analyze@4bfa242aa49c5f7c6770b98670d354a7dfac05f8
