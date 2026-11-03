@@ -17,7 +17,7 @@ jobs:
         with:
           persist-credentials: false
       # actions/setup-node@v4 tag 指向 SHA（2026-10-11 抓取，R2 P2-7 供应链锁定）
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 22
       - run: node --test
