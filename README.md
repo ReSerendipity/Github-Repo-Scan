@@ -88,6 +88,16 @@ Windows 用户可直接双击 `启动面板.bat`。常用命令：
 - 面向**个人账号**（查询走 `user(login:)`），组织账号暂不支持。
 - 本地服务仅监听 `127.0.0.1`，带跨站来源校验；macOS / Linux / Windows 均可运行，`.bat` 为 Windows 一键启动。
 
+**外部 CLI 最低版本**（本仓不锁版本，但低于下表即不保证行为；括号内为 2026-11-06 实测的验证版本）：
+
+| CLI | 最低 | 依据 |
+|---|---|---|
+| `git` | **2.30**（验证 2.55.0） | 用到 `git -C <path>`、`for-each-ref --format`、`rev-list --count`、`log --since`；2.30 起这些子命令与输出格式在三大平台一致 |
+| `gh` | **2.40**（验证 2.98.0） | 用到 `gh api`（含 `--jq`）与 `gh auth token`；2.40 起 `gh api` 的 `--jq`/`-f` 参数已稳定 |
+| `python` | **3.9**（验证 3.12.10） | **可选**：仅 `scripts/modelscope.mjs` 解析 pickle 化的 CookieJar 时调用；缺失时该路径自动跳过，不影响 GitHub 扫描 |
+
+缺少 `git` 时远程扫描仍可跑（本地对照降级为「跳过」）；缺少 `gh` 时回落到 `GH_TOKEN` 直连。
+
 ### 使用示例
 
 ```bash
