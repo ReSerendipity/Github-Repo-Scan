@@ -22,10 +22,12 @@ Release** —— `gh api repos/ReSerendipity/Github-Repo-Scan/tags` 与
 - 新增 Tests workflow `.github/workflows/test.yml`：`push` / PR 到 `main` 时自动运行 `node --test`（PR #2）。
 - 新增 `docs/release-governance.md`：本地化 `.github` 治理规范 §10「发布 / 分发统一规范」（工单 D-02，PR #3）。
 - 新增模块边界约定文档，并登记 `scan-core.mjs` 职责集中债。
+- 新增 `assets/display-format.mjs`：展示/评分口径（`esc` / `relTime` / `fullTime` / `scoreOf` / `gradeOf`）的单一来源，服务端 import 与浏览器端注入共用同一份文本（债 #11 收口，2026-11-07）。
 - `scan.mjs` 新增 `--help` 输出与未知 `--` 参数拒绝。
 
 ### Changed
 - 重构传输层：把 D1 传输域外提为 `github-fetch.mjs`，删除死代码 `gh` / `sleepSync`；直连传输层改由 `setHttpsTransport` 显式注入，并补 `node:https` 显式 import。
+- 展示/评分口径改为单一来源：`scan-core.mjs` 只 import + re-export，`render-dashboard.mjs` 去掉行首 `export` 后把该模块注入成页面全局脚本块（排在客户端脚本之前），`dashboard-client.js` 删除 5 份同名副本；`tests/core.test.mjs` 的原「双份对拍」换成三条结构断言（同源函数对象 / 客户端无副本 / 注入顺序与 vm 全局可见性）。`node --test` 77 通过 / 0 失败。
 - 补充测试：`collectData` 全编排契约与 `ghAsync` 降级链桩测；服务端 / 客户端双份口径对拍断言落地，`esc` 补 D4 export；CI 开启实验性覆盖率输出取基线。
 - 文档：README 补齐本地门禁的可复现安装与 agent 层注册模板；标题别称统一为 `Github-Repo-Scan`；`readme.md` 更名为 `README.md` 并修正远程 URL 大小写；文件清单补 `tests/direct-api.test.mjs`；对内文档区 `DOCS/` 统一小写 `docs/`、内部版取消跟踪。
 - 维护：`AGENTS.md` 改为仅本地保留、取消远程跟踪；`.gitignore` 忽略 `.qoder/`；`.mailmap` 归一个人邮箱显示；`docs/tech-debt.md` 登记 DCO 签名缺口例外并就地标注「评审快照已被取代」。

@@ -28,23 +28,9 @@
 
   var SVG_FOLDER = '<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M1.75 1.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V4.75a.25.25 0 0 0-.25-.25H7.5a.75.75 0 0 1-.6-.3L5.9 2.9a.25.25 0 0 0-.2-.1H1.75ZM0 1.75C0 .784.784 0 1.75 0h4.06c.464 0 .909.216 1.194.585l1.28 1.665h5.966c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V1.75Z"/></svg>';
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-  function relTime(iso) {
-    if (!iso) return '—';
-    var days = (Date.now() - new Date(iso).getTime()) / 86400000;
-    if (days < 1 / 24) return Math.max(1, Math.round(days * 24 * 60)) + ' 分钟前';
-    if (days < 1) return Math.round(days * 24) + ' 小时前';
-    if (days < 30) return Math.round(days) + ' 天前';
-    if (days < 365) return Math.round(days / 30) + ' 个月前';
-    return (days / 365).toFixed(1) + ' 年前';
-  }
-  function fullTime(iso) {
-    return iso ? new Date(iso).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false }) : '—';
-  }
+  // esc / relTime / fullTime / scoreOf / gradeOf 来自 assets/display-format.mjs（债 #11 单一来源）：
+  // render-dashboard 把它去掉 export 后作为前一个 <script> 注入，五个函数是页面全局，此处不再定义副本。
+  // 改口径请改 assets/display-format.mjs，改这里会被 tests/core.test.mjs 的「客户端不得重新长出副本」断言拦下。
 
   /* ---------- 主题 ---------- */
   function applyTheme(t) {
@@ -54,36 +40,7 @@
     if (b) { b.innerHTML = t === 'dark' ? SVG_SUN : SVG_MOON; b.title = t === 'dark' ? '切换到亮色主题' : '切换到暗色主题'; }
   }
 
-  /* ---------- 健康评分(与 scan-core.mjs 导出的 scoreOf/gradeOf 同款实现) ---------- */
-  function scoreOf(r) {
-    if (!r) return 0;
-    var ci;
-    if (r.ci && r.ci.cls === 'ok') {
-      var tr = (r.ci.trend || []);
-      var done = tr.filter(function (x) { return ['success', 'failure', 'timed_out', 'startup_failure', 'action_required'].indexOf(x.c) >= 0; });
-      var okr = done.filter(function (x) { return x.c === 'success'; }).length;
-      var ratio = done.length ? okr / done.length : 1;
-      ci = 25 + Math.round(15 * ratio);
-    } else if (r.ci && r.ci.cls === 'running') ci = 20;
-    else if (r.ci && r.ci.cls === 'none') ci = 15;
-    else ci = 0;
-    var days = r.pushedAt ? (Date.now() - new Date(r.pushedAt).getTime()) / 86400000 : Infinity;
-    var fresh = days <= 7 ? 30 : days <= 30 ? 24 : days <= 90 ? 16 : days <= 365 ? 8 : 2;
-    var n = r.openIssues == null ? 0 : r.openIssues;
-    var hyg = n === 0 ? 15 : n <= 2 ? 12 : n <= 9 ? 8 : n <= 29 ? 4 : 0;
-    var relDays = (r.latestRelease && r.latestRelease.publishedAt)
-      ? (Date.now() - new Date(r.latestRelease.publishedAt).getTime()) / 86400000 : null;
-    var rel = relDays == null ? ((r.releases || 0) > 0 ? 5 : 3) : (relDays <= 90 ? 15 : relDays <= 365 ? 9 : 5);
-    var total = ci + fresh + hyg + rel;
-    if (r.isArchived) total = Math.round(total * 0.7);
-    return Math.max(0, Math.min(100, total));
-  }
-  function gradeOf(score) {
-    if (score >= 85) return { g: 'A', cls: 'ok' };
-    if (score >= 70) return { g: 'B', cls: 'info' };
-    if (score >= 50) return { g: 'C', cls: 'warn' };
-    return { g: 'D', cls: 'fail' };
-  }
+  /* ---------- 健康评分：scoreOf/gradeOf 来自 assets/display-format.mjs（页面全局） ---------- */
 
   // 仓库大小格式化（与模块级 fmtSize 语义一致；客户端脚本拿不到模块作用域，须自带一份）
   function fmtSize(kb) {

@@ -6,6 +6,11 @@ import { join } from "node:path";
 import { HERE } from "./shared.mjs";
 
 const CLIENT_APP = readFileSync(join(HERE, "assets", "dashboard-client.js"), "utf8");
+// 展示/评分口径的唯一来源（债 #11）：ESM 的 export 关键字去掉后作为独立 <script> 注入，
+// 且必须排在客户端脚本之前 —— 五个函数落在页面全局，客户端直接调用，不再自带副本。
+const DISPLAY_FORMAT = readFileSync(join(HERE, "assets", "display-format.mjs"), "utf8")
+  .replace(/^\s*export\s+/gm, "")
+  .trimEnd();
 /* ---------------- 面板渲染（内嵌数据 + 筛选搜索 + 排序 + 主题 + 扫描 + 趋势 + 配额） ---------------- */
 export function renderDashboard(data) {
   const jsonStr = JSON.stringify(data).replace(/</g, "\\u003c");
@@ -411,6 +416,7 @@ export function renderDashboard(data) {
 <script>
 window.__SCAN_DATA__ = ${jsonStr};
 </script>
+<script>${DISPLAY_FORMAT}</script>
 <script>${CLIENT_APP}</script>
 </body>
 </html>

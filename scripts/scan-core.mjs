@@ -7,8 +7,12 @@ import { join } from "node:path";
 import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
 import { renderDashboard } from "./render-dashboard.mjs";
 import { execFileP, pool, applyJq, directApi, setHttpsTransport, ghAsync } from "./github-fetch.mjs";
+// 展示/评分口径唯一来源（债 #11）：esc/relTime/fullTime/scoreOf/gradeOf 只活在 assets/display-format.mjs，
+// 服务端 import 后原样 re-export，浏览器端由 render-dashboard 注入同一份文本，两侧不能再各自持有副本。
+import { esc, relTime, fullTime, scoreOf, gradeOf } from "../assets/display-format.mjs";
 
 export { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath, renderDashboard };
+export { esc, relTime, fullTime, scoreOf, gradeOf };
 export { execFileP, pool, applyJq, directApi, setHttpsTransport, ghAsync };
 // 置 SCAN_WITH_TRAFFIC=1 时额外拉取每仓近 14 天流量（views/clones，各 +1 次 REST 调用，需 push 权限）
 const WITH_TRAFFIC = process.env.SCAN_WITH_TRAFFIC === "1";
@@ -265,10 +269,9 @@ export function mergeLocalSnapshot(localScan) {
   return data;
 }
 
-/* ---------------- 通用工具 ---------------- */
-export const esc = (s) =>
-  String(s ?? "").replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+/* ---------------- 通用工具 ----------------
+ * esc / relTime / fullTime / scoreOf / gradeOf 已迁至 assets/display-format.mjs（债 #11 单一来源），
+ * 本文件顶部 import 并 re-export，勿在此重新定义。 */
 
 const LANG_COLORS = {
   JavaScript: "#f1e05a", TypeScript: "#3178c6", Python: "#3572A5", Rust: "#dea584",
@@ -372,20 +375,6 @@ export function detectCliRemote(paths, manifests) {
   return { state: c.state, detail: c.detail, src: "remote" };
 }
 
-export function relTime(iso) {
-  if (!iso) return "—";
-  const days = (Date.now() - new Date(iso).getTime()) / 86400000;
-  if (days < 1 / 24) return Math.max(1, Math.round(days * 24 * 60)) + " 分钟前";
-  if (days < 1) return Math.round(days * 24) + " 小时前";
-  if (days < 30) return Math.round(days) + " 天前";
-  if (days < 365) return Math.round(days / 30) + " 个月前";
-  return (days / 365).toFixed(1) + " 年前";
-}
-
-export function fullTime(iso) {
-  return iso ? new Date(iso).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false }) : "—";
-}
-
 export function ciStateOf(run) {
   if (!run) return { label: "无 CI 记录", cls: "none" };
   if (run.status !== "completed") return { label: "运行中", cls: "running" };
@@ -402,37 +391,8 @@ export function ciStateOf(run) {
   }
 }
 
-/* ---------------- 仓库健康评分(0-100):CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15,归档仓打七折 ---------------- */
-export function scoreOf(r) {
-  if (!r) return 0;
-  let ci;
-  if (r.ci && r.ci.cls === "ok") {
-    const t = r.ci.trend || [];
-    const done = t.filter((x) => ["success", "failure", "timed_out", "startup_failure", "action_required"].includes(x.c));
-    const okr = done.filter((x) => x.c === "success").length;
-    const ratio = done.length ? okr / done.length : 1;
-    ci = 25 + Math.round(15 * ratio);
-  } else if (r.ci && r.ci.cls === "running") ci = 20;
-  else if (r.ci && r.ci.cls === "none") ci = 15;
-  else ci = 0;
-  const days = r.pushedAt ? (Date.now() - new Date(r.pushedAt).getTime()) / 86400000 : Infinity;
-  const fresh = days <= 7 ? 30 : days <= 30 ? 24 : days <= 90 ? 16 : days <= 365 ? 8 : 2;
-  const n = r.openIssues == null ? 0 : r.openIssues;
-  const hyg = n === 0 ? 15 : n <= 2 ? 12 : n <= 9 ? 8 : n <= 29 ? 4 : 0;
-  const relDays = r.latestRelease && r.latestRelease.publishedAt
-    ? (Date.now() - new Date(r.latestRelease.publishedAt).getTime()) / 86400000 : null;
-  const rel = relDays == null ? (r.releases > 0 ? 5 : 3) : relDays <= 90 ? 15 : relDays <= 365 ? 9 : 5;
-  let total = ci + fresh + hyg + rel;
-  if (r.isArchived) total = Math.round(total * 0.7);
-  return Math.max(0, Math.min(100, total));
-}
-
-export function gradeOf(score) {
-  if (score >= 85) return { g: "A", cls: "ok" };
-  if (score >= 70) return { g: "B", cls: "info" };
-  if (score >= 50) return { g: "C", cls: "warn" };
-  return { g: "D", cls: "fail" };
-}
+/* 仓库健康评分(0-100):CI 40 + 新鲜度 30 + Issue 卫生 15 + 发布节奏 15,归档仓打七折
+ * 实现已迁至 assets/display-format.mjs（债 #11 单一来源），此处只留指向说明。 */
 
 const QUERY_PAGE = /* GraphQL */ `
   query($owner: String!, $cursor: String) {

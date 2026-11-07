@@ -1,7 +1,7 @@
 # scan-core.mjs 模块边界约定（职责地图 · 依赖方向 · 影响面）
 
 > 登记依据：`docs/tech-debt.md` 债项 #9「scan-core.mjs 职责集中」。本文件是 `scan-core.mjs` 内部的**唯一权威职责地图**：改动其中任何函数之前，先在第 3 节定位所属域、调用方与最小验证命令，再动手。
-> 快照口径：2026-10-14 首版为 1036 行 / 55 个顶层声明 / 10 个职责域；**2026-10-21 复核为 891 行 / 40 个顶层声明**（D1 传输域外提 `github-fetch.mjs`、死代码 `gh`/`sleepSync` 删除后）。表中的行号仅供导航，**以函数名为准**（行号随版本漂移；第 3 节 D1（成员已移入 `github-fetch.mjs`）与 D7–D10 的行号均为外提/上移前快照值，D4 行号按 2026-10-21 复核校正）。
+> 快照口径：2026-10-14 首版为 1036 行 / 55 个顶层声明 / 10 个职责域；**2026-10-21 复核为 891 行 / 40 个顶层声明**（D1 传输域外提 `github-fetch.mjs`、死代码 `gh`/`sleepSync` 删除后）；**2026-11-07 债 #11 收口后为 815 行**（D4 的 `esc`/`relTime`/`fullTime`/`scoreOf`/`gradeOf` 迁至 `assets/display-format.mjs`，scan-core 只留 import + re-export）。表中的行号仅供导航，**以函数名为准**（行号随版本漂移；第 3 节 D1（成员已移入 `github-fetch.mjs`）与 D7–D10 的行号均为外提/上移前快照值）。
 
 ## 1. 边界规则（违反即属架构变更，须先改本文件再写代码）
 
@@ -11,7 +11,7 @@
 | BM-2 | **只有 D1 可以触网**（`gh` 子进程 / HTTPS 直连）；`git` 子进程只允许出现在 D2。D4/D6/D7/D9 等纯函数域不得引入 IO | 纯口径函数里出现 `execFileP` / `httpsJson` / `readFileSync` |
 | BM-3 | 域内私有的常量与小函数不外泄；一旦需要被别的域引用，必须 `export` 并同步登记到第 2、3 节 | 新增 export 未进第 3 节表格 |
 | BM-4 | 第 12 行的门面再导出（`HERE`/`fmtSize`/`readLocalConfig`/…/`renderDashboard`）**只允许转发 `shared.mjs` 与 `render-dashboard.mjs` 的既有符号**；禁止在 scan-core 里新写实现再顺手暴露，避免入口继续向单文件堆叠 | 门面行新增的符号在本文件内有函数体 |
-| BM-5 | **展示与评分口径双份**（scan-core 的服务端副本 ↔ `assets/dashboard-client.js` 的浏览器副本）。改 `scoreOf`/`gradeOf`/`relTime`/`fullTime`/`esc` 必须两处同步并更新断言 | 只改一处的提交；`tests/core.test.mjs` 未同步 |
+| BM-5 | **展示与评分口径单一来源**（`assets/display-format.mjs` 是唯一实现；`scripts/scan-core.mjs` import 后原样 re-export；`scripts/render-dashboard.mjs` 去掉行首 `export` 后作为独立脚本块注入，排在客户端脚本之前，五个函数即页面全局）。改 `scoreOf`/`gradeOf`/`relTime`/`fullTime`/`esc` 只改这一个文件 | `assets/dashboard-client.js` 里重新出现同名 `function` 副本；scan-core 内又写一份实现（不再与 display-format 是同一函数对象）；注入块排到客户端块之后或仍带 `export` —— 三条都由 `tests/core.test.mjs` 的新结构断言拦下 |
 | BM-6 | 每个域的外部依赖（Node 内置模块、`gh`/`git` 可执行文件、环境变量开关）必须**显式 import / 显式读取**，禁止依赖运行环境里恰好存在的全局 | 出现未 import 的模块标识符；新增 `SCAN_*` 环境变量未进第 4 节 |
 
 > BM-6 曾被实测违反：D1 的 `httpsJson` 用了未 `import` 的 `https`，而 `globalThis.https` 桩使测试全绿（债#10）。2026-10-15 已偿清：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入（桩不再遮蔽模块绑定）；`tests/direct-api.test.mjs` 末尾有静态守卫防回归。
@@ -23,7 +23,7 @@
 | D1 | GitHub 取数传输（**2026-10-15 已外提 `github-fetch.mjs`**） | `execFileP` `sleep` `ghToken` `canDirectFallback` `applyJq` `directApi` `httpsJson`+`setHttpsTransport` `ghAsync` `pool`（死代码 `gh`/`sleepSync` 已删） | `ghAsync`（内部）、`directApi`/`applyJq`/`setHttpsTransport`（测试与兜底，经 scan-core re-export） | 仅 Node 内置 + `gh` 可执行文件 |
 | D2 | 本地 Git 事实 | `SKIP_DIRS` `parseRemoteUrl` `findGitRepos` `gitOne` `gitInfoFor` `collectLocal` | `collectLocal` `gitInfoFor` `findGitRepos` `parseRemoteUrl` | D1 的 `pool`/`execFileP`、`shared.mjs` 的 `defaultLocalRoots` |
 | D3 | CLI 三态检测 | `CLI_SKIP_DIRS` `CLI_MANIFESTS` `CLI_ENTRY_FILE` `CLI_SCRIPT_DIR` `manifestCliDetail` `classifyCli` `detectCliLocal` `detectCliRemote` | `detectCliLocal` `detectCliRemote` 及三个判定函数 | 仅 `node:fs`；不得触网、不得跑 `git` |
-| D4 | 领域口径与展示原语 | `esc` `LANG_COLORS` `relTime` `fullTime` `ciStateOf` `scoreOf` `gradeOf` `repoUnchanged` | 全部 export（多数只被测试与客户端副本消费） | 纯函数，零依赖 |
+| D4 | 领域口径与展示原语 | `esc` `LANG_COLORS` `relTime` `fullTime` `ciStateOf` `scoreOf` `gradeOf` `repoUnchanged` | 全部 export（多数只被测试与面板消费；五个口径函数 2026-11-07 起实体在 `assets/display-format.mjs`，此处为 re-export） | 纯函数，零依赖 |
 | D5 | 远程采集编排 | `QUERY_PAGE` `WITH_TRAFFIC` `collectData` | `collectData` | D1→D2→D3→D4 全部（唯一允许「横向通吃」的域） |
 | D6 | 本地↔远程匹配与合并 | `matchLocalToRemote` `applyLocalTotals` `mergeLocalSnapshot` | 三个均 export | D2 的 `parseRemoteUrl`、D3 的 `detectCliLocal`、D4 的口径；`shared.mjs` 的配置读取 |
 | D7 | Star 历史与周增 | `HISTORY_FILE` `HISTORY_MAX` `loadStarHistory` `recordStarHistory` `computeStarWeek` | `computeStarWeek` `loadStarHistory` | 仅 `node:fs` + 历史文件 |
@@ -81,13 +81,13 @@
 
 | 声明 | 内部调用方 | 外部消费者 | 改动波及 |
 |---|---|---|---|
-| `esc` | **无（死代码，scan-core 内零调用，详见 §5）** | 无 | 面板实际用客户端副本 |
+| `esc` | **无（scan-core 内零调用，详见 §5）** | 无 | 面板与 scan-core 共用 `assets/display-format.mjs`（注入块） |
 | `LANG_COLORS` (L417) | `collectData` | — | `row.langColor` 入快照 |
-| `relTime` (L519) | 无 | `core.test`（面板用 `dashboard-client.js` 副本） | BM-5 双份口径 |
-| `fullTime` (L529) | 无 | 同上 | 同上 |
+| `relTime` | `core.test` | 面板经注入块共用 `assets/display-format.mjs` | BM-5 单一来源 |
+| `fullTime` | 同上 | 同上 | 同上 |
 | `ciStateOf` (L533) | `collectData` | `core.test` | `row.ci.state/cls` + `totals.ciOk/ciDone` |
-| `scoreOf` (L550) | 无 | `core.test`（面板用客户端副本） | BM-5：健康分口径，改动须双份同步 |
-| `gradeOf` (L574) | 无 | 同上 | 同上 |
+| `scoreOf` | 无 | `core.test`；面板经注入块共用同一实现 | BM-5：健康分口径，只改 `assets/display-format.mjs` |
+| `gradeOf` | 无 | 同上 | 同上 |
 | `repoUnchanged` (L617) | `collectData` | `core.test` | 增量复用判定：漏判 → 多打网络请求；误判 → 快照陈旧 |
 
 ### D5 远程采集编排
@@ -150,13 +150,13 @@
 |---|---|---|
 | D1 `httpsJson` 依赖未声明的全局 `https` | **已偿清（2026-10-15）**：显式 `import https from "node:https"`；传输层经 `setHttpsTransport` 显式注入；`tests/direct-api.test.mjs` 尾部静态守卫防 import 缺失回归 | 已闭合（原 `docs/tech-debt.md` #10） |
 | D1 `gh` 零调用方 | **已删除（2026-10-15，随 D1 外提按 tech-debt.md #9 准则清理）**；D4 `esc` 仍零调用，待首个触碰 D4 的变更顺手删除 | 已闭合（D1 部分）/ `docs/tech-debt.md` #9（D4 部分） |
-| D4 展示口径函数（`esc`/`relTime`/`fullTime`/`scoreOf`/`gradeOf`）双份实现 | 面板实际执行 `assets/dashboard-client.js` 的副本；`tests/core.test.mjs` 断言的是 scan-core 的副本 → 测试护的不是发布路径（2026-10-15 起已有「两份实现同输入同输出」对拍断言，漂移即门禁红，单一来源收敛待 #9） | #11 |
+| D4 展示口径函数（`esc`/`relTime`/`fullTime`/`scoreOf`/`gradeOf`）双份实现 | **已偿清（2026-11-07）**：五函数迁至 `assets/display-format.mjs`，服务端 import + re-export、浏览器端去 `export` 后注入同一份文本、客户端副本删除；`tests/core.test.mjs` 三条结构断言（同源函数对象 / 客户端无副本 / 注入顺序与 vm 全局可见性）守着 | 已闭合（原 `docs/tech-debt.md` #11） |
 
 ## 6. 改动自检流程（每次动 scan-core.mjs 都走一遍）
 
 1. **定位**：在第 2 节找到函数所属域；在第 3 节读出它的「内部调用方 + 外部消费者」。
 2. **判方向**：新增的调用边是否符合 BM-1（只向下）与 BM-2（IO 只在 D1/D2）；不符就先改本文件与 `docs/adr/`。
-3. **查双份**：动 D4 口径 → 同步 `assets/dashboard-client.js`（BM-5）。
+3. **查口径归属**：动 D4 口径 → 只改 `assets/display-format.mjs`（两侧共用，BM-5）；`assets/dashboard-client.js` 不得重新长出副本。
 4. **最小验证**（按域，全部为本地无网命令）：
    - 语法：`node --check scripts/scan-core.mjs`
    - D1 直连支路：`node --test tests/direct-api.test.mjs`（2026-10-15 起桩经 `setHttpsTransport` 显式注入——测试文件本身即文件形态实调 `directApi`，且尾部 BM-6 静态守卫防 import 缺失回归；注入桩遮蔽模块绑定的旧失效模式已消除）。

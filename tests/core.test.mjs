@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { ciStateOf, relTime, esc, fullTime, renderDashboard, scoreOf, gradeOf, applyJq, parseRemoteUrl, findGitRepos, matchLocalToRemote, applyLocalTotals, fmtSize, computeStarWeek, repoUnchanged, gitInfoFor, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote, ownerOnlyEnabled, maskLocalPath, unmaskLocalPath, appendAudit, loadAuditRows } from "../scripts/scan-core.mjs";
+import * as displayFormat from "../assets/display-format.mjs";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
 import { createHmac } from "node:crypto";
 import { tmpdir, homedir } from "node:os";
@@ -79,11 +80,11 @@ test("renderDashboard：内嵌数据、XSS 转义、浅色默认", () => {
   assert.ok(html.includes('th class="sortable"'), "应有排序表头");
   assert.ok(html.includes('id="q"'), "应有搜索框");
   // 内嵌 JSON 中的 < 必须转义为 \u003c：夹带的 </script> 不得以原样出现，
-  // 全文只允许两处真实闭合标签（两个 script 块）
+  // 全文只允许三处真实闭合标签（数据块 / 共享口径块 / 客户端块，后者由债 #11 的单一来源引入）
   assert.ok(html.includes("\\u003c"), "内嵌 JSON 的 < 应被 \\u003c 转义");
   assert.ok(!html.includes("<b>desc</b>"), "原始 HTML 不得原样出现");
   assert.ok(!html.includes("<script>alert(1)"), "夹带的 script 不得原样出现");
-  assert.equal(html.match(/<\/script>/g).length, 2);
+  assert.equal(html.match(/<\/script>/g).length, 3);
   // 配额/截断展示为客户端渲染：验证容器与内嵌配额数据
   assert.ok(html.includes('id="footExtra"'), "应有配额/截断展示容器");
   assert.ok(html.includes('"remaining":4999'), "内嵌数据应包含 API 配额");
@@ -359,15 +360,18 @@ test("renderDashboard：客户端脚本不得调用未定义的服务端辅助�
   });
   const tags = html.match(/<script>[\s\S]*?<\/script>/g) || [];
   const client = tags[tags.length - 1].slice(8, -9);
+  // 同一页面里先出现的脚本块（data、display-format）也在全局作用域，客户端可合法调用其中的函数（债 #11）
+  const preamble = tags.slice(0, -1).map((s) => s.slice(8, -9)).join("\n");
+  const scope = preamble + "\n" + client;
   const serverOnly = ["fmtSize", "esc", "relTime", "fullTime", "ciStateOf", "scoreOf", "gradeOf", "applyJq", "parseRemoteUrl", "findGitRepos", "matchLocalToRemote", "ownerOnlyEnabled", "applyLocalTotals", "computeStarWeek", "repoUnchanged", "collectData", "collectLocal", "mergeLocalSnapshot", "writeOutputs", "printSummary", "loadStarHistory", "recordStarHistory"];
   for (const name of serverOnly) {
     const at = client.indexOf(name + "(");
     if (at < 0) continue;
     if (/[A-Za-z0-9_$]/.test(client.charAt(at - 1) || " ")) continue; // 是更长标识符的一部分
-    const defined = client.indexOf("function " + name + "(") >= 0 || client.indexOf("function " + name + " (") >= 0
-      || client.indexOf("var " + name + " =") >= 0 || client.indexOf("var " + name + "=") >= 0
-      || client.indexOf("let " + name + " =") >= 0 || client.indexOf("const " + name + " =") >= 0;
-    assert.ok(defined, "客户端脚本调用了 " + name + "() 但未在脚本内定义（会抛 ReferenceError）");
+    const defined = scope.indexOf("function " + name + "(") >= 0 || scope.indexOf("function " + name + " (") >= 0
+      || scope.indexOf("var " + name + " =") >= 0 || scope.indexOf("var " + name + "=") >= 0
+      || scope.indexOf("let " + name + " =") >= 0 || scope.indexOf("const " + name + " =") >= 0;
+    assert.ok(defined, "客户端脚本调用了 " + name + "() 但未在页面脚本内定义（会抛 ReferenceError）");
   }
   // Star 周增长用独立类名 swtrend，避免与 CI 趋势点阵的 .trend 冲突
   assert.ok(client.indexOf("swtrend") >= 0, "Star 周增长应使用 swtrend 类名");
@@ -571,55 +575,51 @@ test("appendAudit：JSONL 写入、明文/HMAC 模式与可重算校验（R2 P2-
   }
 });
 
-/* ---------------- 双份口径对拍（债#11：发布路径=客户端副本，2026-10-15 落地短期方案） ----------------
- * scan-core.mjs（服务端副本，被单测守护）与 assets/dashboard-client.js（浏览器实际执行）各自持有一份
- * esc/relTime/fullTime/scoreOf/gradeOf。本用例从客户端源码提取函数体进 vm 沙箱，与服务端副本对拍
- * 同输入同输出；任何一侧口径漂移都会让门禁变红（tech-debt.md #11 的「单测护的不是发布路径」风险收口）。
- * 输入集避开 Date.now() 档位边界，保证两端先后调用结果稳定。 */
+/* ---------------- 展示/评分口径单一来源（债#11，2026-11-07 收敛） ----------------
+ * 五个口径函数只活在 assets/display-format.mjs：服务端 import 后 re-export，浏览器端由
+ * render-dashboard 去掉 export 注入成页面全局。本用例守三件事：
+ *   ① 服务端导出的就是同一模块的同一函数对象（不是「同款实现」，是同源）；
+ *   ② 客户端源码里不得重新长出副本（回潮即红，这是原来对拍断言真正想要的不变量）；
+ *   ③ 注入页面的共享块确实排在客户端块之前，且 vm 里跑完它就拿到五个全局函数。 */
 
-test("双份口径对拍：esc/relTime/fullTime/scoreOf/gradeOf 服务端副本 ≡ 客户端副本（债#11）", () => {
+test("口径单一来源：scan-core 与 display-format 是同一份实现（债#11）", () => {
+  // 同一函数对象才算同源；只要有人把实现抄回 scan-core，「同输入同输出」可能仍绿，但这里会立刻红
+  assert.equal(scoreOf, displayFormat.scoreOf, "scan-core 的 scoreOf 应是 display-format 的同一函数对象");
+  assert.equal(gradeOf, displayFormat.gradeOf, "scan-core 的 gradeOf 应是同一函数对象");
+  assert.equal(esc, displayFormat.esc, "scan-core 的 esc 应是同一函数对象");
+  assert.equal(relTime, displayFormat.relTime, "scan-core 的 relTime 应是同一函数对象");
+  assert.equal(fullTime, displayFormat.fullTime, "scan-core 的 fullTime 应是同一函数对象");
+});
+
+test("口径单一来源：客户端不再持有 esc/relTime/fullTime/scoreOf/gradeOf 副本（债#11）", () => {
   const clientSrc = readFileSync(new URL("../assets/dashboard-client.js", import.meta.url), "utf8");
-  const names = ["esc", "relTime", "fullTime", "scoreOf", "gradeOf"];
-  const extract = (name) => {
-    const i = clientSrc.indexOf("function " + name + "(");
-    assert.ok(i >= 0, "客户端函数缺失：" + name);
-    let depth = 0;
-    const open = clientSrc.indexOf("{", i);
-    for (let k = open; k < clientSrc.length; k++) {
-      if (clientSrc[k] === "{") depth++;
-      else if (clientSrc[k] === "}") { depth--; if (depth === 0) return clientSrc.slice(i, k + 1); }
-    }
-    throw new Error("括号配对失败：" + name);
-  };
-  const client = vm.runInNewContext(names.map(extract).join("\n") + "\n;({ esc, relTime, fullTime, scoreOf, gradeOf });");
+  for (const name of ["esc", "relTime", "fullTime", "scoreOf", "gradeOf"]) {
+    assert.equal(clientSrc.indexOf("function " + name + "("), -1,
+      "客户端不应再定义 " + name + "()，改口径请改 assets/display-format.mjs");
+  }
+  // 客户端确实还在用它们（否则说明迁移写漏了调用点，页面会静默少算分）
+  assert.ok(clientSrc.indexOf("scoreOf(") >= 0 && clientSrc.indexOf("gradeOf(") >= 0, "客户端应仍调用 scoreOf/gradeOf");
+});
 
-  const now = Date.now();
-  const iso = (days) => new Date(now - days * 86400000).toISOString();
-  for (const v of ['<b>&"', "", null, undefined, 0, false, "<script>alert(1)</script>"]) {
-    assert.equal(client.esc(v), esc(v), "esc 漂移：" + String(v));
-  }
-  for (const v of [null, "", iso(2 / 1440), iso(0.08), iso(2), iso(40), iso(400)]) {
-    assert.equal(client.relTime(v), relTime(v), "relTime 漂移：" + String(v));
-  }
-  for (const v of ["2026-09-21T00:00:00Z", null, ""]) {
-    assert.equal(client.fullTime(v), fullTime(v), "fullTime 漂移：" + String(v));
-  }
-  const rows = [
-    null,
-    { ci: { cls: "ok", trend: [{ c: "success" }, { c: "failure" }, { c: "success" }, { c: "timed_out" }, { c: "skipped" }] }, pushedAt: iso(10), openIssues: 3, releases: 2, latestRelease: { publishedAt: iso(30) }, isArchived: false },
-    { ci: { cls: "running" }, pushedAt: iso(100), openIssues: 0, releases: 0, isArchived: false },
-    { ci: { cls: "none" }, pushedAt: iso(400), openIssues: 50, releases: 0, isArchived: false },
-    { ci: { cls: "ok", trend: [] }, pushedAt: iso(5), openIssues: 1, releases: 1, latestRelease: { publishedAt: iso(100) }, isArchived: true },
-    { ci: { cls: "ok", trend: [{ c: "success" }] }, pushedAt: iso(1), openIssues: 2, releases: 1, latestRelease: { publishedAt: iso(400) }, isArchived: false },
-    { ci: null, pushedAt: null, openIssues: null, releases: null, isArchived: false },
-  ];
-  for (const r of rows) {
-    assert.equal(client.scoreOf(r), scoreOf(r), "scoreOf 漂移：" + JSON.stringify(r));
-  }
-  for (const s of [0, 49.9, 50, 69.9, 70, 84.9, 85, 100]) {
-    const c = client.gradeOf(s);
-    const sv = gradeOf(s);
-    assert.equal(c.g, sv.g, "gradeOf.g 漂移：" + s);
-    assert.equal(c.cls, sv.cls, "gradeOf.cls 漂移：" + s);
+test("口径单一来源：页面注入顺序与浏览器全局可见性（债#11）", () => {
+  const html = renderDashboard({
+    schema: 3, owner: "demo", avatarUrl: "", scannedAt: null, truncated: false, rate: null,
+    totals: { repos: 0, totalRepos: 0, stars: 0, forks: 0, openIssues: 0, openPRs: 0, releases: 0, ciDone: 0, ciOk: 0, sizeTotal: 0 },
+    rows: [],
+  });
+  const tags = html.match(/<script>[\s\S]*?<\/script>/g) || [];
+  // 数据块、共享口径块、客户端块三段都在
+  assert.equal(tags.length, 3, "应恰好三个脚本块：数据 / 共享口径 / 客户端");
+  const shared = tags[1].slice(8, -9);
+  const client = tags[2].slice(8, -9);
+  assert.ok(shared.indexOf("function scoreOf(") >= 0, "第二个脚本块应是共享口径（在客户端之前）");
+  assert.ok(!/^\s*export\b/m.test(shared), "注入前必须去掉行首 export 关键字，否则经典脚本语法错误");
+  assert.equal(client.indexOf("function scoreOf("), -1, "客户端块不应再带副本");
+  // 在 vm 里按页面顺序跑共享块，五个函数应成为该全局对象上的可调用属性（浏览器里的 window.xxx）
+  const sandbox = {};
+  vm.runInNewContext(shared, sandbox, { filename: "display-format.inline.js" });
+  for (const name of ["esc", "relTime", "fullTime", "scoreOf", "gradeOf"]) {
+    assert.equal(typeof sandbox[name], "function", "共享块执行后应暴露全局 " + name);
   }
 });
+
