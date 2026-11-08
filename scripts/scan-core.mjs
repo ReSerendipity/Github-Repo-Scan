@@ -2,7 +2,9 @@
 // v2：并行扫描 / 仓库分页 / CI 趋势 / API 配额 / 许可证链接增量复用 / schema 2
 // v3：渲染与客户端应用拆至 render-dashboard.mjs + assets/dashboard-client.js，路径/配置/格式化拆至 shared.mjs
 import { writeFileSync, readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { createHmac } from "node:crypto";
+import { CLI_MANIFESTS as CLI_MANIFEST_NAMES, manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote } from "./cli-detect.mjs";
+import { loadStarHistory, recordStarHistory, computeStarWeek } from "./star-history.mjs";
+import { loadAuditRows, appendAudit } from "./audit-log.mjs";
 import { join } from "node:path";
 import { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath } from "./shared.mjs";
 import { renderDashboard } from "./render-dashboard.mjs";
@@ -14,6 +16,11 @@ import { esc, relTime, fullTime, scoreOf, gradeOf } from "../assets/display-form
 export { HERE, fmtSize, readLocalConfig, writeLocalConfig, ownerOnlyEnabled, defaultLocalRoots, maskLocalPath, unmaskLocalPath, renderDashboard };
 export { esc, relTime, fullTime, scoreOf, gradeOf };
 export { execFileP, pool, applyJq, directApi, setHttpsTransport, ghAsync };
+// 债 #9 逐域外提后的门面再导出（BM-4）：D3 CLI 检测 / D7 Star 历史 / D9 审计日志的**实现**已不在本文件，
+// 外部消费者（scan.mjs / server.mjs / tests）继续从本入口取这 7 个符号，签名与行为不变。
+export { manifestCliDetail, classifyCli, detectCliLocal, detectCliRemote };
+export { loadStarHistory, recordStarHistory, computeStarWeek };
+export { loadAuditRows, appendAudit };
 // 置 SCAN_WITH_TRAFFIC=1 时额外拉取每仓近 14 天流量（views/clones，各 +1 次 REST 调用，需 push 权限）
 const WITH_TRAFFIC = process.env.SCAN_WITH_TRAFFIC === "1";
 
@@ -281,99 +288,8 @@ const LANG_COLORS = {
   Lua: "#000080", MDX: "#fcb32c", Dockerfile: "#384d54", "Jupyter Notebook": "#DA5B0B",
 };
 
-/* ---------------- CLI 检测 ----------------
- * 三态口径：CLI = 有正式命令行入口（manifest bin/entry_points 或 cli 命名入口文件）；
- * 脚本集 = scripts|tools|bin|cmd 目录承载命令行脚本但无统一入口；无 = 检测不到交互面。
- * 本地有克隆的仓优先本地检测（更新鲜），远程-only 仓走文件树 + 清单（pushedAt 未变复用快照）。
- * gradlew / vitepress build 之类构建工具链不算仓库自有 CLI。 */
-const CLI_SKIP_DIRS = new Set(["node_modules", ".git", ".venv", "venv", "__pycache__", "dist", "build",
-  "target", ".gradle", ".idea", ".vscode", "site", ".vitepress", "output", "outputs", "vendor",
-  "third_party", "coverage", "test-results", "playwright-report", "_archive", "backups", "logs", "data"]);
-const CLI_MANIFESTS = ["package.json", "pyproject.toml", "setup.py", "setup.cfg", "Cargo.toml"];
-const CLI_ENTRY_FILE = /(^|\/)(cli|__main__|entrypoint|entry_point|console)\.(py|js|ts|mjs|cjs|go)$/i;
-const CLI_SCRIPT_DIR = /^(scripts|tools|bin|cmd)\/[^/]+$/.source;
-
-export function manifestCliDetail(name, text) {
-  try {
-    if (name === "package.json") {
-      const bin = JSON.parse(text).bin;
-      if (!bin) return null;
-      return typeof bin === "string" ? "package.json bin" : "package.json bin: " + Object.keys(bin).slice(0, 3).join(", ");
-    }
-    if (name === "pyproject.toml") {
-      const m = text.match(/\[project\.scripts\]([^\[]*)/);
-      if (m && m[1].trim()) {
-        const keys = m[1].split("\n").map((l) => l.split("=")[0].trim()).filter(Boolean).slice(0, 3).join(", ");
-        return "pyproject scripts: " + keys;
-      }
-      const m2 = text.match(/\[tool\.poetry\.scripts\]([^\[]*)/);
-      return m2 && m2[1].trim() ? "poetry scripts" : null;
-    }
-    if (name === "setup.py") return /console_scripts|entry_points\s*=/.test(text) ? "setup.py entry_points" : null;
-    if (name === "setup.cfg") return /console_scripts/.test(text) ? "setup.cfg console_scripts" : null;
-    if (name === "Cargo.toml") return /\[\[bin\]\]/.test(text) ? "Cargo [[bin]]" : null;
-  } catch { /* 解析失败按未命中处理 */ }
-  return null;
-}
-
-export function classifyCli({ hasEntry, entryDetail, hasScriptDir }) {
-  if (hasEntry) return { state: "CLI", detail: entryDetail || null };
-  if (hasScriptDir) return { state: "脚本集", detail: null };
-  return { state: "无", detail: null };
-}
-
-export function detectCliLocal(dir) {
-  let hasEntry = false, entryDetail = null, hasScriptDir = false;
-  let rootNames = [];
-  try { rootNames = readdirSync(dir); } catch { return { state: "无", detail: null, src: "local" }; }
-  for (const mf of CLI_MANIFESTS) {
-    if (!rootNames.includes(mf)) continue;
-    let text = "";
-    try { text = readFileSync(join(dir, mf), "utf8"); } catch { continue; }
-    const d = manifestCliDetail(mf, text);
-    if (d) { hasEntry = true; entryDetail = d; }
-  }
-  const walk = (rel, depth) => {
-    let items = [];
-    try { items = readdirSync(join(dir, rel)); } catch { return; }
-    for (const it of items) {
-      if (it.startsWith(".")) continue;
-      const r = rel ? rel + "/" + it : it;
-      let st = null;
-      try { st = statSync(join(dir, r)); } catch { continue; }
-      if (st.isDirectory()) {
-        if (CLI_SKIP_DIRS.has(it)) continue;
-        if (it === "scripts" || it === "tools" || it === "bin" || it === "cmd") {
-          hasScriptDir = true;
-          if (depth < 2) walk(r, depth + 1); // 进入脚本目录查找 cli 命名入口（如 scripts/ops.py / agent_cli.py），命中则升级为 CLI
-        }
-        if (depth < 2) walk(r, depth + 1);
-      } else if (CLI_ENTRY_FILE.test(r)) {
-        if (!hasEntry) entryDetail = "入口文件: " + r;
-        hasEntry = true;
-      }
-    }
-  };
-  walk("", 0);
-  const c = classifyCli({ hasEntry, entryDetail, hasScriptDir });
-  return { state: c.state, detail: c.detail, src: "local" };
-}
-
-export function detectCliRemote(paths, manifests) {
-  let hasEntry = false, entryDetail = null;
-  for (const p of paths || []) {
-    if (CLI_ENTRY_FILE.test(p)) { entryDetail = "入口文件: " + p; hasEntry = true; break; }
-  }
-  if (!hasEntry) {
-    for (const mf of Object.keys(manifests || {})) {
-      const d = manifestCliDetail(mf, manifests[mf]);
-      if (d) { entryDetail = d; hasEntry = true; break; }
-    }
-  }
-  const hasScriptDir = !hasEntry && (paths || []).some((p) => new RegExp(CLI_SCRIPT_DIR).test(p));
-  const c = classifyCli({ hasEntry, entryDetail, hasScriptDir });
-  return { state: c.state, detail: c.detail, src: "remote" };
-}
+/* ---------------- CLI 检测（D3）—— 实现已外提 scripts/cli-detect.mjs（债 #9 第二步） ----------------
+ * 三态口径与遍历规则见该文件头；本文件只 import 后原样 re-export（BM-4），别再往这里搬实现。 */
 
 export function ciStateOf(run) {
   if (!run) return { label: "无 CI 记录", cls: "none" };
@@ -591,7 +507,7 @@ export async function collectData(ownerArg, opts = {}) {
       const tree = JSON.parse(await ghAsync(["api", "repos/" + owner + "/" + r.name + "/git/trees/" + (r.defaultBranchRef?.name || "HEAD") + "?recursive=1"]));
       const paths = (tree.tree || []).map((x) => x.path);
       const manifests = {};
-      for (const mf of CLI_MANIFESTS) {
+      for (const mf of CLI_MANIFEST_NAMES) {
         if (!paths.includes(mf) || Object.keys(manifests).length >= 2) continue;
         try { manifests[mf] = await ghAsync(["api", "repos/" + owner + "/" + r.name + "/contents/" + mf, "-H", "Accept: application/vnd.github.raw"]); } catch { /* 拉不到就跳过 */ }
       }
@@ -695,58 +611,7 @@ export async function collectData(ownerArg, opts = {}) {
 }
 
 /* ---------------- 产物输出 ---------------- */
-// Star 周增长趋势：本地扫描快照历史（按自然日去重，仅远程全量扫描写入）
-const HISTORY_FILE = join(HERE, "scan-data-history.json");
-const HISTORY_MAX = 400; // 约 > 1 年（按天去重后）
-
-export function loadStarHistory() {
-  try {
-    const h = JSON.parse(readFileSync(HISTORY_FILE, "utf8"));
-    return Array.isArray(h) ? h : [];
-  } catch { return []; }
-}
-
-// 记录一次扫描快照（按自然日去重，仅远程全量扫描调用）
-export function recordStarHistory(data) {
-  const t = data.scannedAt || new Date().toISOString();
-  const day = String(t).slice(0, 10);
-  const repos = {};
-  for (const r of data.rows || []) repos[r.name] = r.stars || 0;
-  let hist = loadStarHistory();
-  const idx = hist.findIndex((e) => String(e.t).slice(0, 10) === day);
-  const entry = { t, repos };
-  if (idx >= 0) hist[idx] = entry; else hist.push(entry);
-  hist.sort((a, b) => new Date(a.t) - new Date(b.t));
-  if (hist.length > HISTORY_MAX) hist = hist.slice(hist.length - HISTORY_MAX);
-  writeFileSync(HISTORY_FILE, JSON.stringify(hist), "utf8");
-  return hist;
-}
-
-// 计算每个仓库近 7 天 Star 增量，写入 r.starWeek 与 data.starWeekRef
-// hist 可外部注入（便于测试），默认从本地历史文件读取；历史不足 6 天则全部置 null（不编造数据）
-export function computeStarWeek(data, hist) {
-  hist = hist || loadStarHistory();
-  const now = new Date(data.scannedAt || Date.now()).getTime();
-  const target = now - 7 * 86400000;
-  let chosen = null;
-  for (const e of hist) {
-    const et = new Date(e.t).getTime();
-    if (et <= target) {
-      if (!chosen || et > new Date(chosen.t).getTime()) chosen = e;
-    }
-  }
-  if (chosen && (now - new Date(chosen.t).getTime()) >= 6 * 86400000) {
-    data.starWeekRef = chosen.t;
-    for (const r of data.rows || []) {
-      const prev = chosen.repos[r.name];
-      r.starWeek = (typeof prev === "number") ? (r.stars || 0) - prev : null;
-    }
-  } else {
-    data.starWeekRef = null;
-    for (const r of data.rows || []) r.starWeek = null;
-  }
-  return data;
-}
+// Star 周增长趋势（D7）实现已外提 scripts/star-history.mjs（债 #9 第三步前半），此处只留指向说明。
 
 export function writeOutputs(data, withHistory = false, source = null) {
   if (withHistory) {
@@ -774,42 +639,8 @@ export function writeOutputs(data, withHistory = false, source = null) {
   } catch { /* 审计写入失败不影响主产物 */ }
 }
 
-/* ---------------- 审计日志（R2 P2-8）：结构化 JSONL，不入库 ----------------
- * 行格式：{ ts, event, owner, mode, source, repos, durationMs, hmac? }
- * 防篡改：设 SCAN_AUDIT_KEY 环境变量时逐行附 HMAC-SHA256（对 hmac 之前的行体签名）；
- * 未设置时 hmac 为 null（明文模式，首次写入提示）。轮转：超过 AUDIT_MAX 行保留最近 AUDIT_MAX 行。
- * filePath 可注入便于测试，默认写入项目目录 scan-audit.jsonl（.gitignore 已排除）。 */
-const AUDIT_FILE = join(HERE, "scan-audit.jsonl");
-const AUDIT_MAX = 2000;
-
-export function loadAuditRows(filePath = AUDIT_FILE) {
-  try {
-    const text = readFileSync(filePath, "utf8");
-    const rows = text.split("\n").map((l) => l.trim()).filter(Boolean)
-      .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-    return rows;
-  } catch { return []; }
-}
-
-let auditKeyWarned = false;
-export function appendAudit(entry, filePath = AUDIT_FILE) {
-  try {
-    const line = JSON.stringify(entry);
-    let hmac = null;
-    const key = process.env.SCAN_AUDIT_KEY;
-    if (key) hmac = createHmac("sha256", key).update(line).digest("hex");
-    else if (!auditKeyWarned) {
-      auditKeyWarned = true;
-      console.log("? 审计日志为明文模式（未设 SCAN_AUDIT_KEY）：设置该环境变量可启用逐行 HMAC 防篡改");
-    }
-    const row = { ...entry, hmac };
-    const rows = loadAuditRows(filePath);
-    rows.push(row);
-    const kept = rows.slice(-AUDIT_MAX);
-    writeFileSync(filePath, kept.map((r) => JSON.stringify(r)).join("\n") + (kept.length ? "\n" : ""), "utf8");
-    return row;
-  } catch { return null; }
-}
+/* ---------------- 审计日志（D9）—— 实现已外提 scripts/audit-log.mjs（债 #9 第三步后半） ----------------
+ * 行格式 / HMAC / 轮转口径见该文件头；本文件只 import 后原样 re-export（BM-4）。 */
 
 /* 快照入库前脱敏：localScan.repos[].path、localScan.roots 与 rows[].local.path 相对化为 ~/…（非主目录路径原样保留） */
 function maskSnapshotPaths(data) {
