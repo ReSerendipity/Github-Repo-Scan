@@ -29,7 +29,7 @@ jobs:
       # actions/checkout@v4 tag 指向 SHA（2026-10-11 抓取）
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@cf12ceefebab2c867b9c35d7f907e059681d37ab
+        uses: github/codeql-action/init@4bfa242aa49c5f7c6770b98670d354a7dfac05f8
         with:
           languages: javascript
           queries: security-extended
