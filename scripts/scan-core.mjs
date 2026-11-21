@@ -669,8 +669,12 @@ export function printSummary(data) {
     console.log("▸ 本次扫描：" + (si.mode === "reuse" ? "无变更·复用快照（0 次深度请求）" : (si.mode === "full" ? "强制全量" : "增量") + " · 深度 " + si.deepScanned + " 个 · 复用 " + si.reused + " 个") + (si.fetchErrorRows ? " · ⚠ 有字段没取到 " + si.fetchErrorRows + " 个" : "") + " · " + (si.durationMs / 1000).toFixed(1) + "s");
   }
   for (const r of data.rows) {
-    console.log("   " + r.name.padEnd(24) + " CI:" + r.ci.state.padEnd(6) + " 许可:" + (r.license ?? "未声明").padEnd(12) + " Release:" + (r.latestRelease ? r.latestRelease.tag : "—").padEnd(14) + " 分支:" + r.defaultBranch + "/" + r.branches + "  ★" + r.stars);
+    const s = scoreOf(r), g = gradeOf(s);
+    console.log("   " + r.name.padEnd(24) + " CI:" + r.ci.state.padEnd(6) + " 许可:" + (r.license ?? "未声明").padEnd(12) + " Release:" + (r.latestRelease ? r.latestRelease.tag : "—").padEnd(14) + " 分支:" + r.defaultBranch + "/" + r.branches + "  ★" + r.stars + "  健康:" + s + "(" + g.g + ")");
   }
+  const gradeCount = { A: 0, B: 0, C: 0, D: 0 };
+  for (const r of data.rows) gradeCount[gradeOf(scoreOf(r)).g]++;
+  console.log("▸ 健康分布：A " + gradeCount.A + " · B " + gradeCount.B + " · C " + gradeCount.C + " · D " + gradeCount.D);
   if (data.localScan) {
     const ls = data.localScan;
     console.log("▸ 本地对照：本机 " + ls.count + " 个 Git 仓库 · 对上 " + ls.matched + " · 本地独有 " + ls.localOnlyCount + " · 远程有本地缺 " + (t.localMissing ?? 0)

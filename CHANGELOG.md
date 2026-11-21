@@ -19,6 +19,7 @@ Release** —— `gh api repos/ReSerendipity/Github-Repo-Scan/tags` 与
 ## [Unreleased]
 
 ### Added
+- CLI `printSummary` 每行新增 `健康:<score>(<grade>)`，并输出 A/B/C/D 等级分布；复用 `scoreOf`/`gradeOf` 单一口径，附 `tests/print-summary.test.mjs`（2026-11-21）。
 - 新增 Tests workflow `.github/workflows/test.yml`：`push` / PR 到 `main` 时自动运行 `node --test`（PR #2）。
 - 新增 `docs/release-governance.md`：本地化 `.github` 治理规范 §10「发布 / 分发统一规范」（工单 D-02，PR #3）。
 - 新增模块边界约定文档，并登记 `scan-core.mjs` 职责集中债。
